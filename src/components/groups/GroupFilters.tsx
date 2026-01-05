@@ -33,7 +33,7 @@ export function GroupFilters({
   };
 
   return (
-    <div className="space-y-4 bg-background/80 backdrop-blur-md rounded-xl p-4 shadow-sm">
+    <div className="space-y-4 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-xl p-4 shadow-md border border-white/50 dark:border-gray-700">
       {/* Search Bar */}
       <div className="flex gap-2">
         <div className="relative flex-1">
@@ -42,7 +42,7 @@ export function GroupFilters({
             placeholder="Tìm kiếm nhóm..."
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="pl-10 bg-background border-border shadow-sm"
+            className="pl-10 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 shadow-sm text-gray-900 dark:text-gray-100 placeholder:text-gray-500"
           />
         </div>
         <Button
@@ -60,9 +60,9 @@ export function GroupFilters({
 
       {/* Filter Options */}
       {showFilters && (
-        <div className="flex flex-wrap gap-3 p-4 bg-background/90 backdrop-blur-sm rounded-lg border border-border shadow-sm">
+        <div className="flex flex-wrap gap-3 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-md">
           <Select value={category} onValueChange={onCategoryChange}>
-            <SelectTrigger className="w-[180px] bg-background border-border">
+            <SelectTrigger className="w-[180px] bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100">
               <SelectValue placeholder="Danh mục" />
             </SelectTrigger>
             <SelectContent>
@@ -76,7 +76,7 @@ export function GroupFilters({
           </Select>
 
           <Select value={location} onValueChange={onLocationChange}>
-            <SelectTrigger className="w-[180px] bg-background border-border">
+            <SelectTrigger className="w-[180px] bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100">
               <SelectValue placeholder="Địa điểm" />
             </SelectTrigger>
             <SelectContent>
@@ -106,10 +106,10 @@ export function GroupFilters({
             variant={category === cat.value ? 'default' : 'outline'}
             size="sm"
             onClick={() => onCategoryChange(cat.value)}
-            className={`flex-shrink-0 shadow-sm ${
+            className={`flex-shrink-0 shadow-md font-medium ${
               category === cat.value
                 ? 'bg-gradient-to-r from-primary to-accent text-white'
-                : 'bg-background hover:bg-muted border-border'
+                : 'bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200'
             }`}
           >
             {'emoji' in cat && <span className="mr-1">{cat.emoji}</span>}

@@ -44,7 +44,7 @@ export function GroupCard({ group, showJoinButton = true }: GroupCardProps) {
       transition={{ duration: 0.3 }}
     >
       <Link to={`/groups/${group.id}`}>
-        <Card className="group overflow-hidden hover:shadow-lg transition-all duration-300 border-border bg-background/95 backdrop-blur-sm hover:bg-background cursor-pointer shadow-md">
+        <Card className="group overflow-hidden hover:shadow-xl transition-all duration-300 border-2 border-white/50 dark:border-gray-700 bg-white dark:bg-gray-900 cursor-pointer shadow-lg">
           {/* Cover Image */}
           <div className="relative h-32 bg-gradient-to-br from-primary/30 via-accent/20 to-primary/10 overflow-hidden">
             {group.cover_image_url ? (
@@ -89,7 +89,7 @@ export function GroupCard({ group, showJoinButton = true }: GroupCardProps) {
                 <h3 className="font-semibold text-foreground truncate group-hover:text-primary transition-colors">
                   {group.name}
                 </h3>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300 font-medium">
                   <Users className="h-3.5 w-3.5" />
                   <span>{group.members_count.toLocaleString()} thành viên</span>
                 </div>
@@ -98,13 +98,13 @@ export function GroupCard({ group, showJoinButton = true }: GroupCardProps) {
 
             {/* Description */}
             {group.description && (
-              <p className="mt-3 text-sm text-muted-foreground line-clamp-2">
+              <p className="mt-3 text-sm text-gray-700 dark:text-gray-300 line-clamp-2">
                 {group.description}
               </p>
             )}
 
             {/* Location & Stats */}
-            <div className="mt-3 flex items-center gap-4 text-xs text-muted-foreground">
+            <div className="mt-3 flex items-center gap-4 text-xs text-gray-600 dark:text-gray-400 font-medium">
               {group.location && (
                 <span className="flex items-center gap-1">
                   <MapPin className="h-3 w-3" />
@@ -151,7 +151,7 @@ export function GroupCard({ group, showJoinButton = true }: GroupCardProps) {
 
             {/* Reward hint */}
             {!isMember && !isPending && (
-              <p className="mt-2 text-xs text-center text-muted-foreground flex items-center justify-center gap-1">
+              <p className="mt-2 text-xs text-center text-gray-600 dark:text-gray-400 font-medium flex items-center justify-center gap-1">
                 +{CAMLY_REWARDS.GROUP_POST.toLocaleString()} <CamlyCoinInline /> mỗi bài đăng trong nhóm
               </p>
             )}
