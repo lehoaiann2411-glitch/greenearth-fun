@@ -15,9 +15,8 @@ interface PersonalStats {
   treesPlanted: number;
   co2Absorbed: number;
   forestArea: number;
-  greenPoints: number;
   campaignsJoined: number;
-  greenReputation: number;
+  camlyBalance: number;
 }
 
 export function useGlobalStats() {
@@ -68,7 +67,7 @@ export function usePersonalStats() {
 
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
-        .select('trees_planted, green_points, campaigns_joined, green_reputation')
+        .select('trees_planted, campaigns_joined, camly_balance')
         .eq('id', user.id)
         .single();
 
@@ -78,9 +77,8 @@ export function usePersonalStats() {
         treesPlanted: profile?.trees_planted || 0,
         co2Absorbed: calculateCO2Absorbed(profile?.trees_planted || 0),
         forestArea: calculateForestArea(profile?.trees_planted || 0),
-        greenPoints: profile?.green_points || 0,
         campaignsJoined: profile?.campaigns_joined || 0,
-        greenReputation: profile?.green_reputation || 0,
+        camlyBalance: profile?.camly_balance || 0,
       };
 
       return stats;
@@ -88,4 +86,3 @@ export function usePersonalStats() {
     enabled: !!user,
   });
 }
-

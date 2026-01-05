@@ -7,8 +7,9 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Trophy, Medal, Crown, Leaf } from 'lucide-react';
-import { getRankByPoints } from '@/lib/greenRanks';
+import { Trophy, Medal, Crown } from 'lucide-react';
+import { CamlyCoinIcon } from '@/components/rewards/CamlyCoinIcon';
+import { formatCamly } from '@/lib/camlyCoin';
 
 export default function Leaderboard() {
   const { user } = useAuth();
@@ -50,15 +51,15 @@ export default function Leaderboard() {
           {/* Header */}
           <div className="mb-8 text-center">
             <div className="mb-4 flex justify-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full gradient-forest">
-                <Trophy className="h-8 w-8 text-primary-foreground" />
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-yellow-400 to-amber-500">
+                <Trophy className="h-8 w-8 text-white" />
               </div>
             </div>
             <h1 className="font-display text-3xl font-bold md:text-4xl">
-              Bảng Xếp Hạng
+              Bảng Xếp Hạng Camly Coin
             </h1>
             <p className="mt-2 text-muted-foreground">
-              Top những người bạn xanh tích cực nhất
+              Top những người bạn giàu Camly Coin nhất
             </p>
           </div>
 
@@ -75,11 +76,11 @@ export default function Leaderboard() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Leaf className="h-5 w-5 text-primary" />
-                Top 50 Điểm Xanh
+                <CamlyCoinIcon size="sm" />
+                Top 50 Camly Coin
               </CardTitle>
               <CardDescription>
-                Xếp hạng dựa trên tổng điểm xanh tích lũy
+                Xếp hạng dựa trên số Camly Coin sở hữu
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -97,16 +98,15 @@ export default function Leaderboard() {
                 <div className="space-y-2">
                   {leaderboard?.map((entry) => {
                     const rankStyle = getRankStyle(entry.rank);
-                    const userRank = getRankByPoints(entry.green_points);
-                    const RankIcon = userRank.icon;
                     const isCurrentUser = user?.id === entry.id;
+                    const camlyBalance = entry.camly_balance || 0;
 
                     return (
                       <div
                         key={entry.id}
                         className={`flex items-center gap-4 rounded-lg border p-4 transition-colors ${
                           isCurrentUser
-                            ? 'border-primary/30 bg-primary/5'
+                            ? 'border-yellow-500/30 bg-yellow-50 dark:bg-yellow-950/20'
                             : 'hover:bg-muted/50'
                         }`}
                       >
@@ -141,18 +141,17 @@ export default function Leaderboard() {
                               <Badge variant="secondary" className="shrink-0">Bạn</Badge>
                             )}
                           </div>
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <RankIcon className={`h-4 w-4 ${userRank.colorClass}`} />
-                            <span>{userRank.name}</span>
-                          </div>
+                          <p className="text-sm text-muted-foreground">
+                            {entry.trees_planted} cây đã trồng
+                          </p>
                         </div>
 
-                        {/* Points */}
-                        <div className="text-right">
-                          <p className="text-lg font-bold text-primary">
-                            {entry.green_points.toLocaleString()}
+                        {/* Camly Balance */}
+                        <div className="text-right flex items-center gap-2">
+                          <CamlyCoinIcon size="sm" />
+                          <p className="text-lg font-bold text-yellow-600 dark:text-yellow-400">
+                            {formatCamly(camlyBalance)}
                           </p>
-                          <p className="text-xs text-muted-foreground">điểm</p>
                         </div>
                       </div>
                     );

@@ -1,30 +1,28 @@
-import { TreePine, Leaf, Award, Star, TrendingUp } from 'lucide-react';
+import { TreePine, Leaf, Award, TrendingUp } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
-import { formatCO2, formatArea } from '@/lib/carbonCalculations';
-import { useUserBadges } from '@/hooks/useBadges';
+import { formatCO2 } from '@/lib/carbonCalculations';
+import { CamlyCoinIcon } from '@/components/rewards/CamlyCoinIcon';
+import { formatCamly } from '@/lib/camlyCoin';
 
 interface PersonalImpactProps {
   stats: {
     treesPlanted: number;
     co2Absorbed: number;
     forestArea: number;
-    greenPoints: number;
     campaignsJoined: number;
-    greenReputation: number;
+    camlyBalance?: number;
   } | null | undefined;
   isLoading: boolean;
 }
 
 export function PersonalImpact({ stats, isLoading }: PersonalImpactProps) {
-  const { data: userBadges } = useUserBadges();
-
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {[...Array(5)].map((_, i) => (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {[...Array(4)].map((_, i) => (
             <Card key={i}>
               <CardHeader className="pb-2">
                 <Skeleton className="h-4 w-24" />
@@ -51,6 +49,13 @@ export function PersonalImpact({ stats, isLoading }: PersonalImpactProps) {
 
   const statCards = [
     {
+      title: 'Camly Coin',
+      value: formatCamly(stats.camlyBalance || 0),
+      icon: () => <CamlyCoinIcon size="sm" />,
+      color: 'text-yellow-600',
+      bgColor: 'bg-yellow-500/10',
+    },
+    {
       title: 'Cây đã trồng',
       value: stats.treesPlanted.toString(),
       icon: TreePine,
@@ -65,25 +70,11 @@ export function PersonalImpact({ stats, isLoading }: PersonalImpactProps) {
       bgColor: 'bg-emerald-500/10',
     },
     {
-      title: 'Điểm xanh',
-      value: stats.greenPoints.toLocaleString(),
-      icon: Star,
-      color: 'text-amber-600',
-      bgColor: 'bg-amber-500/10',
-    },
-    {
       title: 'Chiến dịch',
       value: stats.campaignsJoined.toString(),
       icon: Award,
       color: 'text-purple-600',
       bgColor: 'bg-purple-500/10',
-    },
-    {
-      title: 'Uy tín xanh',
-      value: stats.greenReputation.toString(),
-      icon: TrendingUp,
-      color: 'text-teal-600',
-      bgColor: 'bg-teal-500/10',
     },
   ];
 
@@ -94,7 +85,7 @@ export function PersonalImpact({ stats, isLoading }: PersonalImpactProps) {
   return (
     <div className="space-y-6">
       {/* Stats Grid */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {statCards.map((stat, index) => (
           <Card key={index}>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -106,7 +97,9 @@ export function PersonalImpact({ stats, isLoading }: PersonalImpactProps) {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
+              <div className={`text-2xl font-bold ${stat.title === 'Camly Coin' ? 'text-yellow-600 dark:text-yellow-400' : ''}`}>
+                {stat.value}
+              </div>
             </CardContent>
           </Card>
         ))}
@@ -117,7 +110,7 @@ export function PersonalImpact({ stats, isLoading }: PersonalImpactProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingUp className="h-5 w-5 text-primary" />
-            Tiến độ
+            Tiến độ trồng cây
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -134,33 +127,6 @@ export function PersonalImpact({ stats, isLoading }: PersonalImpactProps) {
           </div>
         </CardContent>
       </Card>
-
-      {/* Earned Badges */}
-      {userBadges && userBadges.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Award className="h-5 w-5 text-primary" />
-              Huy hiệu đã đạt
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-wrap gap-3">
-              {userBadges.map((ub) => (
-                <div
-                  key={ub.id}
-                  className="flex items-center gap-2 px-3 py-2 rounded-full bg-primary/10 text-primary"
-                >
-                  <Award className="h-4 w-4" />
-                  <span className="text-sm font-medium">
-                    {ub.badge?.name_vi || ub.badge?.name}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 }
