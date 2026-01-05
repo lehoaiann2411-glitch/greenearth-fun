@@ -18,7 +18,7 @@ export const wagmiConfig = createConfig({
 
 export const SUPPORTED_CHAINS = [polygon, polygonAmoy];
 
-export const GREEN_NFT_CONTRACT_ADDRESS = '0x0000000000000000000000000000000000000000'; // Placeholder - deploy your own contract
+
 
 export const formatAddress = (address: string): string => {
   if (!address) return '';

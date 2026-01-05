@@ -33,8 +33,8 @@ export default function Index() {
     },
     {
       icon: Leaf,
-      title: 'Green NFT',
-      description: 'Mỗi cây trồng = 1 NFT số với GPS, thời gian, đơn vị thực hiện.',
+      title: 'Camly Coin',
+      description: 'Kiếm token thưởng khi trồng cây, chia sẻ bài viết và tham gia hoạt động xanh.',
       delay: 'animation-delay-200',
     },
     {
@@ -55,7 +55,7 @@ export default function Index() {
     { step: 1, title: 'Đăng ký', description: 'Tạo tài khoản miễn phí trong 30 giây' },
     { step: 2, title: 'Tham gia', description: 'Chọn chiến dịch phù hợp với bạn' },
     { step: 3, title: 'Hành động', description: 'Trồng cây, dọn rác, tái chế...' },
-    { step: 4, title: 'Nhận thưởng', description: 'Điểm xanh, NFT và cấp bậc' },
+    { step: 4, title: 'Nhận thưởng', description: 'Điểm xanh, Camly Coin và cấp bậc' },
   ];
 
   return (
