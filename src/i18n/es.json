@@ -16,12 +16,16 @@
     "submit": "Enviar",
     "confirm": "Confirmar",
     "done": "Hecho",
-    "loginRequired": "Inicio de sesión requerido"
+    "loginRequired": "Inicio de sesión requerido",
+    "user": "Usuario"
   },
   "nav": {
     "home": "Inicio",
+    "feed": "Noticias",
+    "reels": "Reels",
     "campaigns": "Campañas",
     "community": "Comunidad",
+    "groups": "Grupos",
     "leaderboard": "Clasificación",
     "impact": "Impacto",
     "quests": "Misiones",
@@ -32,7 +36,142 @@
     "login": "Iniciar sesión",
     "signup": "Registrarse",
     "logout": "Cerrar sesión",
-    "rewards": "Recompensas"
+    "rewards": "Recompensas",
+    "messages": "Mensajes",
+    "friends": "Amigos"
+  },
+  "header": {
+    "lightMode": "Modo claro",
+    "darkMode": "Modo oscuro",
+    "joinNow": "Únete ahora"
+  },
+  "footer": {
+    "platform": "Plataforma",
+    "about": "Acerca de",
+    "contact": "Contacto",
+    "campaigns": "Campañas",
+    "community": "Comunidad",
+    "leaderboard": "Clasificación",
+    "aboutUs": "Sobre nosotros",
+    "partners": "Socios",
+    "contactUs": "Contáctanos",
+    "faq": "Preguntas frecuentes",
+    "description": "Plataforma que conecta comunidades por un medio ambiente más verde. Juntos creamos un futuro sostenible.",
+    "madeWith": "Hecho con",
+    "forPlanet": "para el planeta.",
+    "privacy": "Política de privacidad",
+    "terms": "Términos de servicio",
+    "vietnam": "Vietnam"
+  },
+  "home": {
+    "hero": {
+      "titleLine1": "Juntos",
+      "titleLine2": "Haciendo Verde la Tierra",
+      "description": "Únete a una comunidad de miles que aman el medio ambiente. Cada pequeña acción tuya es reconocida y crea un gran cambio.",
+      "joinNow": "Únete ahora",
+      "exploreCampaigns": "Explorar campañas"
+    },
+    "stats": {
+      "treesPlanted": "Árboles plantados",
+      "members": "Miembros",
+      "campaigns": "Campañas",
+      "greenPoints": "Puntos verdes"
+    },
+    "features": {
+      "title": "Características principales",
+      "subtitle": "Una plataforma diseñada para reconocer todas tus contribuciones al medio ambiente",
+      "greenPoints": {
+        "title": "Puntos Verdes y Rangos",
+        "description": "Acumula puntos verdes a través de actividades, sube de rango desde Semilla hasta Árbol Gigante."
+      },
+      "camlyCoin": {
+        "title": "Camly Coin",
+        "description": "Gana tokens de recompensa plantando árboles, compartiendo publicaciones y participando en actividades verdes."
+      },
+      "community": {
+        "title": "Comunidad Verde",
+        "description": "Conéctate con personas que comparten tu pasión por la protección del medio ambiente."
+      },
+      "reputation": {
+        "title": "Reputación Verde",
+        "description": "Perfil de contribución para becas, estudios en el extranjero, trabajos ESG."
+      }
+    },
+    "howItWorks": {
+      "title": "Cómo funciona",
+      "subtitle": "Comienza tu viaje verde en solo 4 simples pasos"
+    },
+    "steps": {
+      "register": {
+        "title": "Regístrate",
+        "description": "Crea una cuenta gratis en 30 segundos"
+      },
+      "join": {
+        "title": "Únete",
+        "description": "Elige campañas que te convengan"
+      },
+      "action": {
+        "title": "Actúa",
+        "description": "Planta árboles, limpia, recicla..."
+      },
+      "reward": {
+        "title": "Obtén recompensas",
+        "description": "Puntos verdes, Camly Coin y rangos"
+      }
+    },
+    "cta": {
+      "title": "Comienza tu viaje verde",
+      "description": "Únete a miles de personas que hacen cambios positivos para el medio ambiente.",
+      "button": "Regístrate gratis"
+    },
+    "trust": {
+      "security": {
+        "title": "Seguridad",
+        "description": "Datos encriptados de forma segura"
+      },
+      "transparency": {
+        "title": "Transparencia",
+        "description": "Blockchain registra todas las contribuciones"
+      },
+      "esg": {
+        "title": "ESG",
+        "description": "Certificados reconocidos internacionalmente"
+      }
+    }
+  },
+  "auth": {
+    "backToHome": "Volver al inicio",
+    "tagline": "Juntos construyendo una Tierra Verde",
+    "login": "Iniciar sesión",
+    "signup": "Registrarse",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "fullName": "Nombre completo",
+    "orgName": "Nombre de la organización",
+    "accountType": "Tipo de cuenta",
+    "individual": "Individual",
+    "organization": "Organización",
+    "passwordPlaceholder": "Mínimo 6 caracteres",
+    "namePlaceholder": "Juan Pérez",
+    "orgPlaceholder": "Nombre de la empresa/organización",
+    "createAccount": "Crear cuenta",
+    "orContinueWith": "O continuar con",
+    "orSignupWith": "O registrarse con",
+    "loginFailed": "Inicio de sesión fallido",
+    "signupFailed": "Registro fallido",
+    "loginSuccess": "¡Inicio de sesión exitoso!",
+    "welcomeBack": "Bienvenido de vuelta a Green Earth.",
+    "signupSuccess": "¡Registro exitoso!",
+    "pleaseLogin": "Por favor inicia sesión con tu nueva cuenta.",
+    "welcomeToGreenEarth": "¡Bienvenido a Green Earth! 🌱",
+    "accountCreated": "Tu cuenta ha sido creada exitosamente.",
+    "invalidCredentials": "Correo o contraseña inválidos",
+    "emailAlreadyRegistered": "Este correo ya está registrado. Por favor inicia sesión o usa otro correo.",
+    "validation": {
+      "invalidEmail": "Correo inválido",
+      "passwordMin": "La contraseña debe tener al menos 6 caracteres",
+      "nameRequired": "Por favor ingresa tu nombre completo"
+    }
   },
   "hero": {
     "badge": "Plataforma Web3 de Protección Ambiental 🌍🌳",

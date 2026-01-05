@@ -16,12 +16,16 @@
     "submit": "送信",
     "confirm": "確認",
     "done": "完了",
-    "loginRequired": "ログインが必要です"
+    "loginRequired": "ログインが必要です",
+    "user": "ユーザー"
   },
   "nav": {
     "home": "ホーム",
+    "feed": "フィード",
+    "reels": "リール",
     "campaigns": "キャンペーン",
     "community": "コミュニティ",
+    "groups": "グループ",
     "leaderboard": "ランキング",
     "impact": "インパクト",
     "quests": "クエスト",
@@ -32,7 +36,142 @@
     "login": "ログイン",
     "signup": "新規登録",
     "logout": "ログアウト",
-    "rewards": "報酬"
+    "rewards": "報酬",
+    "messages": "メッセージ",
+    "friends": "友達"
+  },
+  "header": {
+    "lightMode": "ライトモード",
+    "darkMode": "ダークモード",
+    "joinNow": "今すぐ参加"
+  },
+  "footer": {
+    "platform": "プラットフォーム",
+    "about": "概要",
+    "contact": "お問い合わせ",
+    "campaigns": "キャンペーン",
+    "community": "コミュニティ",
+    "leaderboard": "ランキング",
+    "aboutUs": "私たちについて",
+    "partners": "パートナー",
+    "contactUs": "お問い合わせ",
+    "faq": "よくある質問",
+    "description": "よりグリーンな環境のためにコミュニティをつなぐプラットフォーム。一緒に持続可能な未来を作りましょう。",
+    "madeWith": "",
+    "forPlanet": "地球のために作られました。",
+    "privacy": "プライバシーポリシー",
+    "terms": "利用規約",
+    "vietnam": "ベトナム"
+  },
+  "home": {
+    "hero": {
+      "titleLine1": "一緒に",
+      "titleLine2": "地球を緑に",
+      "description": "環境を愛する何千人ものコミュニティに参加しましょう。あなたの小さな行動一つ一つが認められ、大きな変化を生み出します。",
+      "joinNow": "今すぐ参加",
+      "exploreCampaigns": "キャンペーンを探す"
+    },
+    "stats": {
+      "treesPlanted": "植樹した木",
+      "members": "メンバー",
+      "campaigns": "キャンペーン",
+      "greenPoints": "グリーンポイント"
+    },
+    "features": {
+      "title": "主な機能",
+      "subtitle": "環境へのすべての貢献を認識するために設計されたプラットフォーム",
+      "greenPoints": {
+        "title": "グリーンポイント＆ランク",
+        "description": "活動を通じてグリーンポイントを蓄積し、種子から巨木までランクアップ。"
+      },
+      "camlyCoin": {
+        "title": "Camly Coin",
+        "description": "植樹、投稿シェア、グリーン活動への参加でトークンを獲得。"
+      },
+      "community": {
+        "title": "グリーンコミュニティ",
+        "description": "環境保護への情熱を共有する人々とつながりましょう。"
+      },
+      "reputation": {
+        "title": "グリーン信用",
+        "description": "奨学金、留学、ESG就職のための貢献プロフィール。"
+      }
+    },
+    "howItWorks": {
+      "title": "使い方",
+      "subtitle": "たった4つの簡単なステップでグリーンジャーニーを始めましょう"
+    },
+    "steps": {
+      "register": {
+        "title": "登録",
+        "description": "30秒で無料アカウントを作成"
+      },
+      "join": {
+        "title": "参加",
+        "description": "あなたに合ったキャンペーンを選択"
+      },
+      "action": {
+        "title": "行動",
+        "description": "植樹、清掃、リサイクル..."
+      },
+      "reward": {
+        "title": "報酬を獲得",
+        "description": "グリーンポイント、Camly Coinとランク"
+      }
+    },
+    "cta": {
+      "title": "グリーンジャーニーを始めよう",
+      "description": "環境にポジティブな変化をもたらす何千人もの人々に加わりましょう。",
+      "button": "無料で登録"
+    },
+    "trust": {
+      "security": {
+        "title": "セキュリティ",
+        "description": "安全に暗号化されたデータ"
+      },
+      "transparency": {
+        "title": "透明性",
+        "description": "ブロックチェーンがすべての貢献を記録"
+      },
+      "esg": {
+        "title": "ESG",
+        "description": "国際的に認められた証明書"
+      }
+    }
+  },
+  "auth": {
+    "backToHome": "ホームに戻る",
+    "tagline": "一緒にグリーンアースを作ろう",
+    "login": "ログイン",
+    "signup": "新規登録",
+    "email": "メール",
+    "password": "パスワード",
+    "fullName": "氏名",
+    "orgName": "組織名",
+    "accountType": "アカウントタイプ",
+    "individual": "個人",
+    "organization": "組織",
+    "passwordPlaceholder": "6文字以上",
+    "namePlaceholder": "山田太郎",
+    "orgPlaceholder": "会社/組織名",
+    "createAccount": "アカウント作成",
+    "orContinueWith": "または以下で続ける",
+    "orSignupWith": "または以下で登録",
+    "loginFailed": "ログイン失敗",
+    "signupFailed": "登録失敗",
+    "loginSuccess": "ログイン成功！",
+    "welcomeBack": "Green Earthへようこそお戻りください。",
+    "signupSuccess": "登録成功！",
+    "pleaseLogin": "新しいアカウントでログインしてください。",
+    "welcomeToGreenEarth": "Green Earthへようこそ！🌱",
+    "accountCreated": "アカウントが正常に作成されました。",
+    "invalidCredentials": "メールまたはパスワードが無効です",
+    "emailAlreadyRegistered": "このメールは既に登録されています。ログインするか、別のメールを使用してください。",
+    "validation": {
+      "invalidEmail": "無効なメール",
+      "passwordMin": "パスワードは6文字以上必要です",
+      "nameRequired": "氏名を入力してください"
+    }
   },
   "hero": {
     "badge": "Web3 環境保護プラットフォーム 🌍🌳",

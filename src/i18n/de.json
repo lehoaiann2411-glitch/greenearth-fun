@@ -16,12 +16,16 @@
     "submit": "Absenden",
     "confirm": "Bestätigen",
     "done": "Fertig",
-    "loginRequired": "Anmeldung erforderlich"
+    "loginRequired": "Anmeldung erforderlich",
+    "user": "Benutzer"
   },
   "nav": {
     "home": "Startseite",
+    "feed": "Feed",
+    "reels": "Reels",
     "campaigns": "Kampagnen",
     "community": "Gemeinschaft",
+    "groups": "Gruppen",
     "leaderboard": "Rangliste",
     "impact": "Wirkung",
     "quests": "Aufgaben",
@@ -32,7 +36,142 @@
     "login": "Anmelden",
     "signup": "Registrieren",
     "logout": "Abmelden",
-    "rewards": "Belohnungen"
+    "rewards": "Belohnungen",
+    "messages": "Nachrichten",
+    "friends": "Freunde"
+  },
+  "header": {
+    "lightMode": "Heller Modus",
+    "darkMode": "Dunkler Modus",
+    "joinNow": "Jetzt beitreten"
+  },
+  "footer": {
+    "platform": "Plattform",
+    "about": "Über uns",
+    "contact": "Kontakt",
+    "campaigns": "Kampagnen",
+    "community": "Gemeinschaft",
+    "leaderboard": "Rangliste",
+    "aboutUs": "Über uns",
+    "partners": "Partner",
+    "contactUs": "Kontakt",
+    "faq": "FAQ",
+    "description": "Plattform, die Gemeinschaften für eine grünere Umwelt verbindet. Gemeinsam schaffen wir eine nachhaltige Zukunft.",
+    "madeWith": "Gemacht mit",
+    "forPlanet": "für den Planeten.",
+    "privacy": "Datenschutzrichtlinie",
+    "terms": "Nutzungsbedingungen",
+    "vietnam": "Vietnam"
+  },
+  "home": {
+    "hero": {
+      "titleLine1": "Gemeinsam",
+      "titleLine2": "Die Erde Begrünen",
+      "description": "Treten Sie einer Gemeinschaft von Tausenden bei, die die Umwelt lieben. Jede Ihrer kleinen Aktionen wird anerkannt und bewirkt große Veränderungen.",
+      "joinNow": "Jetzt beitreten",
+      "exploreCampaigns": "Kampagnen erkunden"
+    },
+    "stats": {
+      "treesPlanted": "Gepflanzte Bäume",
+      "members": "Mitglieder",
+      "campaigns": "Kampagnen",
+      "greenPoints": "Grüne Punkte"
+    },
+    "features": {
+      "title": "Hauptfunktionen",
+      "subtitle": "Eine Plattform, die alle Ihre Beiträge zur Umwelt anerkennt",
+      "greenPoints": {
+        "title": "Grüne Punkte & Ränge",
+        "description": "Sammeln Sie grüne Punkte durch Aktivitäten, steigen Sie vom Sämling zum Riesenbaum auf."
+      },
+      "camlyCoin": {
+        "title": "Camly Coin",
+        "description": "Verdienen Sie Token durch Pflanzen, Teilen und Teilnahme an grünen Aktivitäten."
+      },
+      "community": {
+        "title": "Grüne Gemeinschaft",
+        "description": "Verbinden Sie sich mit Menschen, die Ihre Leidenschaft für Umweltschutz teilen."
+      },
+      "reputation": {
+        "title": "Grüne Reputation",
+        "description": "Beitragsprofil für Stipendien, Auslandsstudium, ESG-Jobs."
+      }
+    },
+    "howItWorks": {
+      "title": "So funktioniert's",
+      "subtitle": "Starten Sie Ihre grüne Reise in nur 4 einfachen Schritten"
+    },
+    "steps": {
+      "register": {
+        "title": "Registrieren",
+        "description": "Erstellen Sie ein kostenloses Konto in 30 Sekunden"
+      },
+      "join": {
+        "title": "Beitreten",
+        "description": "Wählen Sie passende Kampagnen"
+      },
+      "action": {
+        "title": "Handeln",
+        "description": "Bäume pflanzen, aufräumen, recyceln..."
+      },
+      "reward": {
+        "title": "Belohnungen",
+        "description": "Grüne Punkte, Camly Coin und Ränge"
+      }
+    },
+    "cta": {
+      "title": "Starten Sie Ihre grüne Reise",
+      "description": "Schließen Sie sich Tausenden an, die positive Veränderungen für die Umwelt bewirken.",
+      "button": "Kostenlos registrieren"
+    },
+    "trust": {
+      "security": {
+        "title": "Sicherheit",
+        "description": "Daten sicher verschlüsselt"
+      },
+      "transparency": {
+        "title": "Transparenz",
+        "description": "Blockchain zeichnet alle Beiträge auf"
+      },
+      "esg": {
+        "title": "ESG",
+        "description": "International anerkannte Zertifikate"
+      }
+    }
+  },
+  "auth": {
+    "backToHome": "Zurück zur Startseite",
+    "tagline": "Gemeinsam eine grüne Erde bauen",
+    "login": "Anmelden",
+    "signup": "Registrieren",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "fullName": "Vollständiger Name",
+    "orgName": "Organisationsname",
+    "accountType": "Kontotyp",
+    "individual": "Einzelperson",
+    "organization": "Organisation",
+    "passwordPlaceholder": "Mindestens 6 Zeichen",
+    "namePlaceholder": "Max Mustermann",
+    "orgPlaceholder": "Firmen-/Organisationsname",
+    "createAccount": "Konto erstellen",
+    "orContinueWith": "Oder fortfahren mit",
+    "orSignupWith": "Oder registrieren mit",
+    "loginFailed": "Anmeldung fehlgeschlagen",
+    "signupFailed": "Registrierung fehlgeschlagen",
+    "loginSuccess": "Anmeldung erfolgreich!",
+    "welcomeBack": "Willkommen zurück bei Green Earth.",
+    "signupSuccess": "Registrierung erfolgreich!",
+    "pleaseLogin": "Bitte melden Sie sich mit Ihrem neuen Konto an.",
+    "welcomeToGreenEarth": "Willkommen bei Green Earth! 🌱",
+    "accountCreated": "Ihr Konto wurde erfolgreich erstellt.",
+    "invalidCredentials": "Ungültige E-Mail oder Passwort",
+    "emailAlreadyRegistered": "Diese E-Mail ist bereits registriert. Bitte anmelden oder andere E-Mail verwenden.",
+    "validation": {
+      "invalidEmail": "Ungültige E-Mail",
+      "passwordMin": "Passwort muss mindestens 6 Zeichen haben",
+      "nameRequired": "Bitte geben Sie Ihren vollständigen Namen ein"
+    }
   },
   "hero": {
     "badge": "Web3 Umweltschutz-Plattform 🌍🌳",
