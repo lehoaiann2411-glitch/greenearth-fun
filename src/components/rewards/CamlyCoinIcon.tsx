@@ -126,14 +126,16 @@ export function CoinSparkles({ active = false }: { active?: boolean }) {
 // Inline coin icon for text (replaces 🪙 emoji)
 interface CamlyCoinInlineProps {
   className?: string;
+  size?: number;
 }
 
-export function CamlyCoinInline({ className = '' }: CamlyCoinInlineProps) {
+export function CamlyCoinInline({ className = '', size = 16 }: CamlyCoinInlineProps) {
   return (
     <img 
       src={camlyCoinImage} 
       alt="Camly" 
-      className={`inline-block w-4 h-4 align-text-bottom ${className}`}
+      className={`inline-block align-text-bottom ${className}`}
+      style={{ width: size, height: size }}
     />
   );
 }

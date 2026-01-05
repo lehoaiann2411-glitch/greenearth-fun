@@ -23,6 +23,8 @@ import Feed from "./pages/Feed";
 import Groups from "./pages/Groups";
 import GroupCreate from "./pages/GroupCreate";
 import GroupDetail from "./pages/GroupDetail";
+import Messages from "./pages/Messages";
+import Friends from "./pages/Friends";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -41,6 +43,7 @@ const App = () => (
               <Route path="/auth" element={<Auth />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/profile/:userId" element={<Profile />} />
               <Route path="/profile/edit" element={<ProfileEdit />} />
               <Route path="/leaderboard" element={<Leaderboard />} />
               
@@ -54,6 +57,12 @@ const App = () => (
               <Route path="/groups/:id" element={<GroupDetail />} />
               <Route path="/impact" element={<ImpactDashboard />} />
               <Route path="/rewards" element={<Rewards />} />
+              
+              {/* Social Network Routes */}
+              <Route path="/messages" element={<Messages />} />
+              <Route path="/messages/:conversationId" element={<Messages />} />
+              <Route path="/friends" element={<Friends />} />
+              
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

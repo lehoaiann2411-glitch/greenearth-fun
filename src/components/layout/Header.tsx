@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
-import { Leaf, Menu, X, User, LogOut, TreeDeciduous, LayoutDashboard, Coins, Users } from 'lucide-react';
+import { Leaf, Menu, X, User, LogOut, TreeDeciduous, LayoutDashboard, Coins, Users, MessageCircle, UserPlus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -15,12 +15,17 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ConnectWallet } from '@/components/web3/ConnectWallet';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
+import { useUnreadMessagesCount } from '@/hooks/useMessages';
+import { useFriendRequestsCount } from '@/hooks/useFriendships';
 
 export function Header() {
   const { t } = useTranslation();
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
+  const { data: unreadMessages } = useUnreadMessagesCount();
+  const { data: friendRequests } = useFriendRequestsCount();
 
   const handleSignOut = async () => {
     await signOut();
@@ -73,6 +78,40 @@ export function Header() {
           <ConnectWallet />
           {user ? (
             <div className="flex items-center gap-2">
+              {/* Messages Icon */}
+              <Button
+                variant="ghost"
+                size="icon"
+                asChild
+                className="relative text-white hover:bg-white/10"
+              >
+                <Link to="/messages">
+                  <MessageCircle className="h-5 w-5" />
+                  {unreadMessages && unreadMessages > 0 && (
+                    <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+                      {unreadMessages > 9 ? '9+' : unreadMessages}
+                    </span>
+                  )}
+                </Link>
+              </Button>
+
+              {/* Friend Requests Icon */}
+              <Button
+                variant="ghost"
+                size="icon"
+                asChild
+                className="relative text-white hover:bg-white/10"
+              >
+                <Link to="/friends">
+                  <UserPlus className="h-5 w-5" />
+                  {friendRequests && friendRequests > 0 && (
+                    <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-white">
+                      {friendRequests > 9 ? '9+' : friendRequests}
+                    </span>
+                  )}
+                </Link>
+              </Button>
+
               <NotificationBell />
               <DropdownMenu>
               <DropdownMenuTrigger asChild>
