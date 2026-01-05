@@ -1,5 +1,6 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { useProfile } from '@/hooks/useProfile';
 import { useUserRank } from '@/hooks/useLeaderboard';
@@ -18,15 +19,22 @@ import {
   Edit,
   Award,
   Target,
-  Calendar
+  Calendar,
+  Coins,
+  ArrowRight,
 } from 'lucide-react';
 import { getRankByPoints, getNextRank, getProgressToNextRank, getPointsToNextRank } from '@/lib/greenRanks';
+import { toCamlyCoin, canClaim } from '@/lib/camlyCoin';
+import { CoinAnimation } from '@/components/rewards/CoinAnimation';
+import { ClaimModal } from '@/components/rewards/ClaimModal';
 
 export default function Profile() {
+  const { t } = useTranslation();
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { data: profile, isLoading: profileLoading } = useProfile();
   const { data: userRank } = useUserRank(user?.id);
+  const [claimModalOpen, setClaimModalOpen] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -58,17 +66,24 @@ export default function Profile() {
   const progress = getProgressToNextRank(profile.green_points);
   const pointsToNext = getPointsToNextRank(profile.green_points);
   const RankIcon = currentRank.icon;
+  const camlyCoin = toCamlyCoin(profile.green_points);
 
   const stats = [
-    { icon: Leaf, label: 'Điểm Xanh', value: profile.green_points, color: 'text-primary' },
-    { icon: TreePine, label: 'Cây đã trồng', value: profile.trees_planted, color: 'text-accent' },
-    { icon: Trophy, label: 'Chiến dịch', value: profile.campaigns_joined, color: 'text-sky' },
+    { 
+      icon: Leaf, 
+      label: t('impact.greenPoints'), 
+      value: profile.green_points, 
+      color: 'text-primary',
+      subLabel: `≈ ${camlyCoin} CAMLY`
+    },
+    { icon: TreePine, label: t('impact.treesPlanted'), value: profile.trees_planted, color: 'text-accent' },
+    { icon: Trophy, label: t('impact.campaignsJoined'), value: profile.campaigns_joined, color: 'text-sky' },
   ];
 
   const badges = [
-    { name: 'Người tiên phong', icon: Award, earned: profile.campaigns_joined >= 1 },
-    { name: 'Nhà bảo vệ', icon: TreePine, earned: profile.trees_planted >= 5 },
-    { name: 'Chiến binh xanh', icon: Target, earned: profile.green_points >= 500 },
+    { name: t('badges.pioneer', 'Người tiên phong'), icon: Award, earned: profile.campaigns_joined >= 1 },
+    { name: t('badges.protector', 'Nhà bảo vệ'), icon: TreePine, earned: profile.trees_planted >= 5 },
+    { name: t('badges.warrior', 'Chiến binh xanh'), icon: Target, earned: profile.green_points >= 500 },
   ];
 
   return (
@@ -140,7 +155,7 @@ export default function Profile() {
           </Card>
 
           {/* Stats Grid */}
-          <div className="mt-6 grid gap-4 md:grid-cols-3">
+          <div className="mt-6 grid gap-4 md:grid-cols-4">
             {stats.map((stat) => (
               <Card key={stat.label}>
                 <CardContent className="flex items-center gap-4 p-6">
@@ -150,10 +165,35 @@ export default function Profile() {
                   <div>
                     <p className="text-2xl font-bold">{stat.value}</p>
                     <p className="text-sm text-muted-foreground">{stat.label}</p>
+                    {stat.subLabel && (
+                      <p className="text-xs text-green-600 dark:text-green-400">{stat.subLabel}</p>
+                    )}
                   </div>
                 </CardContent>
               </Card>
             ))}
+            
+            {/* Camly Coin Card */}
+            <Card className="bg-gradient-to-br from-green-50 to-emerald-100 dark:from-green-950 dark:to-emerald-900 border-green-200 dark:border-green-800">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-3">
+                  <CoinAnimation size="md" animated />
+                  <div>
+                    <p className="text-2xl font-bold text-green-600 dark:text-green-400">{camlyCoin}</p>
+                    <p className="text-sm text-muted-foreground">CAMLY</p>
+                  </div>
+                </div>
+                <Button
+                  size="sm"
+                  onClick={() => setClaimModalOpen(true)}
+                  disabled={!canClaim(profile.green_points)}
+                  className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
+                >
+                  <Coins className="mr-2 h-4 w-4" />
+                  {t('rewards.claimCamly', 'Claim CAMLY')}
+                </Button>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Rank Progress */}
@@ -220,20 +260,33 @@ export default function Profile() {
           {/* Quick Links */}
           <div className="mt-6 flex flex-wrap gap-4">
             <Button asChild variant="outline" className="gap-2">
+              <Link to="/rewards">
+                <Coins className="h-4 w-4" />
+                {t('nav.rewards', 'Rewards')}
+              </Link>
+            </Button>
+            <Button asChild variant="outline" className="gap-2">
               <Link to="/nft-gallery">
                 <TreePine className="h-4 w-4" />
-                Xem bộ sưu tập NFT
+                {t('impact.nftsOwned', 'NFT Collection')}
               </Link>
             </Button>
             <Button asChild variant="outline" className="gap-2">
               <Link to="/leaderboard">
                 <Trophy className="h-4 w-4" />
-                Bảng xếp hạng
+                {t('nav.leaderboard', 'Leaderboard')}
               </Link>
             </Button>
           </div>
         </div>
       </div>
+
+      <ClaimModal
+        open={claimModalOpen}
+        onOpenChange={setClaimModalOpen}
+        greenPoints={profile.green_points}
+        walletAddress={profile.wallet_address || ''}
+      />
     </Layout>
   );
 }

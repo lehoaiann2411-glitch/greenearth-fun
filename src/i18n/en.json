@@ -14,7 +14,9 @@
     "next": "Next",
     "previous": "Previous",
     "submit": "Submit",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "done": "Done",
+    "loginRequired": "Login Required"
   },
   "nav": {
     "home": "Home",
@@ -30,7 +32,8 @@
     "dashboard": "Dashboard",
     "login": "Login",
     "signup": "Sign Up",
-    "logout": "Logout"
+    "logout": "Logout",
+    "rewards": "Rewards"
   },
   "hero": {
     "badge": "Web3 Environmental Protection Platform",
@@ -80,5 +83,40 @@
     "co2Absorbed": "CO₂ Absorbed",
     "location": "Location",
     "plantedAt": "Planted At"
+  },
+  "rewards": {
+    "title": "Rewards & Wallet",
+    "subtitle": "Earn Green Points and claim CAMLY tokens",
+    "greenPoints": "Green Points",
+    "camlyCoin": "Camly Coin",
+    "equivalent": "equivalent",
+    "claimCamly": "Claim CAMLY Tokens",
+    "claimDescription": "Convert your Green Points to CAMLY tokens",
+    "claimNow": "Claim CAMLY",
+    "claimSuccess": "Claim Successful!",
+    "conversionRate": "Conversion Rate",
+    "minimumClaim": "Minimum",
+    "pointsToClaim": "Points to Claim",
+    "totalClaimed": "Total Claimed",
+    "transactions": "transactions",
+    "readyToClaim": "Ready to Claim",
+    "history": "History",
+    "claims": "Claims",
+    "howToEarn": "How to Earn",
+    "pointsHistory": "Points History",
+    "recentEarnings": "Your recent point earnings",
+    "claimHistory": "Claim History",
+    "yourClaims": "Your CAMLY token claims",
+    "noHistory": "No point history yet",
+    "startEarning": "Start earning points by completing actions!",
+    "noClaims": "No claims yet",
+    "claimInfo": "Claim your CAMLY tokens when you have enough points!",
+    "howToEarnTitle": "How to Earn Green Points",
+    "tip": "Pro Tip",
+    "tipDescription": "Complete daily quests and participate in campaigns to maximize your earnings!",
+    "loginToView": "Please login to view your rewards",
+    "processing": "Processing your claim...",
+    "pleaseWait": "Please wait while we process your transaction",
+    "earnedPoints": "You earned {{points}} Green Points ≈ {{camly}} CAMLY!"
   }
 }

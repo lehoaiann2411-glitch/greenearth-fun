@@ -176,6 +176,47 @@ export type Database = {
           },
         ]
       }
+      claims_history: {
+        Row: {
+          camly_received: number
+          created_at: string | null
+          green_points_converted: number
+          id: string
+          status: string | null
+          transaction_hash: string | null
+          user_id: string
+          wallet_address: string | null
+        }
+        Insert: {
+          camly_received: number
+          created_at?: string | null
+          green_points_converted: number
+          id?: string
+          status?: string | null
+          transaction_hash?: string | null
+          user_id: string
+          wallet_address?: string | null
+        }
+        Update: {
+          camly_received?: number
+          created_at?: string | null
+          green_points_converted?: number
+          id?: string
+          status?: string | null
+          transaction_hash?: string | null
+          user_id?: string
+          wallet_address?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "claims_history_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       daily_quests: {
         Row: {
           created_at: string | null
@@ -416,6 +457,50 @@ export type Database = {
         }
         Relationships: []
       }
+      points_history: {
+        Row: {
+          action_type: string
+          camly_equivalent: number
+          created_at: string | null
+          description: string | null
+          id: string
+          points_earned: number
+          reference_id: string | null
+          reference_type: string | null
+          user_id: string
+        }
+        Insert: {
+          action_type: string
+          camly_equivalent: number
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          points_earned: number
+          reference_id?: string | null
+          reference_type?: string | null
+          user_id: string
+        }
+        Update: {
+          action_type?: string
+          camly_equivalent?: number
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          points_earned?: number
+          reference_id?: string | null
+          reference_type?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "points_history_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       post_comments: {
         Row: {
           content: string
@@ -533,6 +618,7 @@ export type Database = {
           green_reputation: number | null
           id: string
           location: string | null
+          total_camly_claimed: number | null
           trees_planted: number
           updated_at: string
           wallet_address: string | null
@@ -548,6 +634,7 @@ export type Database = {
           green_reputation?: number | null
           id: string
           location?: string | null
+          total_camly_claimed?: number | null
           trees_planted?: number
           updated_at?: string
           wallet_address?: string | null
@@ -563,6 +650,7 @@ export type Database = {
           green_reputation?: number | null
           id?: string
           location?: string | null
+          total_camly_claimed?: number | null
           trees_planted?: number
           updated_at?: string
           wallet_address?: string | null
