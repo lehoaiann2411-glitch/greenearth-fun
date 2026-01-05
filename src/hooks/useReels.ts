@@ -52,7 +52,7 @@ export interface ReelComment {
 export const REEL_REWARDS = {
   LIKE: 100,
   COMMENT: 200,
-  SHARE: 500,
+  SHARE: 200,  // +200 Camly Coin for sharing green vibes!
   CREATE: 5000,
   VIEWS_1000: 1000,
   TOP_WEEKLY: 10000,
