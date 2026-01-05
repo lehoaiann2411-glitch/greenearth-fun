@@ -78,13 +78,17 @@ export function Header() {
       {/* Glass morphism background */}
       <div className="absolute inset-0 bg-white/10 backdrop-blur-lg border-b border-white/20" />
       
-      <div className="container relative flex h-16 items-center justify-between">
-        {/* Logo */}
-        <Link to="/" className="flex items-center group">
+      <div className="container relative flex h-28 items-center justify-between">
+        {/* Logo with Glow Effect */}
+        <Link to="/" className="flex items-center group relative">
+          {/* Quầng ánh sáng phía sau */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle,_rgba(255,255,255,0.5)_0%,_rgba(74,222,128,0.4)_40%,_transparent_70%)] blur-2xl scale-[2.5] animate-glow-pulse pointer-events-none" />
+          
+          {/* Logo chính */}
           <img 
             src={greenEarthLogo} 
             alt="Green Earth" 
-            className="h-12 w-auto transition-transform duration-300 group-hover:scale-105"
+            className="relative z-10 h-36 w-auto transition-transform duration-300 group-hover:scale-110 drop-shadow-[0_0_30px_rgba(255,255,255,0.5)]"
           />
         </Link>
 

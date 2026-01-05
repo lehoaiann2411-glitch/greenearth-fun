@@ -35,11 +35,15 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="space-y-4">
-            <Link to="/" className="flex items-center group">
+            <Link to="/" className="flex items-center group relative">
+              {/* Quầng ánh sáng phía sau */}
+              <div className="absolute inset-0 bg-[radial-gradient(circle,_rgba(255,255,255,0.4)_0%,_rgba(74,222,128,0.3)_40%,_transparent_70%)] blur-2xl scale-[2.5] animate-glow-pulse pointer-events-none" />
+              
+              {/* Logo chính */}
               <img 
                 src={greenEarthLogo} 
                 alt="Green Earth" 
-                className="h-14 w-auto"
+                className="relative z-10 h-40 w-auto drop-shadow-[0_0_25px_rgba(255,255,255,0.4)]"
               />
             </Link>
             <p className="text-white/70 text-sm leading-relaxed">
