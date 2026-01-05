@@ -23,6 +23,15 @@ export const CAMLY_REWARDS = {
   STORY_GREEN_REPLY: 500,      // Green message reply bonus
   STORY_REACTION: 50,          // React to a story
   
+  // Group Actions - Higher rewards to encourage community
+  GROUP_CREATE: 5000,          // Create a group (+5,000)
+  GROUP_POST: 4000,            // Post in group (higher than normal feed)
+  GROUP_POST_WITH_IMAGE: 5000, // Post with image in group
+  GROUP_INVITE_POSTED: 3000,   // Friend you invited posts in group
+  GROUP_EVENT_50_RSVP: 20000,  // Event with 50+ RSVPs (admin bonus)
+  GROUP_FIRST_POST: 1000,      // First post in a new group you joined
+  GROUP_JOIN: 500,             // Join a group
+  
   // Comment Actions
   CREATE_COMMENT: 300,         // Comment on post
   REPLY_COMMENT: 200,          // Reply to comment
@@ -62,6 +71,8 @@ export const DAILY_LIMITS = {
   STORY_VIEWS: 100,     // Max 100 story views/day
   STORY_REPLIES: 20,    // Max 20 story replies/day
   STORY_REACTIONS: 50,  // Max 50 story reactions/day
+  GROUP_POSTS: 5,       // Max 5 group posts/day for rewards
+  GROUP_INVITES: 10,    // Max 10 group invites/day
 };
 
 // Green keywords for bonus story replies
@@ -133,6 +144,14 @@ export const ACTION_TYPES = {
   COMPLETE_QUEST: 'complete_quest',
   CAMPAIGN_COMPLETE: 'campaign_complete',
   TOP_CONTRIBUTOR: 'top_contributor',
+  // Group actions
+  GROUP_CREATE: 'group_create',
+  GROUP_POST: 'group_post',
+  GROUP_POST_WITH_IMAGE: 'group_post_with_image',
+  GROUP_INVITE_POSTED: 'group_invite_posted',
+  GROUP_EVENT_BONUS: 'group_event_bonus',
+  GROUP_FIRST_POST: 'group_first_post',
+  GROUP_JOIN: 'group_join',
 };
 
 // Reaction types for posts

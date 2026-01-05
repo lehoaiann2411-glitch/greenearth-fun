@@ -396,6 +396,462 @@ export type Database = {
           },
         ]
       }
+      group_event_rsvps: {
+        Row: {
+          created_at: string | null
+          event_id: string
+          id: string
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          event_id: string
+          id?: string
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          event_id?: string
+          id?: string
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_event_rsvps_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "group_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_event_rsvps_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      group_events: {
+        Row: {
+          campaign_id: string | null
+          cover_image_url: string | null
+          created_at: string | null
+          created_by: string
+          description: string | null
+          description_vi: string | null
+          end_time: string | null
+          event_date: string
+          group_id: string
+          id: string
+          latitude: number | null
+          location: string | null
+          longitude: number | null
+          max_attendees: number | null
+          rsvp_count: number | null
+          start_time: string | null
+          title: string
+          title_vi: string | null
+        }
+        Insert: {
+          campaign_id?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          created_by: string
+          description?: string | null
+          description_vi?: string | null
+          end_time?: string | null
+          event_date: string
+          group_id: string
+          id?: string
+          latitude?: number | null
+          location?: string | null
+          longitude?: number | null
+          max_attendees?: number | null
+          rsvp_count?: number | null
+          start_time?: string | null
+          title: string
+          title_vi?: string | null
+        }
+        Update: {
+          campaign_id?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          created_by?: string
+          description?: string | null
+          description_vi?: string | null
+          end_time?: string | null
+          event_date?: string
+          group_id?: string
+          id?: string
+          latitude?: number | null
+          location?: string | null
+          longitude?: number | null
+          max_attendees?: number | null
+          rsvp_count?: number | null
+          start_time?: string | null
+          title?: string
+          title_vi?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_events_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_events_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_events_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      group_invites: {
+        Row: {
+          camly_earned: number | null
+          created_at: string | null
+          group_id: string
+          id: string
+          invite_accepted: boolean | null
+          invitee_id: string
+          invitee_posted: boolean | null
+          inviter_id: string
+        }
+        Insert: {
+          camly_earned?: number | null
+          created_at?: string | null
+          group_id: string
+          id?: string
+          invite_accepted?: boolean | null
+          invitee_id: string
+          invitee_posted?: boolean | null
+          inviter_id: string
+        }
+        Update: {
+          camly_earned?: number | null
+          created_at?: string | null
+          group_id?: string
+          id?: string
+          invite_accepted?: boolean | null
+          invitee_id?: string
+          invitee_posted?: boolean | null
+          inviter_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_invites_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_invites_invitee_id_fkey"
+            columns: ["invitee_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_invites_inviter_id_fkey"
+            columns: ["inviter_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      group_members: {
+        Row: {
+          camly_earned: number | null
+          group_id: string
+          id: string
+          invited_by: string | null
+          joined_at: string | null
+          role: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          camly_earned?: number | null
+          group_id: string
+          id?: string
+          invited_by?: string | null
+          joined_at?: string | null
+          role?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          camly_earned?: number | null
+          group_id?: string
+          id?: string
+          invited_by?: string | null
+          joined_at?: string | null
+          role?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_members_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_members_invited_by_fkey"
+            columns: ["invited_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_members_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      group_post_comments: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          likes_count: number | null
+          parent_id: string | null
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          likes_count?: number | null
+          parent_id?: string | null
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          likes_count?: number | null
+          parent_id?: string | null
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_post_comments_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "group_post_comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_post_comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "group_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_post_comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      group_post_likes: {
+        Row: {
+          created_at: string | null
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_post_likes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "group_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_post_likes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      group_posts: {
+        Row: {
+          camly_earned: number | null
+          comments_count: number | null
+          content: string
+          created_at: string | null
+          feeling: string | null
+          group_id: string
+          id: string
+          is_announcement: boolean | null
+          is_pinned: boolean | null
+          likes_count: number | null
+          media_urls: string[] | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          camly_earned?: number | null
+          comments_count?: number | null
+          content: string
+          created_at?: string | null
+          feeling?: string | null
+          group_id: string
+          id?: string
+          is_announcement?: boolean | null
+          is_pinned?: boolean | null
+          likes_count?: number | null
+          media_urls?: string[] | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          camly_earned?: number | null
+          comments_count?: number | null
+          content?: string
+          created_at?: string | null
+          feeling?: string | null
+          group_id?: string
+          id?: string
+          is_announcement?: boolean | null
+          is_pinned?: boolean | null
+          likes_count?: number | null
+          media_urls?: string[] | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_posts_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_posts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      groups: {
+        Row: {
+          category: string | null
+          cover_image_url: string | null
+          created_at: string | null
+          created_by: string
+          description: string | null
+          description_vi: string | null
+          events_count: number | null
+          icon_emoji: string | null
+          id: string
+          is_featured: boolean | null
+          location: string | null
+          location_vi: string | null
+          members_count: number | null
+          name: string
+          name_vi: string | null
+          posts_count: number | null
+          privacy: string
+          updated_at: string | null
+        }
+        Insert: {
+          category?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          created_by: string
+          description?: string | null
+          description_vi?: string | null
+          events_count?: number | null
+          icon_emoji?: string | null
+          id?: string
+          is_featured?: boolean | null
+          location?: string | null
+          location_vi?: string | null
+          members_count?: number | null
+          name: string
+          name_vi?: string | null
+          posts_count?: number | null
+          privacy?: string
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          created_by?: string
+          description?: string | null
+          description_vi?: string | null
+          events_count?: number | null
+          icon_emoji?: string | null
+          id?: string
+          is_featured?: boolean | null
+          location?: string | null
+          location_vi?: string | null
+          members_count?: number | null
+          name?: string
+          name_vi?: string | null
+          posts_count?: number | null
+          privacy?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "groups_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notifications: {
         Row: {
           actor_id: string | null

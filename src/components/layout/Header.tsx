@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
-import { Leaf, Menu, X, User, LogOut, TreeDeciduous, LayoutDashboard, Coins } from 'lucide-react';
+import { Leaf, Menu, X, User, LogOut, TreeDeciduous, LayoutDashboard, Coins, Users } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -30,11 +30,10 @@ export function Header() {
   const navLinks = [
     { href: '/feed', label: 'Feed' },
     { href: '/campaigns', label: t('nav.campaigns') },
-    { href: '/community', label: t('nav.community') },
+    { href: '/groups', label: 'Cộng đồng', icon: Users },
     { href: '/impact', label: t('nav.impact') },
     { href: '/rewards', label: t('nav.rewards'), icon: Coins },
     { href: '/leaderboard', label: t('nav.leaderboard') },
-    
   ];
 
   return (
