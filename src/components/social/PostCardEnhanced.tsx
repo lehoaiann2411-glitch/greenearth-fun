@@ -154,8 +154,8 @@ export function PostCardEnhanced({ post, showComments = false }: PostCardEnhance
     <Card className="overflow-hidden">
       {/* Header */}
       <div className="p-4 flex items-start gap-3">
-        <Link to={`/profile?id=${post.user.id}`}>
-          <Avatar className="w-10 h-10 ring-2 ring-primary/10 hover:ring-primary/30 transition-all">
+        <Link to={`/profile/${post.user.id}`} className="group">
+          <Avatar className="w-10 h-10 ring-2 ring-primary/10 group-hover:ring-primary/30 transition-all">
             <AvatarImage src={post.user.avatar_url || undefined} />
             <AvatarFallback className="bg-primary/10 text-primary">
               {post.user.full_name?.[0] || '🌱'}
@@ -166,10 +166,16 @@ export function PostCardEnhanced({ post, showComments = false }: PostCardEnhance
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             <Link 
-              to={`/profile?id=${post.user.id}`}
+              to={`/profile/${post.user.id}`}
               className="font-semibold text-foreground hover:underline"
             >
               {post.user.full_name || 'Green Warrior'}
+            </Link>
+            <Link 
+              to={`/profile/${post.user.id}`}
+              className="text-xs text-primary hover:underline hidden sm:inline"
+            >
+              Xem hồ sơ
             </Link>
             {feeling && (
               <span className="text-muted-foreground text-sm">

@@ -1,11 +1,12 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Layout } from '@/components/layout/Layout';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLeaderboard, LeaderboardPeriod } from '@/hooks/useLeaderboard';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Trophy, Crown, Medal } from 'lucide-react';
+import { Trophy, Crown, Medal, ExternalLink } from 'lucide-react';
 import { CamlyCoinIcon } from '@/components/rewards/CamlyCoinIcon';
 import { formatCamly } from '@/lib/camlyCoin';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -274,108 +275,119 @@ export default function Leaderboard() {
                     const isTopThree = entry.rank <= 3;
                     const isTopTen = entry.rank <= 10;
 
-                    return (
-                      <motion.div
+                      return (
+                      <Link 
                         key={entry.id}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.05 }}
-                        whileHover={{ 
-                          y: -4, 
-                          scale: 1.01,
-                          transition: { duration: 0.2 }
-                        }}
-                        className={`relative rounded-2xl p-4 transition-all cursor-pointer ${
-                          isChampion
-                            ? 'bg-gradient-to-r from-yellow-50 to-amber-50 border-4 glow-gold-lg scale-[1.02]'
-                            : isTopThree
-                            ? 'bg-white border-2 border-yellow-400/50 glow-gold'
-                            : isTopTen
-                            ? 'bg-white border-2 border-yellow-300/30 hover:glow-gold'
-                            : 'bg-white/90 border border-gray-200 hover:border-yellow-300/50'
-                        } ${isCurrentUser ? 'ring-2 ring-green-500 ring-offset-2' : ''}`}
-                        style={isChampion ? {
-                          borderImage: 'linear-gradient(135deg, #FFD700, #FFA500, #FFD700) 1',
-                          borderStyle: 'solid'
-                        } : {}}
+                        to={`/profile/${entry.id}`}
+                        className="block"
                       >
-                        {/* Champion Crown & Confetti */}
-                        {isChampion && (
-                          <>
-                            <ChampionConfetti />
-                            <motion.div 
-                              className="absolute -top-5 left-1/2 -translate-x-1/2 z-10"
-                              animate={{ y: [0, -3, 0], rotate: [-5, 5, -5] }}
-                              transition={{ duration: 2, repeat: Infinity }}
-                            >
-                              <Crown className="h-10 w-10 text-yellow-500 drop-shadow-lg" />
-                            </motion.div>
-                          </>
-                        )}
-
-                        <div className={`flex items-center gap-4 ${isChampion ? 'pt-4' : ''}`}>
-                          {/* Rank Number */}
-                          <div className="flex w-14 justify-center">
-                            {rankStyle ? (
+                        <motion.div
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.05 }}
+                          whileHover={{ 
+                            y: -4, 
+                            scale: 1.01,
+                            transition: { duration: 0.2 }
+                          }}
+                          className={`group relative rounded-2xl p-4 transition-all cursor-pointer ${
+                            isChampion
+                              ? 'bg-gradient-to-r from-yellow-50 to-amber-50 border-4 glow-gold-lg scale-[1.02]'
+                              : isTopThree
+                              ? 'bg-white border-2 border-yellow-400/50 glow-gold'
+                              : isTopTen
+                              ? 'bg-white border-2 border-yellow-300/30 hover:glow-gold'
+                              : 'bg-white/90 border border-gray-200 hover:border-yellow-300/50'
+                          } ${isCurrentUser ? 'ring-2 ring-green-500 ring-offset-2' : ''}`}
+                          style={isChampion ? {
+                            borderImage: 'linear-gradient(135deg, #FFD700, #FFA500, #FFD700) 1',
+                            borderStyle: 'solid'
+                          } : {}}
+                        >
+                          {/* Champion Crown & Confetti */}
+                          {isChampion && (
+                            <>
+                              <ChampionConfetti />
                               <motion.div 
-                                className={`flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br ${
-                                  entry.rank === 1 ? 'from-yellow-400 to-amber-500' :
-                                  entry.rank === 2 ? 'from-gray-300 to-gray-400' :
-                                  'from-orange-400 to-orange-500'
-                                } shadow-lg`}
-                                whileHover={{ scale: 1.1, rotate: 10 }}
+                                className="absolute -top-5 left-1/2 -translate-x-1/2 z-10"
+                                animate={{ y: [0, -3, 0], rotate: [-5, 5, -5] }}
+                                transition={{ duration: 2, repeat: Infinity }}
                               >
-                                <rankStyle.icon className="h-6 w-6 text-white" />
+                                <Crown className="h-10 w-10 text-yellow-500 drop-shadow-lg" />
                               </motion.div>
-                            ) : (
-                              <span className="text-xl font-bold text-gray-500">
-                                #{entry.rank}
-                              </span>
-                            )}
-                          </div>
+                            </>
+                          )}
 
-                          {/* Avatar */}
-                          <Avatar className={`h-14 w-14 ${
-                            isTopTen 
-                              ? rankStyle?.ringClass || 'ring-2 ring-yellow-300'
-                              : ''
-                          }`}>
-                            <AvatarImage src={entry.avatar_url || ''} alt={entry.full_name || ''} />
-                            <AvatarFallback className="bg-gradient-to-br from-green-100 to-emerald-200 text-green-700 font-bold">
-                              {entry.full_name?.charAt(0) || '?'}
-                            </AvatarFallback>
-                          </Avatar>
-
-                          {/* Info */}
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2">
-                              <p className={`font-bold truncate ${isChampion ? 'text-xl text-gray-900' : 'text-lg text-gray-800'}`}>
-                                {entry.full_name || 'Người dùng ẩn danh'}
-                              </p>
-                              {isCurrentUser && (
-                                <Badge className="shrink-0 bg-green-500 text-white">Bạn</Badge>
+                          <div className={`flex items-center gap-4 ${isChampion ? 'pt-4' : ''}`}>
+                            {/* Rank Number */}
+                            <div className="flex w-14 justify-center">
+                              {rankStyle ? (
+                                <motion.div 
+                                  className={`flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br ${
+                                    entry.rank === 1 ? 'from-yellow-400 to-amber-500' :
+                                    entry.rank === 2 ? 'from-gray-300 to-gray-400' :
+                                    'from-orange-400 to-orange-500'
+                                  } shadow-lg`}
+                                  whileHover={{ scale: 1.1, rotate: 10 }}
+                                >
+                                  <rankStyle.icon className="h-6 w-6 text-white" />
+                                </motion.div>
+                              ) : (
+                                <span className="text-xl font-bold text-gray-500">
+                                  #{entry.rank}
+                                </span>
                               )}
                             </div>
-                            <p className="text-sm text-gray-500">
-                              {entry.trees_planted} cây đã trồng
-                            </p>
-                          </div>
 
-                          {/* Camly Balance */}
-                          <div className="flex items-center gap-2">
-                            <CamlyCoinIcon size={isChampion ? 'md' : 'sm'} animated={isTopThree} />
-                            <p className={`font-bold ${
-                              isChampion 
-                                ? 'text-2xl text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-amber-600' 
-                                : isTopThree
-                                ? 'text-xl text-yellow-600'
-                                : 'text-lg text-yellow-600'
+                            {/* Avatar */}
+                            <Avatar className={`h-14 w-14 group-hover:ring-4 group-hover:ring-emerald-400/50 transition-all ${
+                              isTopTen 
+                                ? rankStyle?.ringClass || 'ring-2 ring-yellow-300'
+                                : ''
                             }`}>
-                              {formatCamly(camlyBalance)}
-                            </p>
+                              <AvatarImage src={entry.avatar_url || ''} alt={entry.full_name || ''} />
+                              <AvatarFallback className="bg-gradient-to-br from-green-100 to-emerald-200 text-green-700 font-bold">
+                                {entry.full_name?.charAt(0) || '?'}
+                              </AvatarFallback>
+                            </Avatar>
+
+                            {/* Info */}
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2">
+                                <p className={`font-bold truncate group-hover:underline ${isChampion ? 'text-xl text-gray-900' : 'text-lg text-gray-800'}`}>
+                                  {entry.full_name || 'Người dùng ẩn danh'}
+                                </p>
+                                {isCurrentUser && (
+                                  <Badge className="shrink-0 bg-green-500 text-white">Bạn</Badge>
+                                )}
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <p className="text-sm text-gray-500">
+                                  {entry.trees_planted} cây đã trồng
+                                </p>
+                                <span className="text-xs text-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                                  <ExternalLink className="h-3 w-3" />
+                                  Xem hồ sơ
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* Camly Balance */}
+                            <div className="flex items-center gap-2">
+                              <CamlyCoinIcon size={isChampion ? 'md' : 'sm'} animated={isTopThree} />
+                              <p className={`font-bold ${
+                                isChampion 
+                                  ? 'text-2xl text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-amber-600' 
+                                  : isTopThree
+                                  ? 'text-xl text-yellow-600'
+                                  : 'text-lg text-yellow-600'
+                              }`}>
+                                {formatCamly(camlyBalance)}
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                      </motion.div>
+                        </motion.div>
+                      </Link>
                     );
                   })}
                 </motion.div>

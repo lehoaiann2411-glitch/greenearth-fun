@@ -125,8 +125,8 @@ interface CommentItemProps {
 function CommentItem({ comment, isOwner, onDelete, isDeleting }: CommentItemProps) {
   return (
     <div className="group flex gap-2">
-      <Link to={`/profile?id=${comment.user_id}`}>
-        <Avatar className="h-8 w-8 shrink-0">
+      <Link to={`/profile/${comment.user_id}`} className="shrink-0 hover:opacity-80 transition-opacity">
+        <Avatar className="h-8 w-8">
           <AvatarImage src={comment.profile?.avatar_url || ''} />
           <AvatarFallback className="bg-muted text-xs">
             {comment.profile?.full_name?.charAt(0) || 'U'}
@@ -136,12 +136,20 @@ function CommentItem({ comment, isOwner, onDelete, isDeleting }: CommentItemProp
 
       <div className="flex-1">
         <div className="rounded-lg bg-muted px-3 py-2">
-          <Link
-            to={`/profile?id=${comment.user_id}`}
-            className="text-sm font-medium hover:underline"
-          >
-            {comment.profile?.full_name || 'Người dùng'}
-          </Link>
+          <div className="flex items-center gap-2 flex-wrap">
+            <Link
+              to={`/profile/${comment.user_id}`}
+              className="text-sm font-medium hover:underline"
+            >
+              {comment.profile?.full_name || 'Người dùng'}
+            </Link>
+            <Link
+              to={`/profile/${comment.user_id}`}
+              className="text-xs text-primary hover:underline opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              Xem hồ sơ
+            </Link>
+          </div>
           <p className="text-sm">{comment.content}</p>
         </div>
         <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">

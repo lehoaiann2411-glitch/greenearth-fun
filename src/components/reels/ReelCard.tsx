@@ -223,15 +223,20 @@ export function ReelCard({ reel, isActive }: ReelCardProps) {
 
       {/* Bottom Left Info - Caption, Hashtags, Music */}
       <div className="absolute bottom-20 left-4 right-20 z-10">
-        {/* Creator Name */}
-        <Link to={`/profile/${reel.user_id}`}>
-          <motion.p
+        {/* Creator Name + View Profile */}
+        <Link to={`/profile/${reel.user_id}`} className="group inline-block">
+          <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="text-white font-bold text-base mb-2"
+            className="mb-2"
           >
-            @{reel.profiles?.full_name || 'User'}
-          </motion.p>
+            <p className="text-white font-bold text-base group-hover:underline">
+              @{reel.profiles?.full_name || 'User'}
+            </p>
+            <p className="text-white/60 text-xs group-hover:text-white/80 transition-colors">
+              Xem hồ sơ
+            </p>
+          </motion.div>
         </Link>
 
         {/* Caption */}
