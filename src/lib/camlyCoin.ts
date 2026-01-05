@@ -1,78 +1,118 @@
-// Camly Coin conversion rate: 10 Green Points = 1 Camly Coin
-export const GREEN_POINTS_PER_CAMLY = 10;
-export const MINIMUM_CLAIM_POINTS = 100; // Minimum 100 GP = 10 CAMLY
+// ===== CAMLY COIN REWARDS SYSTEM =====
+// Direct Camly Coin rewards - no conversion needed
 
-// Points configuration for different actions
-export const POINTS_CONFIG = {
-  PLANT_TREE: 50,           // Plant a tree or upload proof
-  DONATE_PER_USD: 10,       // 1 USD = 10 points
-  DAILY_CHECK_IN: 5,        // Daily check-in
-  COMPLETE_QUEST: 10,       // Complete daily quest
-  SHARE_POST: 2,            // Share post
-  VERIFY_TREE_GROWTH: 15,   // Verify/update tree growth
-  TOP_CONTRIBUTOR_BONUS: 200, // Top contributor bonus
+// Camly Coin rewards for different actions
+export const CAMLY_REWARDS = {
+  // Social Actions
+  CREATE_POST: 3000,           // Post about environment
+  SHARE_POST: 1500,            // Share campaign/post
+  LIKE_POST: 200,              // Like a post
+  
+  // Daily Streak
+  DAILY_CHECK_IN: 500,         // Daily check-in (flat)
+  STREAK_7_DAY_BONUS: 2000,    // 7-day streak bonus
+  
+  // Main Actions
+  SIGNUP_BONUS: 10000,         // Signup bonus
+  PLANT_TREE: 5000,            // Plant tree/upload proof
+  UPDATE_TREE: 3000,           // Update tree growth
+  INVITE_FRIEND: 5000,         // Invite friend
+  
+  // Quest Range
+  QUEST_MIN: 1000,
+  QUEST_MAX: 3000,
+  
+  // Donate: 100 CAMLY per USD
+  DONATE_PER_USD: 100,
+};
+
+// Daily limits to prevent spam
+export const DAILY_LIMITS = {
+  SHARES: 10,      // Max 10 shares/day
+  LIKES: 50,       // Max 50 likes/day
 };
 
 // Action type keys for tracking
 export const ACTION_TYPES = {
-  PLANT_TREE: 'plant_tree',
-  DONATE: 'donate',
-  DAILY_CHECK_IN: 'daily_check_in',
-  COMPLETE_QUEST: 'complete_quest',
-  SHARE_POST: 'share_post',
-  VERIFY_TREE: 'verify_tree',
-  TOP_CONTRIBUTOR: 'top_contributor',
-  CAMPAIGN_COMPLETE: 'campaign_complete',
-  POST_LIKE_RECEIVED: 'post_like_received',
   CREATE_POST: 'create_post',
+  SHARE_POST: 'share_post',
+  LIKE_POST: 'like_post',
+  DAILY_CHECK_IN: 'daily_check_in',
+  STREAK_BONUS: 'streak_bonus',
+  SIGNUP_BONUS: 'signup_bonus',
+  PLANT_TREE: 'plant_tree',
+  UPDATE_TREE: 'update_tree',
+  INVITE_FRIEND: 'invite_friend',
+  DONATE: 'donate',
+  COMPLETE_QUEST: 'complete_quest',
+  CAMPAIGN_COMPLETE: 'campaign_complete',
+  TOP_CONTRIBUTOR: 'top_contributor',
 };
 
 /**
- * Convert Green Points to Camly Coin
+ * Format Camly Coin for display
  */
-export function toCamlyCoin(greenPoints: number): number {
-  return Math.floor(greenPoints / GREEN_POINTS_PER_CAMLY);
-}
-
-/**
- * Check if user can claim (minimum 100 GP)
- */
-export function canClaim(greenPoints: number): boolean {
-  return greenPoints >= MINIMUM_CLAIM_POINTS;
-}
-
-/**
- * Calculate claimable Camly Coins from available points
- */
-export function getClaimableAmount(greenPoints: number): { points: number; camly: number } {
-  if (!canClaim(greenPoints)) {
-    return { points: 0, camly: 0 };
-  }
-  // Only claim in multiples of 10 (to get whole CAMLY coins)
-  const claimablePoints = Math.floor(greenPoints / GREEN_POINTS_PER_CAMLY) * GREEN_POINTS_PER_CAMLY;
-  return {
-    points: claimablePoints,
-    camly: claimablePoints / GREEN_POINTS_PER_CAMLY,
-  };
-}
-
-/**
- * Format Green Points with Camly Coin equivalent
- */
-export function formatPointsWithCamly(greenPoints: number): string {
-  const camly = toCamlyCoin(greenPoints);
-  return `${greenPoints.toLocaleString()} GP ≈ ${camly.toLocaleString()} CAMLY`;
+export function formatCamly(amount: number): string {
+  return amount.toLocaleString();
 }
 
 /**
  * Format earned message for notifications
  */
-export function formatEarnedMessage(greenPoints: number, language: 'en' | 'vi' = 'en'): string {
-  const camly = toCamlyCoin(greenPoints);
+export function formatEarnedMessage(camlyAmount: number, action: string, language: 'en' | 'vi' = 'en'): string {
+  const actionLabels = getActionLabels(language);
+  const label = actionLabels[action] || action;
+  
   if (language === 'vi') {
-    return `Bạn nhận được +${greenPoints} Green Points ≈ ${camly} CAMLY!`;
+    return `Yay! +${formatCamly(camlyAmount)} Camly Coin cho ${label}! 🎉`;
   }
-  return `You earned +${greenPoints} Green Points ≈ ${camly} CAMLY!`;
+  return `Yay! +${formatCamly(camlyAmount)} Camly Coin for ${label}! 🎉`;
+}
+
+/**
+ * Get action labels for display
+ */
+export function getActionLabels(language: 'en' | 'vi' = 'en'): Record<string, string> {
+  if (language === 'vi') {
+    return {
+      [ACTION_TYPES.CREATE_POST]: 'đăng bài',
+      [ACTION_TYPES.SHARE_POST]: 'chia sẻ',
+      [ACTION_TYPES.LIKE_POST]: 'thích bài viết',
+      [ACTION_TYPES.DAILY_CHECK_IN]: 'điểm danh',
+      [ACTION_TYPES.STREAK_BONUS]: 'streak 7 ngày',
+      [ACTION_TYPES.SIGNUP_BONUS]: 'đăng ký',
+      [ACTION_TYPES.PLANT_TREE]: 'trồng cây',
+      [ACTION_TYPES.UPDATE_TREE]: 'cập nhật cây',
+      [ACTION_TYPES.INVITE_FRIEND]: 'mời bạn',
+      [ACTION_TYPES.DONATE]: 'quyên góp',
+      [ACTION_TYPES.COMPLETE_QUEST]: 'hoàn thành nhiệm vụ',
+      [ACTION_TYPES.CAMPAIGN_COMPLETE]: 'hoàn thành chiến dịch',
+      [ACTION_TYPES.TOP_CONTRIBUTOR]: 'top đóng góp',
+    };
+  }
+  return {
+    [ACTION_TYPES.CREATE_POST]: 'posting',
+    [ACTION_TYPES.SHARE_POST]: 'sharing',
+    [ACTION_TYPES.LIKE_POST]: 'liking',
+    [ACTION_TYPES.DAILY_CHECK_IN]: 'check-in',
+    [ACTION_TYPES.STREAK_BONUS]: '7-day streak',
+    [ACTION_TYPES.SIGNUP_BONUS]: 'signing up',
+    [ACTION_TYPES.PLANT_TREE]: 'planting tree',
+    [ACTION_TYPES.UPDATE_TREE]: 'tree update',
+    [ACTION_TYPES.INVITE_FRIEND]: 'inviting friend',
+    [ACTION_TYPES.DONATE]: 'donation',
+    [ACTION_TYPES.COMPLETE_QUEST]: 'completing quest',
+    [ACTION_TYPES.CAMPAIGN_COMPLETE]: 'campaign complete',
+    [ACTION_TYPES.TOP_CONTRIBUTOR]: 'top contributor',
+  };
+}
+
+/**
+ * Get action label for single action
+ */
+export function getActionLabel(actionType: string, language: 'en' | 'vi' = 'en'): string {
+  const labels = getActionLabels(language);
+  return labels[actionType] || actionType;
 }
 
 /**
@@ -87,22 +127,40 @@ export function generateMockTransactionHash(): string {
   return hash;
 }
 
-/**
- * Get action label for display
- */
-export function getActionLabel(actionType: string, language: 'en' | 'vi' = 'en'): string {
-  const labels: Record<string, { en: string; vi: string }> = {
-    [ACTION_TYPES.PLANT_TREE]: { en: 'Plant Tree', vi: 'Trồng cây' },
-    [ACTION_TYPES.DONATE]: { en: 'Donation', vi: 'Quyên góp' },
-    [ACTION_TYPES.DAILY_CHECK_IN]: { en: 'Daily Check-in', vi: 'Điểm danh hàng ngày' },
-    [ACTION_TYPES.COMPLETE_QUEST]: { en: 'Complete Quest', vi: 'Hoàn thành nhiệm vụ' },
-    [ACTION_TYPES.SHARE_POST]: { en: 'Share Post', vi: 'Chia sẻ bài viết' },
-    [ACTION_TYPES.VERIFY_TREE]: { en: 'Verify Tree Growth', vi: 'Xác minh cây' },
-    [ACTION_TYPES.TOP_CONTRIBUTOR]: { en: 'Top Contributor Bonus', vi: 'Thưởng đóng góp cao' },
-    [ACTION_TYPES.CAMPAIGN_COMPLETE]: { en: 'Campaign Completed', vi: 'Hoàn thành chiến dịch' },
-    [ACTION_TYPES.POST_LIKE_RECEIVED]: { en: 'Post Liked', vi: 'Bài viết được thích' },
-    [ACTION_TYPES.CREATE_POST]: { en: 'Create Post', vi: 'Tạo bài viết' },
+// ===== LEGACY SUPPORT (for backwards compatibility) =====
+export const GREEN_POINTS_PER_CAMLY = 10;
+export const MINIMUM_CLAIM_POINTS = 100;
+
+export const POINTS_CONFIG = {
+  PLANT_TREE: 50,
+  DONATE_PER_USD: 10,
+  DAILY_CHECK_IN: 5,
+  COMPLETE_QUEST: 10,
+  SHARE_POST: 2,
+  VERIFY_TREE_GROWTH: 15,
+  TOP_CONTRIBUTOR_BONUS: 200,
+};
+
+export function toCamlyCoin(greenPoints: number): number {
+  return Math.floor(greenPoints / GREEN_POINTS_PER_CAMLY);
+}
+
+export function canClaim(greenPoints: number): boolean {
+  return greenPoints >= MINIMUM_CLAIM_POINTS;
+}
+
+export function getClaimableAmount(greenPoints: number): { points: number; camly: number } {
+  if (!canClaim(greenPoints)) {
+    return { points: 0, camly: 0 };
+  }
+  const claimablePoints = Math.floor(greenPoints / GREEN_POINTS_PER_CAMLY) * GREEN_POINTS_PER_CAMLY;
+  return {
+    points: claimablePoints,
+    camly: claimablePoints / GREEN_POINTS_PER_CAMLY,
   };
-  
-  return labels[actionType]?.[language] || actionType;
+}
+
+export function formatPointsWithCamly(greenPoints: number): string {
+  const camly = toCamlyCoin(greenPoints);
+  return `${greenPoints.toLocaleString()} GP ≈ ${camly.toLocaleString()} CAMLY`;
 }

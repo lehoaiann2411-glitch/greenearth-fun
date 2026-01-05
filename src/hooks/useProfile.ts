@@ -3,7 +3,15 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Tables, TablesUpdate } from '@/integrations/supabase/types';
 
-type Profile = Tables<'profiles'>;
+type Profile = Tables<'profiles'> & {
+  // New Camly Coin fields (added via migration)
+  camly_balance?: number;
+  total_posts?: number;
+  total_shares?: number;
+  total_likes_given?: number;
+  current_streak?: number;
+  last_check_in?: string | null;
+};
 type ProfileUpdate = TablesUpdate<'profiles'>;
 
 export function useProfile(userId?: string) {

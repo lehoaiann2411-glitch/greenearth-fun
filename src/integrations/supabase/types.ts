@@ -217,6 +217,41 @@ export type Database = {
           },
         ]
       }
+      daily_limits: {
+        Row: {
+          created_at: string | null
+          id: string
+          likes_count: number | null
+          limit_date: string
+          shares_count: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          likes_count?: number | null
+          limit_date?: string
+          shares_count?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          likes_count?: number | null
+          limit_date?: string
+          shares_count?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "daily_limits_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       daily_quests: {
         Row: {
           created_at: string | null
@@ -460,6 +495,7 @@ export type Database = {
       points_history: {
         Row: {
           action_type: string
+          camly_earned: number | null
           camly_equivalent: number
           created_at: string | null
           description: string | null
@@ -471,6 +507,7 @@ export type Database = {
         }
         Insert: {
           action_type: string
+          camly_earned?: number | null
           camly_equivalent: number
           created_at?: string | null
           description?: string | null
@@ -482,6 +519,7 @@ export type Database = {
         }
         Update: {
           action_type?: string
+          camly_earned?: number | null
           camly_equivalent?: number
           created_at?: string | null
           description?: string | null
@@ -611,14 +649,20 @@ export type Database = {
           account_type: Database["public"]["Enums"]["account_type"]
           avatar_url: string | null
           bio: string | null
+          camly_balance: number | null
           campaigns_joined: number
           created_at: string
+          current_streak: number | null
           full_name: string | null
           green_points: number
           green_reputation: number | null
           id: string
+          last_check_in: string | null
           location: string | null
           total_camly_claimed: number | null
+          total_likes_given: number | null
+          total_posts: number | null
+          total_shares: number | null
           trees_planted: number
           updated_at: string
           wallet_address: string | null
@@ -627,14 +671,20 @@ export type Database = {
           account_type?: Database["public"]["Enums"]["account_type"]
           avatar_url?: string | null
           bio?: string | null
+          camly_balance?: number | null
           campaigns_joined?: number
           created_at?: string
+          current_streak?: number | null
           full_name?: string | null
           green_points?: number
           green_reputation?: number | null
           id: string
+          last_check_in?: string | null
           location?: string | null
           total_camly_claimed?: number | null
+          total_likes_given?: number | null
+          total_posts?: number | null
+          total_shares?: number | null
           trees_planted?: number
           updated_at?: string
           wallet_address?: string | null
@@ -643,14 +693,20 @@ export type Database = {
           account_type?: Database["public"]["Enums"]["account_type"]
           avatar_url?: string | null
           bio?: string | null
+          camly_balance?: number | null
           campaigns_joined?: number
           created_at?: string
+          current_streak?: number | null
           full_name?: string | null
           green_points?: number
           green_reputation?: number | null
           id?: string
+          last_check_in?: string | null
           location?: string | null
           total_camly_claimed?: number | null
+          total_likes_given?: number | null
+          total_posts?: number | null
+          total_shares?: number | null
           trees_planted?: number
           updated_at?: string
           wallet_address?: string | null

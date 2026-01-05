@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { Post, useLikePost, useDeletePost } from '@/hooks/usePosts';
+import { Post, useLikePost, useDeletePost, useSharePost } from '@/hooks/usePosts';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -13,11 +13,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { CommentSection } from './CommentSection';
-import { Heart, MessageCircle, Share2, MoreHorizontal, Trash2, TreePine } from 'lucide-react';
+import { Heart, MessageCircle, Share2, MoreHorizontal, Trash2, TreePine, Copy, Twitter } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import { getRankByPoints } from '@/lib/greenRanks';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 interface PostCardProps {
   post: Post;
@@ -30,6 +31,7 @@ export function PostCard({ post }: PostCardProps) {
 
   const likePost = useLikePost();
   const deletePost = useDeletePost();
+  const sharePost = useSharePost();
 
   const isOwner = user?.id === post.user_id;
   const rank = post.profile ? getRankByPoints(post.profile.green_points) : null;
@@ -50,15 +52,33 @@ export function PostCard({ post }: PostCardProps) {
     }
   };
 
-  const handleShare = async () => {
-    if (navigator.share) {
-      await navigator.share({
-        title: 'Green Earth Post',
-        text: post.content.substring(0, 100),
-        url: window.location.origin + `/community?post=${post.id}`,
-      });
+  const handleShare = async (type: 'copy' | 'twitter' = 'copy') => {
+    const url = window.location.origin + `/community?post=${post.id}`;
+    
+    if (type === 'twitter') {
+      window.open(
+        `https://twitter.com/intent/tweet?text=${encodeURIComponent(post.content.substring(0, 100))}&url=${encodeURIComponent(url)}`,
+        '_blank'
+      );
+    } else if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Green Earth Post',
+          text: post.content.substring(0, 100),
+          url,
+        });
+      } catch {
+        // User cancelled share
+        return;
+      }
     } else {
-      navigator.clipboard.writeText(window.location.origin + `/community?post=${post.id}`);
+      await navigator.clipboard.writeText(url);
+      toast.success('Link copied!');
+    }
+
+    // Track share and award Camly Coin
+    if (user) {
+      await sharePost.mutateAsync({ postId: post.id, shareType: type });
     }
   };
 
@@ -175,14 +195,24 @@ export function PostCard({ post }: PostCardProps) {
               {post.comments_count > 0 && post.comments_count}
             </Button>
 
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleShare}
-              className="gap-1"
-            >
-              <Share2 className="h-4 w-4" />
-            </Button>
+            {/* Share Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="gap-1">
+                  <Share2 className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start">
+                <DropdownMenuItem onClick={() => handleShare('copy')}>
+                  <Copy className="mr-2 h-4 w-4" />
+                  Copy link (+1,500 🪙)
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleShare('twitter')}>
+                  <Twitter className="mr-2 h-4 w-4" />
+                  Share on X (+1,500 🪙)
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
 
