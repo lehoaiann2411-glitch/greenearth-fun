@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { UserPlus, Check, TreePine } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
@@ -19,6 +20,7 @@ interface SuggestedUserCardProps {
 }
 
 function SuggestedUserCard({ user }: SuggestedUserCardProps) {
+  const { t } = useTranslation();
   const followUser = useFollowUser();
   const { data: isFollowing } = useIsFollowing(user.id);
 
@@ -46,11 +48,11 @@ function SuggestedUserCard({ user }: SuggestedUserCardProps) {
           to={`/profile?id=${user.id}`}
           className="font-semibold text-sm hover:underline truncate block text-gray-900 dark:text-white"
         >
-          {user.full_name || 'Green Warrior'}
+          {user.full_name || t('feed.greenWarrior')}
         </Link>
         <p className="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-1 font-medium">
           <TreePine className="w-3 h-3" />
-          {user.trees_planted} trees planted
+          {user.trees_planted} {t('feed.treesPlanted')}
         </p>
       </div>
       
@@ -64,12 +66,12 @@ function SuggestedUserCard({ user }: SuggestedUserCardProps) {
         {isFollowing ? (
           <>
             <Check className="w-3 h-3 mr-1" />
-            Following
+            {t('feed.following')}
           </>
         ) : (
           <>
             <UserPlus className="w-3 h-3 mr-1" />
-            Follow
+            {t('feed.follow')}
           </>
         )}
       </Button>
@@ -78,13 +80,14 @@ function SuggestedUserCard({ user }: SuggestedUserCardProps) {
 }
 
 export function SuggestedUsers() {
+  const { t } = useTranslation();
   const { data: users, isLoading } = useSuggestedUsers();
 
   if (isLoading) {
     return (
       <Card className="bg-white dark:bg-gray-900 shadow-md border-2 border-white/50 dark:border-gray-700">
         <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-bold text-gray-900 dark:text-white">Suggested for you</CardTitle>
+          <CardTitle className="text-sm font-bold text-gray-900 dark:text-white">{t('feed.suggestedForYou')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {[1, 2, 3].map((i) => (
@@ -110,7 +113,7 @@ export function SuggestedUsers() {
     <Card className="bg-white dark:bg-gray-900 shadow-md border-2 border-white/50 dark:border-gray-700">
       <CardHeader className="pb-3">
         <CardTitle className="text-sm font-bold flex items-center gap-2 text-gray-900 dark:text-white">
-          🌱 Suggested for you
+          🌱 {t('feed.suggestedForYou')}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -127,7 +130,7 @@ export function SuggestedUsers() {
         
         <Link to="/leaderboard" className="block">
           <Button variant="link" className="w-full text-primary p-0 h-auto text-xs">
-            See all suggestions
+            {t('feed.seeAll')}
           </Button>
         </Link>
       </CardContent>

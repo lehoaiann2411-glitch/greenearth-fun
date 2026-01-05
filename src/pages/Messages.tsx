@@ -99,7 +99,7 @@ export default function Messages() {
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2">
                 <MessageCircle className="h-5 w-5" />
-                Messages
+                {t('messages.title')}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
@@ -149,7 +149,7 @@ export default function Messages() {
                               )}
                             </div>
                             <p className="text-sm text-muted-foreground truncate">
-                              {conv.last_message_preview || 'Start a conversation'}
+                              {conv.last_message_preview || t('messages.startConversation')}
                             </p>
                           </div>
                           {conv.unread_count > 0 && (
@@ -164,8 +164,8 @@ export default function Messages() {
                 ) : (
                   <div className="p-8 text-center text-muted-foreground">
                     <MessageCircle className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p>No conversations yet</p>
-                    <p className="text-sm">Start chatting with your friends!</p>
+                    <p>{t('messages.noConversations')}</p>
+                    <p className="text-sm">{t('messages.startChatting')}</p>
                   </div>
                 )}
               </ScrollArea>
@@ -205,7 +205,7 @@ export default function Messages() {
                     </div>
                     <div>
                       <p className="font-medium">{otherParticipant?.full_name || 'User'}</p>
-                      <p className="text-xs text-muted-foreground">Active now</p>
+                      <p className="text-xs text-muted-foreground">{t('messages.activeNow')}</p>
                     </div>
                   </div>
                 </CardHeader>
@@ -250,7 +250,7 @@ export default function Messages() {
                               {message.message_type === 'camly_gift' ? (
                                 <div className="flex items-center gap-2">
                                   <Gift className="h-5 w-5" />
-                                  <span>Sent {message.camly_amount} Camly!</span>
+                                  <span>{t('messages.sentCamly', { amount: message.camly_amount })}</span>
                                 </div>
                               ) : (
                                 <p className="text-sm whitespace-pre-wrap">{message.content}</p>
@@ -271,8 +271,8 @@ export default function Messages() {
                     <div className="h-full flex items-center justify-center text-center text-muted-foreground">
                       <div>
                         <MessageCircle className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                        <p>No messages yet</p>
-                        <p className="text-sm">Say hello! 👋</p>
+                        <p>{t('messages.noMessages')}</p>
+                        <p className="text-sm">{t('messages.sayHello')}</p>
                       </div>
                     </div>
                   )}
@@ -291,7 +291,7 @@ export default function Messages() {
                       value={messageInput}
                       onChange={(e) => setMessageInput(e.target.value)}
                       onKeyPress={handleKeyPress}
-                      placeholder="Type a message..."
+                      placeholder={t('messages.typePlaceholder')}
                       className="flex-1"
                     />
                     <Button
@@ -308,8 +308,8 @@ export default function Messages() {
               <div className="flex-1 flex items-center justify-center text-center text-muted-foreground">
                 <div>
                   <MessageCircle className="h-16 w-16 mx-auto mb-4 opacity-50" />
-                  <h3 className="text-lg font-medium">Your Messages</h3>
-                  <p className="text-sm">Select a conversation to start chatting</p>
+                  <h3 className="text-lg font-medium">{t('messages.yourMessages')}</h3>
+                  <p className="text-sm">{t('messages.selectConversation')}</p>
                 </div>
               </div>
             )}

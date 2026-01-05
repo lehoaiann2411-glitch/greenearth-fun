@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { Globe, Users, TrendingUp, TreePine } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -9,14 +10,16 @@ interface FeedFiltersProps {
   onFilterChange: (filter: FeedFilter) => void;
 }
 
-const filters: { id: FeedFilter; label: string; icon: React.ReactNode }[] = [
-  { id: 'all', label: 'For You', icon: <Globe className="w-4 h-4" /> },
-  { id: 'following', label: 'Following', icon: <Users className="w-4 h-4" /> },
-  { id: 'popular', label: 'Popular', icon: <TrendingUp className="w-4 h-4" /> },
-  { id: 'campaigns', label: 'Campaigns', icon: <TreePine className="w-4 h-4" /> },
-];
-
 export function FeedFilters({ activeFilter, onFilterChange }: FeedFiltersProps) {
+  const { t } = useTranslation();
+  
+  const filters: { id: FeedFilter; labelKey: string; icon: React.ReactNode }[] = [
+    { id: 'all', labelKey: 'feed.forYou', icon: <Globe className="w-4 h-4" /> },
+    { id: 'following', labelKey: 'feed.following', icon: <Users className="w-4 h-4" /> },
+    { id: 'popular', labelKey: 'feed.popular', icon: <TrendingUp className="w-4 h-4" /> },
+    { id: 'campaigns', labelKey: 'feed.campaigns', icon: <TreePine className="w-4 h-4" /> },
+  ];
+
   return (
     <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide bg-white/95 dark:bg-gray-900/95 rounded-lg p-2 shadow-md border border-white/50 dark:border-gray-700">
       {filters.map((filter) => (
@@ -32,7 +35,7 @@ export function FeedFilters({ activeFilter, onFilterChange }: FeedFiltersProps) 
           onClick={() => onFilterChange(filter.id)}
         >
           {filter.icon}
-          <span className="ml-2">{filter.label}</span>
+          <span className="ml-2">{t(filter.labelKey)}</span>
           {activeFilter === filter.id && (
             <motion.div
               layoutId="activeFilter"

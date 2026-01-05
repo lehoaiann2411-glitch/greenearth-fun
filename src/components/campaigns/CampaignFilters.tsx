@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
@@ -10,6 +11,8 @@ interface CampaignFiltersProps {
 }
 
 export function CampaignFilters({ filters, onFiltersChange }: CampaignFiltersProps) {
+  const { t } = useTranslation();
+  
   const handleSearchChange = (value: string) => {
     onFiltersChange({ ...filters, search: value || undefined });
   };
@@ -36,7 +39,7 @@ export function CampaignFilters({ filters, onFiltersChange }: CampaignFiltersPro
       <div className="relative flex-1">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
         <Input
-          placeholder="Tìm kiếm chiến dịch..."
+          placeholder={t('campaigns.searchPlaceholder')}
           value={filters.search || ''}
           onChange={(e) => handleSearchChange(e.target.value)}
           className="pl-10 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder:text-gray-500"
@@ -45,10 +48,10 @@ export function CampaignFilters({ filters, onFiltersChange }: CampaignFiltersPro
       
       <Select value={filters.category || 'all'} onValueChange={handleCategoryChange}>
         <SelectTrigger className="w-full sm:w-[180px] bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100">
-          <SelectValue placeholder="Danh mục" />
+          <SelectValue placeholder={t('campaigns.category')} />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">Tất cả danh mục</SelectItem>
+          <SelectItem value="all">{t('campaigns.allCategories')}</SelectItem>
           {Object.entries(CATEGORY_LABELS).map(([value, label]) => (
             <SelectItem key={value} value={value}>
               {label}
@@ -58,7 +61,7 @@ export function CampaignFilters({ filters, onFiltersChange }: CampaignFiltersPro
       </Select>
       
       <Input
-        placeholder="Địa điểm..."
+        placeholder={t('campaigns.location')}
         value={filters.location || ''}
         onChange={(e) => handleLocationChange(e.target.value)}
         className="w-full sm:w-[180px] bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder:text-gray-500"

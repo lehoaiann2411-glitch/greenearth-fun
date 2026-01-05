@@ -1,9 +1,10 @@
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Search, SlidersHorizontal, X } from 'lucide-react';
 import { GROUP_CATEGORIES, VIETNAM_LOCATIONS } from '@/hooks/useGroups';
-import { useState } from 'react';
 
 interface GroupFiltersProps {
   search: string;
@@ -22,6 +23,7 @@ export function GroupFilters({
   location,
   onLocationChange,
 }: GroupFiltersProps) {
+  const { t } = useTranslation();
   const [showFilters, setShowFilters] = useState(false);
 
   const hasActiveFilters = category !== 'all' || location !== '';
@@ -39,7 +41,7 @@ export function GroupFilters({
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Tìm kiếm nhóm..."
+            placeholder={t('groups.searchPlaceholder')}
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
             className="pl-10 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 shadow-sm text-gray-900 dark:text-gray-100 placeholder:text-gray-500"
@@ -51,7 +53,7 @@ export function GroupFilters({
           className="flex-shrink-0"
         >
           <SlidersHorizontal className="h-4 w-4 mr-2" />
-          Lọc
+          {t('groups.filter')}
           {hasActiveFilters && (
             <span className="ml-2 h-2 w-2 rounded-full bg-primary" />
           )}
@@ -63,7 +65,7 @@ export function GroupFilters({
         <div className="flex flex-wrap gap-3 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-md">
           <Select value={category} onValueChange={onCategoryChange}>
             <SelectTrigger className="w-[180px] bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100">
-              <SelectValue placeholder="Danh mục" />
+              <SelectValue placeholder={t('groups.category')} />
             </SelectTrigger>
             <SelectContent>
               {GROUP_CATEGORIES.map((cat) => (
@@ -77,10 +79,10 @@ export function GroupFilters({
 
           <Select value={location} onValueChange={onLocationChange}>
             <SelectTrigger className="w-[180px] bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100">
-              <SelectValue placeholder="Địa điểm" />
+              <SelectValue placeholder={t('groups.location')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Tất cả địa điểm</SelectItem>
+              <SelectItem value="">{t('groups.allLocations')}</SelectItem>
               {VIETNAM_LOCATIONS.map((loc) => (
                 <SelectItem key={loc} value={loc}>
                   📍 {loc}
@@ -92,7 +94,7 @@ export function GroupFilters({
           {hasActiveFilters && (
             <Button variant="ghost" size="sm" onClick={clearFilters}>
               <X className="h-4 w-4 mr-1" />
-              Xóa bộ lọc
+              {t('groups.clearFilters')}
             </Button>
           )}
         </div>
