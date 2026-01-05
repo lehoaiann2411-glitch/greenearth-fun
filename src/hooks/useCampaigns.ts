@@ -81,7 +81,7 @@ export function useCampaigns(filters?: CampaignFilters) {
         .from('campaigns')
         .select(`
           *,
-          creator:profiles!campaigns_creator_id_fkey(id, full_name, avatar_url)
+          creator:profiles(id, full_name, avatar_url)
         `)
         .in('status', ['active', 'pending'])
         .order('start_date', { ascending: true });
@@ -103,7 +103,7 @@ export function useCampaigns(filters?: CampaignFilters) {
       if (error) throw error;
 
       // Get participant counts
-      const campaignIds = data?.map(c => c.id) || [];
+      const campaignIds = data?.map((c: { id: string }) => c.id) || [];
       if (campaignIds.length > 0) {
         const { data: participantCounts } = await supabase
           .from('campaign_participants')
@@ -116,13 +116,13 @@ export function useCampaigns(filters?: CampaignFilters) {
           countMap[p.campaign_id] = (countMap[p.campaign_id] || 0) + 1;
         });
 
-        return data?.map(campaign => ({
+        return data?.map((campaign: { id: string }) => ({
           ...campaign,
           participants_count: countMap[campaign.id] || 0,
-        })) as Campaign[];
+        })) as unknown as Campaign[];
       }
 
-      return data as Campaign[];
+      return data as unknown as Campaign[];
     },
   });
 }
@@ -135,7 +135,7 @@ export function useCampaign(id: string) {
         .from('campaigns')
         .select(`
           *,
-          creator:profiles!campaigns_creator_id_fkey(id, full_name, avatar_url)
+          creator:profiles(id, full_name, avatar_url)
         `)
         .eq('id', id)
         .single();
@@ -152,7 +152,7 @@ export function useCampaign(id: string) {
       return {
         ...data,
         participants_count: count || 0,
-      } as Campaign;
+      } as unknown as Campaign;
     },
     enabled: !!id,
   });
@@ -166,14 +166,14 @@ export function useCampaignParticipants(campaignId: string) {
         .from('campaign_participants')
         .select(`
           *,
-          user:profiles!campaign_participants_user_id_fkey(id, full_name, avatar_url)
+          user:profiles(id, full_name, avatar_url)
         `)
         .eq('campaign_id', campaignId)
         .neq('status', 'cancelled')
         .order('registered_at', { ascending: false });
 
       if (error) throw error;
-      return data as CampaignParticipant[];
+      return data as unknown as CampaignParticipant[];
     },
     enabled: !!campaignId,
   });

@@ -11,6 +11,10 @@ import Profile from "./pages/Profile";
 import ProfileEdit from "./pages/ProfileEdit";
 import Leaderboard from "./pages/Leaderboard";
 import NFTGallery from "./pages/NFTGallery";
+import Campaigns from "./pages/Campaigns";
+import CampaignDetail from "./pages/CampaignDetail";
+import CampaignCreate from "./pages/CampaignCreate";
+import CampaignManage from "./pages/CampaignManage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +34,10 @@ const App = () => (
             <Route path="/profile/edit" element={<ProfileEdit />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/nft-gallery" element={<NFTGallery />} />
+            <Route path="/campaigns" element={<Campaigns />} />
+            <Route path="/campaigns/create" element={<CampaignCreate />} />
+            <Route path="/campaigns/:id" element={<CampaignDetail />} />
+            <Route path="/campaigns/:id/manage" element={<CampaignManage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
