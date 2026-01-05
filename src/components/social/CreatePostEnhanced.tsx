@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ImagePlus, MapPin, Users, TreePine, X, Loader2, 
-  Bold, Italic, List, Camera, Video
+  Bold, Italic, List, Camera, Globe, BarChart3
 } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -14,17 +14,36 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useProfile } from '@/hooks/useProfile';
 import { useCreatePost } from '@/hooks/usePosts';
 import { useCampaigns } from '@/hooks/useCampaigns';
+import { useConfetti } from '@/hooks/useConfetti';
 import { EmojiPicker } from './EmojiPicker';
+import { FeelingPicker, FeelingBadge } from './FeelingPicker';
+import { PrivacySelector, PrivacyOption } from './PrivacySelector';
+import { TagFriends } from './TagFriends';
+import { PollCreator } from './PollCreator';
 import { CamlyCoinIcon } from '@/components/rewards/CamlyCoinIcon';
+import { CAMLY_REWARDS } from '@/lib/camlyCoin';
 import { toast } from 'sonner';
 
 type PostType = 'text' | 'photo' | 'video' | 'campaign_update';
+
+interface TaggedUser {
+  id: string;
+  full_name: string | null;
+  avatar_url: string | null;
+}
+
+interface PollData {
+  question: string;
+  options: string[];
+  durationDays: number;
+}
 
 export function CreatePostEnhanced() {
   const { user } = useAuth();
   const { data: profile } = useProfile(user?.id || '');
   const createPost = useCreatePost();
   const { data: campaigns } = useCampaigns();
+  const { triggerConfetti, triggerCoinRain } = useConfetti();
 
   const [isOpen, setIsOpen] = useState(false);
   const [content, setContent] = useState('');
@@ -33,6 +52,10 @@ export function CreatePostEnhanced() {
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [location, setLocation] = useState('');
   const [selectedCampaign, setSelectedCampaign] = useState<string>('');
+  const [privacy, setPrivacy] = useState<PrivacyOption>('public');
+  const [feeling, setFeeling] = useState<{ id: string; emoji: string; label: string } | null>(null);
+  const [taggedUsers, setTaggedUsers] = useState<TaggedUser[]>([]);
+  const [pollData, setPollData] = useState<PollData | null>(null);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -111,9 +134,15 @@ export function CreatePostEnhanced() {
     );
   };
 
+  const calculateReward = () => {
+    if (pollData) return CAMLY_REWARDS.CREATE_POST_WITH_POLL;
+    if (selectedImages.length > 0) return CAMLY_REWARDS.CREATE_POST_WITH_IMAGE;
+    return CAMLY_REWARDS.CREATE_POST;
+  };
+
   const handleSubmit = async () => {
-    if (!content.trim() && selectedImages.length === 0) {
-      toast.error('Please add some content or images');
+    if (!content.trim() && selectedImages.length === 0 && !pollData) {
+      toast.error('Please add some content, images, or a poll');
       return;
     }
 
@@ -124,11 +153,16 @@ export function CreatePostEnhanced() {
         campaignId: selectedCampaign && selectedCampaign !== 'none' ? selectedCampaign : undefined,
       });
 
+      // Trigger celebration effects
+      triggerConfetti('medium');
+      setTimeout(() => triggerCoinRain(), 300);
+
+      const reward = calculateReward();
       toast.success(
         <div className="flex items-center gap-2">
-          <span>Post shared!</span>
+          <span>Post shared! 🎉</span>
           <span className="flex items-center gap-1 text-camly-gold font-semibold">
-            +3,000 <CamlyCoinIcon size="sm" />
+            +{reward.toLocaleString()} <CamlyCoinIcon size="sm" />
           </span>
         </div>
       );
@@ -140,6 +174,10 @@ export function CreatePostEnhanced() {
       setLocation('');
       setSelectedCampaign('');
       setPostType('text');
+      setPrivacy('public');
+      setFeeling(null);
+      setTaggedUsers([]);
+      setPollData(null);
       setIsOpen(false);
     } catch (error: any) {
       toast.error(error.message || 'Failed to create post');
@@ -149,6 +187,7 @@ export function CreatePostEnhanced() {
   if (!user) return null;
 
   const activeCampaigns = campaigns?.filter(c => c.status === 'active') || [];
+  const reward = calculateReward();
 
   return (
     <Card className="p-4">
@@ -195,8 +234,8 @@ export function CreatePostEnhanced() {
             className="flex-1 text-muted-foreground hover:text-primary hover:bg-primary/10"
             onClick={() => setIsOpen(true)}
           >
-            <TreePine className="w-4 h-4 mr-2 text-emerald-500" />
-            Campaign
+            <BarChart3 className="w-4 h-4 mr-2 text-blue-500" />
+            Poll
           </Button>
         </div>
 
@@ -205,38 +244,34 @@ export function CreatePostEnhanced() {
             <DialogTitle className="flex items-center justify-between">
               <span>Create Post</span>
               <span className="text-sm text-camly-gold flex items-center gap-1 font-normal">
-                +3,000 <CamlyCoinIcon size="sm" />
+                +{reward.toLocaleString()} <CamlyCoinIcon size="sm" />
               </span>
             </DialogTitle>
           </DialogHeader>
 
           <div className="space-y-4">
-            {/* User info */}
+            {/* User info with privacy selector */}
             <div className="flex items-center gap-3">
               <Avatar className="w-10 h-10">
                 <AvatarImage src={profile?.avatar_url || undefined} />
                 <AvatarFallback>{profile?.full_name?.[0] || '🌱'}</AvatarFallback>
               </Avatar>
-              <div>
+              <div className="flex-1">
                 <p className="font-medium">{profile?.full_name || 'Green Warrior'}</p>
-                <Select value={postType} onValueChange={(v) => setPostType(v as PostType)}>
-                  <SelectTrigger className="h-6 text-xs border-none p-0 shadow-none">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="text">📝 Text Post</SelectItem>
-                    <SelectItem value="photo">📷 Photo Post</SelectItem>
-                    <SelectItem value="campaign_update">🌳 Campaign Update</SelectItem>
-                  </SelectContent>
-                </Select>
+                <PrivacySelector value={privacy} onChange={setPrivacy} size="sm" />
               </div>
             </div>
+
+            {/* Feeling badge */}
+            {feeling && (
+              <FeelingBadge feeling={feeling} onRemove={() => setFeeling(null)} />
+            )}
 
             {/* Content textarea */}
             <div className="relative">
               <Textarea
                 ref={textareaRef}
-                placeholder="Share your eco-journey... 🌍🌳🌱"
+                placeholder={`Share your eco-journey${feeling ? ` — feeling ${feeling.emoji} ${feeling.label}` : ''}... 🌍🌳🌱`}
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 className="min-h-[120px] resize-none text-base border-none focus-visible:ring-0 p-0"
@@ -304,6 +339,9 @@ export function CreatePostEnhanced() {
               )}
             </AnimatePresence>
 
+            {/* Poll creator */}
+            <PollCreator onPollChange={setPollData} />
+
             {/* Location display */}
             <AnimatePresence>
               {location && (
@@ -344,8 +382,8 @@ export function CreatePostEnhanced() {
               </Select>
             )}
 
-            {/* Action buttons */}
-            <div className="flex items-center gap-2 pt-2 border-t">
+            {/* Action buttons row */}
+            <div className="flex items-center gap-2 pt-2 border-t flex-wrap">
               <input
                 ref={fileInputRef}
                 type="file"
@@ -372,12 +410,21 @@ export function CreatePostEnhanced() {
                 <MapPin className="w-4 h-4 mr-1" />
                 Location
               </Button>
-              
-              <div className="flex-1" />
-              
+              <FeelingPicker 
+                selectedFeeling={feeling?.id} 
+                onSelect={setFeeling} 
+              />
+              <TagFriends 
+                selectedUsers={taggedUsers} 
+                onUsersChange={setTaggedUsers} 
+              />
+            </div>
+
+            {/* Submit button */}
+            <div className="flex justify-end pt-2">
               <Button
                 onClick={handleSubmit}
-                disabled={createPost.isPending || (!content.trim() && selectedImages.length === 0)}
+                disabled={createPost.isPending || (!content.trim() && selectedImages.length === 0 && !pollData)}
                 className="bg-primary hover:bg-primary/90 px-6"
               >
                 {createPost.isPending ? (

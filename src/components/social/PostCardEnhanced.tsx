@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { 
-  Heart, MessageCircle, Share2, MoreHorizontal, MapPin, 
-  TreePine, Trash2, Bookmark, Flag, Leaf
+  MessageCircle, Share2, MoreHorizontal, MapPin, 
+  TreePine, Trash2, Bookmark, Flag
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
@@ -15,9 +15,14 @@ import {
   DropdownMenuSeparator, DropdownMenuTrigger 
 } from '@/components/ui/dropdown-menu';
 import { useLikePost, useSharePost, useDeletePost } from '@/hooks/usePosts';
+import { useAddReaction, useUserReaction } from '@/hooks/useReactions';
 import { useAuth } from '@/contexts/AuthContext';
 import { CamlyCoinIcon } from '@/components/rewards/CamlyCoinIcon';
 import { CommentSection } from './CommentSection';
+import { ReactionPicker, ReactionSummary } from './ReactionPicker';
+import { ImageCarousel } from './ImageCarousel';
+import { PollDisplay } from './PollDisplay';
+import { REACTION_EMOJIS } from '@/lib/camlyCoin';
 import { toast } from 'sonner';
 
 interface PostCardEnhancedProps {
@@ -34,6 +39,8 @@ interface PostCardEnhancedProps {
     created_at: string;
     campaign_id: string | null;
     user_id: string;
+    poll_id?: string | null;
+    feeling?: string | null;
     user: {
       id: string;
       full_name: string | null;
@@ -54,6 +61,8 @@ export function PostCardEnhanced({ post, showComments = false }: PostCardEnhance
   const likePost = useLikePost();
   const sharePost = useSharePost();
   const deletePost = useDeletePost();
+  const addReaction = useAddReaction();
+  const { data: userReaction } = useUserReaction(post.id);
   
   const [isLiked, setIsLiked] = useState(post.has_liked || false);
   const [likesCount, setLikesCount] = useState(post.likes_count);
@@ -62,27 +71,41 @@ export function PostCardEnhanced({ post, showComments = false }: PostCardEnhance
   const [isLikeAnimating, setIsLikeAnimating] = useState(false);
 
   const isOwner = user?.id === post.user_id;
+  const currentReaction = userReaction?.reaction_type || (isLiked ? 'leaf' : null);
 
-  const handleLike = async () => {
+  // Get all images (combine image_url and media_urls)
+  const allImages = [
+    ...(post.image_url ? [post.image_url] : []),
+    ...(post.media_urls || []),
+  ].filter(Boolean);
+
+  const handleReaction = async (reactionType: string) => {
     if (!user) {
-      toast.error('Please log in to like posts');
+      toast.error('Please log in to react to posts');
       return;
     }
 
     // Optimistic update
     const wasLiked = isLiked;
-    setIsLiked(!isLiked);
-    setLikesCount(prev => wasLiked ? prev - 1 : prev + 1);
+    const isSameReaction = currentReaction === reactionType;
+    
+    if (isSameReaction) {
+      setIsLiked(false);
+      setLikesCount(prev => Math.max(0, prev - 1));
+    } else if (!wasLiked) {
+      setIsLiked(true);
+      setLikesCount(prev => prev + 1);
+    }
+    
     setIsLikeAnimating(true);
     setTimeout(() => setIsLikeAnimating(false), 500);
 
     try {
-      const result = await likePost.mutateAsync({ postId: post.id, isLiked });
-      // Toast is handled by the hook via showReward
+      await addReaction.mutateAsync({ postId: post.id, reactionType });
     } catch (error) {
       // Revert on error
       setIsLiked(wasLiked);
-      setLikesCount(prev => wasLiked ? prev + 1 : prev - 1);
+      setLikesCount(post.likes_count);
     }
   };
 
@@ -98,7 +121,6 @@ export function PostCardEnhanced({ post, showComments = false }: PostCardEnhance
       
       // Copy link to clipboard
       await navigator.clipboard.writeText(`${window.location.origin}/post/${post.id}`);
-      // Toast is handled by the hook via showReward
     } catch (error: any) {
       toast.error(error.message || 'Failed to share');
     }
@@ -117,6 +139,17 @@ export function PostCardEnhanced({ post, showComments = false }: PostCardEnhance
 
   const timeAgo = formatDistanceToNow(new Date(post.created_at), { addSuffix: true });
 
+  // Parse feeling from post
+  const getFeelingDisplay = () => {
+    if (!post.feeling) return null;
+    // Format: "grateful:🌱" or just "grateful"
+    const [id, emoji] = post.feeling.includes(':') 
+      ? post.feeling.split(':') 
+      : [post.feeling, '😊'];
+    return { id, emoji };
+  };
+  const feeling = getFeelingDisplay();
+
   return (
     <Card className="overflow-hidden">
       {/* Header */}
@@ -131,16 +164,21 @@ export function PostCardEnhanced({ post, showComments = false }: PostCardEnhance
         </Link>
         
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <Link 
               to={`/profile?id=${post.user.id}`}
               className="font-semibold text-foreground hover:underline"
             >
               {post.user.full_name || 'Green Warrior'}
             </Link>
+            {feeling && (
+              <span className="text-muted-foreground text-sm">
+                is feeling {feeling.emoji} {feeling.id}
+              </span>
+            )}
             {post.campaign && (
               <span className="text-muted-foreground text-sm">
-                is at{' '}
+                at{' '}
                 <Link 
                   to={`/campaigns/${post.campaign.id}`}
                   className="text-primary hover:underline font-medium"
@@ -216,30 +254,28 @@ export function PostCardEnhanced({ post, showComments = false }: PostCardEnhance
         </div>
       )}
 
-      {/* Image */}
-      {post.image_url && (
-        <Link to={`/post/${post.id}`}>
-          <div className="relative bg-muted">
-            <img
-              src={post.image_url}
-              alt="Post image"
-              className="w-full max-h-[500px] object-cover"
-              loading="lazy"
-            />
-          </div>
-        </Link>
+      {/* Images with carousel */}
+      {allImages.length > 0 && (
+        <div className="px-4 pb-3">
+          <ImageCarousel images={allImages} />
+        </div>
+      )}
+
+      {/* Poll display */}
+      {post.poll_id && (
+        <div className="px-4 pb-3">
+          <PollDisplay pollId={post.poll_id} />
+        </div>
       )}
 
       {/* Stats bar */}
       <div className="px-4 py-2 flex items-center justify-between text-sm text-muted-foreground border-b">
         <div className="flex items-center gap-4">
           {likesCount > 0 && (
-            <span className="flex items-center gap-1">
-              <div className="w-4 h-4 rounded-full bg-primary/20 flex items-center justify-center">
-                <Leaf className="w-2.5 h-2.5 text-primary" />
-              </div>
-              {likesCount}
-            </span>
+            <ReactionSummary
+              reactions={[{ type: currentReaction || 'leaf', count: likesCount }]}
+              totalCount={likesCount}
+            />
           )}
         </div>
         <div className="flex items-center gap-3">
@@ -259,24 +295,14 @@ export function PostCardEnhanced({ post, showComments = false }: PostCardEnhance
 
       {/* Action buttons */}
       <div className="px-4 py-1 flex items-center gap-1">
-        <Button
-          variant="ghost"
-          size="sm"
-          className={`flex-1 gap-2 ${isLiked ? 'text-primary' : 'text-muted-foreground'}`}
-          onClick={handleLike}
-        >
-          <motion.div
-            animate={isLikeAnimating ? { scale: [1, 1.3, 1], rotate: [0, -15, 15, 0] } : {}}
-            transition={{ duration: 0.3 }}
-          >
-            {isLiked ? (
-              <Leaf className="w-5 h-5 fill-current" />
-            ) : (
-              <Heart className="w-5 h-5" />
-            )}
-          </motion.div>
-          Like
-        </Button>
+        {/* Reaction Picker */}
+        <div className="flex-1">
+          <ReactionPicker
+            currentReaction={currentReaction}
+            onReact={handleReaction}
+            disabled={!user}
+          />
+        </div>
         
         <Button
           variant="ghost"
