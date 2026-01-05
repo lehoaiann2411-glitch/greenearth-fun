@@ -7,7 +7,10 @@ export const CAMLY_REWARDS = {
   CREATE_POST: 3000,           // Post about environment
   CREATE_POST_WITH_IMAGE: 4000, // Post with image
   CREATE_POST_WITH_POLL: 3500, // Post with poll
-  SHARE_POST: 1500,            // Share campaign/post
+  SHARE_POST: 2000,            // Share campaign/post (updated from 1500)
+  SHARED_POST_BONUS: 500,      // Original author bonus when shared
+  FRIEND_ACCEPT: 2000,         // Both users get +2,000 when friendship accepted
+  SEND_CAMLY_GIFT: 100,        // Bonus for sending Camly gift
   LIKE_POST: 200,              // Like a post (legacy)
   REACT_POST: 200,             // React to a post
   
