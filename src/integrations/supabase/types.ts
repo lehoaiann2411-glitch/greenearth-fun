@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      green_nfts: {
+        Row: {
+          certificate_number: string | null
+          created_at: string
+          id: string
+          image_url: string | null
+          location: string | null
+          planted_at: string
+          tree_type: string
+          user_id: string
+          verified: boolean
+        }
+        Insert: {
+          certificate_number?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          location?: string | null
+          planted_at?: string
+          tree_type: string
+          user_id: string
+          verified?: boolean
+        }
+        Update: {
+          certificate_number?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          location?: string | null
+          planted_at?: string
+          tree_type?: string
+          user_id?: string
+          verified?: boolean
+        }
+        Relationships: []
+      }
       organizations: {
         Row: {
           created_at: string

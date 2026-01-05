@@ -1,10 +1,12 @@
 import { useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { useProfile } from '@/hooks/useProfile';
 import { Layout } from '@/components/layout/Layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { Skeleton } from '@/components/ui/skeleton';
 import { 
   Leaf, 
   TreePine, 
@@ -13,49 +15,56 @@ import {
   TrendingUp, 
   Calendar,
   ArrowRight,
-  Sprout
 } from 'lucide-react';
+import { getRankByPoints, getNextRank, getProgressToNextRank, getPointsToNextRank } from '@/lib/greenRanks';
 
 export default function Dashboard() {
-  const { user, loading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
+  const { data: profile, isLoading: profileLoading } = useProfile();
 
   useEffect(() => {
-    if (!loading && !user) {
+    if (!authLoading && !user) {
       navigate('/auth');
     }
-  }, [user, loading, navigate]);
+  }, [user, authLoading, navigate]);
 
-  if (loading) {
+  const isLoading = authLoading || profileLoading;
+
+  if (isLoading) {
     return (
       <Layout>
-        <div className="container flex min-h-[60vh] items-center justify-center">
-          <div className="flex flex-col items-center gap-4">
-            <Leaf className="h-12 w-12 animate-pulse text-primary" />
-            <p className="text-muted-foreground">Đang tải...</p>
+        <div className="container py-8 md:py-12">
+          <div className="mb-8">
+            <Skeleton className="h-10 w-64" />
+            <Skeleton className="mt-2 h-5 w-48" />
+          </div>
+          <div className="mb-8 grid gap-4 md:grid-cols-3">
+            <Skeleton className="h-24 w-full" />
+            <Skeleton className="h-24 w-full" />
+            <Skeleton className="h-24 w-full" />
+          </div>
+          <div className="grid gap-8 lg:grid-cols-3">
+            <Skeleton className="h-48 w-full lg:col-span-2" />
+            <Skeleton className="h-48 w-full" />
           </div>
         </div>
       </Layout>
     );
   }
 
-  if (!user) return null;
+  if (!user || !profile) return null;
 
-  const userStats = {
-    greenPoints: 250,
-    treesPlanted: 5,
-    campaignsJoined: 3,
-    rank: 'Mầm Xanh',
-    nextRank: 'Cây Non',
-    pointsToNextRank: 500,
-  };
-
-  const progressToNextRank = (userStats.greenPoints / userStats.pointsToNextRank) * 100;
+  const currentRank = getRankByPoints(profile.green_points);
+  const nextRank = getNextRank(currentRank);
+  const progressToNextRank = getProgressToNextRank(profile.green_points);
+  const pointsToNext = getPointsToNextRank(profile.green_points);
+  const RankIcon = currentRank.icon;
 
   const quickStats = [
-    { icon: Leaf, label: 'Điểm Xanh', value: userStats.greenPoints, color: 'text-primary' },
-    { icon: TreePine, label: 'Cây đã trồng', value: userStats.treesPlanted, color: 'text-accent' },
-    { icon: Trophy, label: 'Chiến dịch', value: userStats.campaignsJoined, color: 'text-sky' },
+    { icon: Leaf, label: 'Điểm Xanh', value: profile.green_points, color: 'text-primary' },
+    { icon: TreePine, label: 'Cây đã trồng', value: profile.trees_planted, color: 'text-accent' },
+    { icon: Trophy, label: 'Chiến dịch', value: profile.campaigns_joined, color: 'text-sky' },
   ];
 
   const upcomingCampaigns = [
@@ -107,7 +116,7 @@ export default function Dashboard() {
           <Card className="lg:col-span-2">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Sprout className="h-5 w-5 text-primary" />
+                <RankIcon className={`h-5 w-5 ${currentRank.colorClass}`} />
                 Cấp bậc của bạn
               </CardTitle>
               <CardDescription>
@@ -117,25 +126,27 @@ export default function Dashboard() {
             <CardContent>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full gradient-leaf">
-                    <Sprout className="h-8 w-8 text-primary-foreground" />
+                  <div className={`flex h-16 w-16 items-center justify-center rounded-full ${currentRank.bgClass}`}>
+                    <RankIcon className={`h-8 w-8 ${currentRank.colorClass}`} />
                   </div>
                   <div>
-                    <p className="font-display text-xl font-bold">{userStats.rank}</p>
+                    <p className="font-display text-xl font-bold">{currentRank.name}</p>
                     <p className="text-sm text-muted-foreground">
-                      {userStats.greenPoints} / {userStats.pointsToNextRank} điểm
+                      {profile.green_points} / {nextRank?.minPoints || profile.green_points} điểm
                     </p>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-sm text-muted-foreground">Cấp tiếp theo</p>
-                  <p className="font-medium text-primary">{userStats.nextRank}</p>
-                </div>
+                {nextRank && (
+                  <div className="text-right">
+                    <p className="text-sm text-muted-foreground">Cấp tiếp theo</p>
+                    <p className="font-medium text-primary">{nextRank.name}</p>
+                  </div>
+                )}
               </div>
               <div className="mt-6">
                 <Progress value={progressToNextRank} className="h-3" />
                 <p className="mt-2 text-center text-sm text-muted-foreground">
-                  Còn {userStats.pointsToNextRank - userStats.greenPoints} điểm để lên cấp
+                  {nextRank ? `Còn ${pointsToNext} điểm để lên cấp` : 'Bạn đã đạt cấp cao nhất!'}
                 </p>
               </div>
             </CardContent>
