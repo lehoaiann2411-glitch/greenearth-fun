@@ -5,7 +5,7 @@ import { useStories, GroupedStories } from '@/hooks/useStories';
 import { useAuth } from '@/contexts/AuthContext';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { StoryViewer } from './StoryViewer';
-import { CreateStoryDialog } from './CreateStoryDialog';
+import { CreateStoryFullscreen } from '@/components/stories/CreateStoryFullscreen';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 
 export function StoriesBar() {
@@ -56,19 +56,33 @@ export function StoriesBar() {
               whileTap={{ scale: 0.95 }}
             >
               <div className="relative">
-                <div className={`w-16 h-16 rounded-full p-[2px] ${
-                  myStories ? 'bg-gradient-to-tr from-primary to-emerald-400' : 'bg-muted'
+                {/* Green glowing ring for stories */}
+                <div className={`w-[68px] h-[68px] rounded-full p-[3px] ${
+                  myStories 
+                    ? 'bg-gradient-to-tr from-primary via-emerald-400 to-lime-400 shadow-[0_0_15px_rgba(34,197,94,0.5)]' 
+                    : 'bg-muted'
                 }`}>
-                  <Avatar className="w-full h-full border-2 border-background">
-                    <AvatarImage src={myStories?.user.avatar_url || undefined} />
-                    <AvatarFallback className="bg-primary/10 text-primary">
-                      {myStories?.user.full_name?.[0] || '🌱'}
-                    </AvatarFallback>
-                  </Avatar>
+                  <div className="w-full h-full rounded-full p-[2px] bg-background">
+                    <Avatar className="w-full h-full">
+                      <AvatarImage src={myStories?.user.avatar_url || undefined} />
+                      <AvatarFallback className="bg-primary/10 text-primary text-lg">
+                        {myStories?.user.full_name?.[0] || '🌱'}
+                      </AvatarFallback>
+                    </Avatar>
+                  </div>
                 </div>
                 {!myStories && (
-                  <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-primary rounded-full flex items-center justify-center border-2 border-background">
+                  <motion.div 
+                    className="absolute -bottom-1 -right-1 w-6 h-6 bg-primary rounded-full flex items-center justify-center border-2 border-background shadow-lg"
+                    whileHover={{ scale: 1.1 }}
+                  >
                     <Plus className="w-4 h-4 text-primary-foreground" />
+                  </motion.div>
+                )}
+                {/* Story count badge */}
+                {myStories && myStories.stories.length > 1 && (
+                  <div className="absolute -top-1 -right-1 w-5 h-5 bg-primary rounded-full flex items-center justify-center text-[10px] font-bold text-primary-foreground border-2 border-background">
+                    {myStories.stories.length}
                   </div>
                 )}
               </div>
@@ -87,17 +101,28 @@ export function StoriesBar() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <div className={`w-16 h-16 rounded-full p-[2px] ${
-                group.hasUnviewed 
-                  ? 'bg-gradient-to-tr from-primary to-emerald-400 animate-pulse' 
-                  : 'bg-muted'
-              }`}>
-                <Avatar className="w-full h-full border-2 border-background">
-                  <AvatarImage src={group.user.avatar_url || undefined} />
-                  <AvatarFallback className="bg-primary/10 text-primary">
-                    {group.user.full_name?.[0] || '🌱'}
-                  </AvatarFallback>
-                </Avatar>
+              <div className="relative">
+                {/* Animated green glowing ring for unviewed stories */}
+                <div className={`w-[68px] h-[68px] rounded-full p-[3px] transition-all duration-300 ${
+                  group.hasUnviewed 
+                    ? 'bg-gradient-to-tr from-primary via-emerald-400 to-lime-400 shadow-[0_0_15px_rgba(34,197,94,0.5)] animate-pulse' 
+                    : 'bg-muted'
+                }`}>
+                  <div className="w-full h-full rounded-full p-[2px] bg-background">
+                    <Avatar className="w-full h-full">
+                      <AvatarImage src={group.user.avatar_url || undefined} />
+                      <AvatarFallback className="bg-primary/10 text-primary text-lg">
+                        {group.user.full_name?.[0] || '🌱'}
+                      </AvatarFallback>
+                    </Avatar>
+                  </div>
+                </div>
+                {/* Story count badge */}
+                {group.stories.length > 1 && (
+                  <div className="absolute -top-1 -right-1 w-5 h-5 bg-primary rounded-full flex items-center justify-center text-[10px] font-bold text-primary-foreground border-2 border-background">
+                    {group.stories.length}
+                  </div>
+                )}
               </div>
               <span className="text-xs font-medium text-center truncate w-16">
                 {group.user.full_name || 'User'}
@@ -110,7 +135,7 @@ export function StoriesBar() {
             <>
               {[1, 2, 3, 4].map((i) => (
                 <div key={i} className="flex flex-col items-center gap-1 min-w-[72px]">
-                  <div className="w-16 h-16 rounded-full bg-muted animate-pulse" />
+                  <div className="w-[68px] h-[68px] rounded-full bg-muted animate-pulse" />
                   <div className="w-12 h-3 bg-muted rounded animate-pulse" />
                 </div>
               ))}
@@ -132,10 +157,10 @@ export function StoriesBar() {
         />
       )}
 
-      {/* Create Story Dialog */}
-      <CreateStoryDialog 
+      {/* Create Story Fullscreen */}
+      <CreateStoryFullscreen 
         open={showCreateStory} 
-        onOpenChange={setShowCreateStory} 
+        onClose={() => setShowCreateStory(false)} 
       />
     </>
   );
