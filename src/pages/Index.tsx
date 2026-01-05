@@ -11,7 +11,6 @@ import {
   Shield,
   Globe,
   Heart,
-  Sparkles,
   Target,
   TrendingUp,
 } from 'lucide-react';
@@ -64,11 +63,6 @@ export default function Index() {
       <section className="relative py-20 md:py-32 overflow-hidden">
         <div className="container relative">
           <div className="max-w-3xl mx-auto text-center">
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/40 backdrop-blur-md border border-white/30 text-white text-sm font-semibold mb-8 animate-fade-in-up text-shadow-sm">
-              <Sparkles className="h-4 w-4 text-accent drop-shadow-md" />
-              Nền tảng môi trường số #1 Việt Nam
-            </div>
 
             {/* Heading */}
             <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 animate-fade-in-up animation-delay-100 text-shadow-lg">
