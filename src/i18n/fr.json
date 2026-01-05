@@ -16,12 +16,16 @@
     "submit": "Soumettre",
     "confirm": "Confirmer",
     "done": "Terminé",
-    "loginRequired": "Connexion requise"
+    "loginRequired": "Connexion requise",
+    "user": "Utilisateur"
   },
   "nav": {
     "home": "Accueil",
+    "feed": "Fil d'actualité",
+    "reels": "Reels",
     "campaigns": "Campagnes",
     "community": "Communauté",
+    "groups": "Groupes",
     "leaderboard": "Classement",
     "impact": "Impact",
     "quests": "Quêtes",
@@ -32,7 +36,142 @@
     "login": "Connexion",
     "signup": "Inscription",
     "logout": "Déconnexion",
-    "rewards": "Récompenses"
+    "rewards": "Récompenses",
+    "messages": "Messages",
+    "friends": "Amis"
+  },
+  "header": {
+    "lightMode": "Mode clair",
+    "darkMode": "Mode sombre",
+    "joinNow": "Rejoignez-nous"
+  },
+  "footer": {
+    "platform": "Plateforme",
+    "about": "À propos",
+    "contact": "Contact",
+    "campaigns": "Campagnes",
+    "community": "Communauté",
+    "leaderboard": "Classement",
+    "aboutUs": "À propos de nous",
+    "partners": "Partenaires",
+    "contactUs": "Nous contacter",
+    "faq": "FAQ",
+    "description": "Plateforme connectant les communautés pour un environnement plus vert. Ensemble, créons un avenir durable.",
+    "madeWith": "Fait avec",
+    "forPlanet": "pour la planète.",
+    "privacy": "Politique de confidentialité",
+    "terms": "Conditions d'utilisation",
+    "vietnam": "Vietnam"
+  },
+  "home": {
+    "hero": {
+      "titleLine1": "Ensemble",
+      "titleLine2": "Verdissons la Terre",
+      "description": "Rejoignez une communauté de milliers de personnes qui aiment l'environnement. Chacune de vos petites actions est reconnue et crée un grand changement.",
+      "joinNow": "Rejoignez-nous",
+      "exploreCampaigns": "Explorer les campagnes"
+    },
+    "stats": {
+      "treesPlanted": "Arbres plantés",
+      "members": "Membres",
+      "campaigns": "Campagnes",
+      "greenPoints": "Points verts"
+    },
+    "features": {
+      "title": "Fonctionnalités clés",
+      "subtitle": "Une plateforme conçue pour reconnaître toutes vos contributions à l'environnement",
+      "greenPoints": {
+        "title": "Points Verts et Rangs",
+        "description": "Accumulez des points verts grâce aux activités, montez en grade de Graine à Arbre Géant."
+      },
+      "camlyCoin": {
+        "title": "Camly Coin",
+        "description": "Gagnez des tokens en plantant des arbres, partageant des posts et participant à des activités vertes."
+      },
+      "community": {
+        "title": "Communauté Verte",
+        "description": "Connectez-vous avec des personnes qui partagent votre passion pour la protection de l'environnement."
+      },
+      "reputation": {
+        "title": "Réputation Verte",
+        "description": "Profil de contribution pour bourses, études à l'étranger, emplois ESG."
+      }
+    },
+    "howItWorks": {
+      "title": "Comment ça marche",
+      "subtitle": "Commencez votre voyage vert en seulement 4 étapes simples"
+    },
+    "steps": {
+      "register": {
+        "title": "Inscrivez-vous",
+        "description": "Créez un compte gratuit en 30 secondes"
+      },
+      "join": {
+        "title": "Rejoignez",
+        "description": "Choisissez les campagnes qui vous conviennent"
+      },
+      "action": {
+        "title": "Agissez",
+        "description": "Plantez des arbres, nettoyez, recyclez..."
+      },
+      "reward": {
+        "title": "Obtenez des récompenses",
+        "description": "Points verts, Camly Coin et rangs"
+      }
+    },
+    "cta": {
+      "title": "Commencez votre voyage vert",
+      "description": "Rejoignez des milliers de personnes qui apportent des changements positifs pour l'environnement.",
+      "button": "Inscription gratuite"
+    },
+    "trust": {
+      "security": {
+        "title": "Sécurité",
+        "description": "Données cryptées en toute sécurité"
+      },
+      "transparency": {
+        "title": "Transparence",
+        "description": "Blockchain enregistre toutes les contributions"
+      },
+      "esg": {
+        "title": "ESG",
+        "description": "Certificats reconnus internationalement"
+      }
+    }
+  },
+  "auth": {
+    "backToHome": "Retour à l'accueil",
+    "tagline": "Ensemble, construisons une Terre Verte",
+    "login": "Connexion",
+    "signup": "Inscription",
+    "email": "Email",
+    "password": "Mot de passe",
+    "fullName": "Nom complet",
+    "orgName": "Nom de l'organisation",
+    "accountType": "Type de compte",
+    "individual": "Individuel",
+    "organization": "Organisation",
+    "passwordPlaceholder": "Minimum 6 caractères",
+    "namePlaceholder": "Jean Dupont",
+    "orgPlaceholder": "Nom de l'entreprise/organisation",
+    "createAccount": "Créer un compte",
+    "orContinueWith": "Ou continuer avec",
+    "orSignupWith": "Ou s'inscrire avec",
+    "loginFailed": "Échec de connexion",
+    "signupFailed": "Échec d'inscription",
+    "loginSuccess": "Connexion réussie !",
+    "welcomeBack": "Bienvenue de retour sur Green Earth.",
+    "signupSuccess": "Inscription réussie !",
+    "pleaseLogin": "Veuillez vous connecter avec votre nouveau compte.",
+    "welcomeToGreenEarth": "Bienvenue sur Green Earth ! 🌱",
+    "accountCreated": "Votre compte a été créé avec succès.",
+    "invalidCredentials": "Email ou mot de passe invalide",
+    "emailAlreadyRegistered": "Cet email est déjà enregistré. Veuillez vous connecter ou utiliser un autre email.",
+    "validation": {
+      "invalidEmail": "Email invalide",
+      "passwordMin": "Le mot de passe doit contenir au moins 6 caractères",
+      "nameRequired": "Veuillez entrer votre nom complet"
+    }
   },
   "hero": {
     "badge": "Plateforme Web3 de Protection Environnementale 🌍🌳",

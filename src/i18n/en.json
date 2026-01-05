@@ -64,44 +64,80 @@
     "vietnam": "Vietnam"
   },
   "home": {
-    "heroTitle": "Together",
-    "heroTitleHighlight": "Greening The Earth",
-    "heroDescription": "Join a community of thousands who love the environment. Every small action of yours is recognized and creates big change.",
-    "joinNow": "Join Now",
-    "exploreCampaigns": "Explore Campaigns",
-    "treesPlanted": "Trees Planted",
-    "members": "Members",
-    "campaigns": "Campaigns",
-    "greenPoints": "Green Points",
-    "featuresTitle": "Key Features",
-    "featuresDescription": "A platform designed to recognize all your contributions to the environment",
-    "feature1Title": "Green Points & Ranks",
-    "feature1Description": "Accumulate green points through activities, rank up from Seedling to Giant Tree.",
-    "feature2Title": "Camly Coin",
-    "feature2Description": "Earn reward tokens by planting trees, sharing posts, and participating in green activities.",
-    "feature3Title": "Green Community",
-    "feature3Description": "Connect with people who share your passion for environmental protection.",
-    "feature4Title": "Green Reputation",
-    "feature4Description": "Contribution profile for scholarships, study abroad, ESG jobs.",
-    "howItWorksTitle": "How It Works",
-    "howItWorksDescription": "Start your green journey in just 4 simple steps",
-    "step1Title": "Sign Up",
-    "step1Description": "Create a free account in 30 seconds",
-    "step2Title": "Join",
-    "step2Description": "Choose campaigns that suit you",
-    "step3Title": "Take Action",
-    "step3Description": "Plant trees, clean up, recycle...",
-    "step4Title": "Get Rewards",
-    "step4Description": "Green points, Camly Coin and ranks",
-    "ctaTitle": "Start Your Green Journey",
-    "ctaDescription": "Join thousands of people making positive changes for the environment.",
-    "signupFree": "Sign Up Free",
-    "trustSecurity": "Security",
-    "trustSecurityDesc": "Data encrypted securely",
-    "trustTransparency": "Transparency",
-    "trustTransparencyDesc": "Blockchain records all contributions",
-    "trustESG": "ESG",
-    "trustESGDesc": "Internationally recognized certificates"
+    "hero": {
+      "titleLine1": "Together",
+      "titleLine2": "Greening The Earth",
+      "description": "Join a community of thousands who love the environment. Every small action of yours is recognized and creates big change.",
+      "joinNow": "Join Now",
+      "exploreCampaigns": "Explore Campaigns"
+    },
+    "stats": {
+      "treesPlanted": "Trees Planted",
+      "members": "Members",
+      "campaigns": "Campaigns",
+      "greenPoints": "Green Points"
+    },
+    "features": {
+      "title": "Key Features",
+      "subtitle": "A platform designed to recognize all your contributions to the environment",
+      "greenPoints": {
+        "title": "Green Points & Ranks",
+        "description": "Accumulate green points through activities, rank up from Seedling to Giant Tree."
+      },
+      "camlyCoin": {
+        "title": "Camly Coin",
+        "description": "Earn reward tokens by planting trees, sharing posts, and participating in green activities."
+      },
+      "community": {
+        "title": "Green Community",
+        "description": "Connect with people who share your passion for environmental protection."
+      },
+      "reputation": {
+        "title": "Green Reputation",
+        "description": "Contribution profile for scholarships, study abroad, ESG jobs."
+      }
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "subtitle": "Start your green journey in just 4 simple steps"
+    },
+    "steps": {
+      "register": {
+        "title": "Sign Up",
+        "description": "Create a free account in 30 seconds"
+      },
+      "join": {
+        "title": "Join",
+        "description": "Choose campaigns that suit you"
+      },
+      "action": {
+        "title": "Take Action",
+        "description": "Plant trees, clean up, recycle..."
+      },
+      "reward": {
+        "title": "Get Rewards",
+        "description": "Green points, Camly Coin and ranks"
+      }
+    },
+    "cta": {
+      "title": "Start Your Green Journey",
+      "description": "Join thousands of people making positive changes for the environment.",
+      "button": "Sign Up Free"
+    },
+    "trust": {
+      "security": {
+        "title": "Security",
+        "description": "Data encrypted securely"
+      },
+      "transparency": {
+        "title": "Transparency",
+        "description": "Blockchain records all contributions"
+      },
+      "esg": {
+        "title": "ESG",
+        "description": "Internationally recognized certificates"
+      }
+    }
   },
   "auth": {
     "backToHome": "Back to Home",
@@ -115,25 +151,27 @@
     "accountType": "Account Type",
     "individual": "Individual",
     "organization": "Organization",
-    "minPassword": "Minimum 6 characters",
+    "passwordPlaceholder": "Minimum 6 characters",
+    "namePlaceholder": "John Doe",
+    "orgPlaceholder": "Company/Organization name",
     "createAccount": "Create Account",
     "orContinueWith": "Or continue with",
     "orSignupWith": "Or sign up with",
     "loginFailed": "Login Failed",
     "signupFailed": "Sign Up Failed",
     "loginSuccess": "Login Successful!",
-    "loginSuccessDesc": "Welcome back to Green Earth.",
+    "welcomeBack": "Welcome back to Green Earth.",
     "signupSuccess": "Sign Up Successful!",
-    "signupSuccessDesc": "Please login with your new account.",
-    "welcomeGreenEarth": "Welcome to Green Earth! 🌱",
+    "pleaseLogin": "Please login with your new account.",
+    "welcomeToGreenEarth": "Welcome to Green Earth! 🌱",
     "accountCreated": "Your account has been created successfully.",
-    "invalidEmail": "Invalid email",
-    "invalidPassword": "Password must be at least 6 characters",
     "invalidCredentials": "Invalid email or password",
     "emailAlreadyRegistered": "This email is already registered. Please login or use a different email.",
-    "enterFullName": "Please enter your full name",
-    "placeholderName": "John Doe",
-    "placeholderOrgName": "Company/Organization name"
+    "validation": {
+      "invalidEmail": "Invalid email",
+      "passwordMin": "Password must be at least 6 characters",
+      "nameRequired": "Please enter your full name"
+    }
   },
   "hero": {
     "badge": "Web3 Environmental Protection Platform",

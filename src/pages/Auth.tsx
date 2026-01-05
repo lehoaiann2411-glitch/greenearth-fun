@@ -1,20 +1,19 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Leaf, User, Building2, ArrowLeft, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { z } from 'zod';
 
-const emailSchema = z.string().email('Email không hợp lệ');
-const passwordSchema = z.string().min(6, 'Mật khẩu phải có ít nhất 6 ký tự');
-
 export default function Auth() {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const defaultMode = searchParams.get('mode') === 'signup' ? 'signup' : 'login';
   
@@ -31,6 +30,9 @@ export default function Auth() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  const emailSchema = z.string().email(t('auth.validation.invalidEmail'));
+  const passwordSchema = z.string().min(6, t('auth.validation.passwordMin'));
+
   const handleGoogleLogin = async () => {
     setSocialLoading('google');
     const { error } = await signInWithGoogle();
@@ -38,7 +40,7 @@ export default function Auth() {
       setSocialLoading(null);
       toast({
         variant: 'destructive',
-        title: 'Đăng nhập thất bại',
+        title: t('auth.loginFailed'),
         description: error.message,
       });
     }
@@ -51,7 +53,7 @@ export default function Auth() {
       setSocialLoading(null);
       toast({
         variant: 'destructive',
-        title: 'Đăng nhập thất bại',
+        title: t('auth.loginFailed'),
         description: error.message,
       });
     }
@@ -69,17 +71,17 @@ export default function Auth() {
     try {
       emailSchema.parse(email);
     } catch {
-      newErrors.email = 'Email không hợp lệ';
+      newErrors.email = t('auth.validation.invalidEmail');
     }
     
     try {
       passwordSchema.parse(password);
     } catch {
-      newErrors.password = 'Mật khẩu phải có ít nhất 6 ký tự';
+      newErrors.password = t('auth.validation.passwordMin');
     }
     
     if (isSignup && !fullName.trim()) {
-      newErrors.fullName = 'Vui lòng nhập họ tên';
+      newErrors.fullName = t('auth.validation.nameRequired');
     }
     
     setErrors(newErrors);
@@ -97,15 +99,15 @@ export default function Auth() {
     if (error) {
       toast({
         variant: 'destructive',
-        title: 'Đăng nhập thất bại',
+        title: t('auth.loginFailed'),
         description: error.message === 'Invalid login credentials' 
-          ? 'Email hoặc mật khẩu không đúng'
+          ? t('auth.invalidCredentials')
           : error.message,
       });
     } else {
       toast({
-        title: 'Đăng nhập thành công!',
-        description: 'Chào mừng bạn quay trở lại Green Earth.',
+        title: t('auth.loginSuccess'),
+        description: t('auth.welcomeBack'),
       });
       navigate('/dashboard');
     }
@@ -122,11 +124,11 @@ export default function Auth() {
       setLoading(false);
       let message = error.message;
       if (error.message.includes('already registered')) {
-        message = 'Email này đã được đăng ký. Vui lòng đăng nhập hoặc sử dụng email khác.';
+        message = t('auth.emailAlreadyRegistered');
       }
       toast({
         variant: 'destructive',
-        title: 'Đăng ký thất bại',
+        title: t('auth.signupFailed'),
         description: message,
       });
     } else {
@@ -136,14 +138,14 @@ export default function Auth() {
       
       if (signInError) {
         toast({
-          title: 'Đăng ký thành công!',
-          description: 'Vui lòng đăng nhập với tài khoản vừa tạo.',
+          title: t('auth.signupSuccess'),
+          description: t('auth.pleaseLogin'),
         });
         setActiveTab('login');
       } else {
         toast({
-          title: 'Chào mừng bạn đến Green Earth! 🌱',
-          description: 'Tài khoản đã được tạo thành công.',
+          title: t('auth.welcomeToGreenEarth'),
+          description: t('auth.accountCreated'),
         });
         navigate('/dashboard');
       }
@@ -157,7 +159,7 @@ export default function Auth() {
         <Button variant="ghost" asChild className="gap-2">
           <Link to="/">
             <ArrowLeft className="h-4 w-4" />
-            Về trang chủ
+            {t('auth.backToHome')}
           </Link>
         </Button>
       </div>
@@ -173,7 +175,7 @@ export default function Auth() {
               Green Earth
             </h1>
             <p className="mt-1 text-muted-foreground">
-              Cùng nhau xây dựng Trái Đất xanh
+              {t('auth.tagline')}
             </p>
           </div>
 
@@ -181,8 +183,8 @@ export default function Auth() {
             <Tabs value={activeTab} onValueChange={setActiveTab}>
               <CardHeader className="pb-4">
                 <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="login">Đăng nhập</TabsTrigger>
-                  <TabsTrigger value="signup">Đăng ký</TabsTrigger>
+                  <TabsTrigger value="login">{t('auth.login')}</TabsTrigger>
+                  <TabsTrigger value="signup">{t('auth.signup')}</TabsTrigger>
                 </TabsList>
               </CardHeader>
 
@@ -191,7 +193,7 @@ export default function Auth() {
                 <TabsContent value="login" className="mt-0">
                   <form onSubmit={handleLogin} className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="login-email">Email</Label>
+                      <Label htmlFor="login-email">{t('auth.email')}</Label>
                       <Input
                         id="login-email"
                         type="email"
@@ -206,7 +208,7 @@ export default function Auth() {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="login-password">Mật khẩu</Label>
+                      <Label htmlFor="login-password">{t('auth.password')}</Label>
                       <Input
                         id="login-password"
                         type="password"
@@ -226,7 +228,7 @@ export default function Auth() {
                       disabled={loading || socialLoading !== null}
                     >
                       {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                      Đăng nhập
+                      {t('auth.login')}
                     </Button>
 
                     {/* Social Login Divider */}
@@ -236,7 +238,7 @@ export default function Auth() {
                       </div>
                       <div className="relative flex justify-center text-xs uppercase">
                         <span className="bg-card px-2 text-muted-foreground">
-                          Hoặc tiếp tục với
+                          {t('auth.orContinueWith')}
                         </span>
                       </div>
                     </div>
@@ -299,7 +301,7 @@ export default function Auth() {
                   <form onSubmit={handleSignup} className="space-y-4">
                     {/* Account Type Selection */}
                     <div className="space-y-3">
-                      <Label>Loại tài khoản</Label>
+                      <Label>{t('auth.accountType')}</Label>
                       <RadioGroup
                         value={accountType}
                         onValueChange={(value) => setAccountType(value as 'individual' | 'organization')}
@@ -315,7 +317,7 @@ export default function Auth() {
                         >
                           <RadioGroupItem value="individual" id="individual" className="sr-only" />
                           <User className={`h-8 w-8 ${accountType === 'individual' ? 'text-primary' : 'text-muted-foreground'}`} />
-                          <span className="font-medium">Cá nhân</span>
+                          <span className="font-medium">{t('auth.individual')}</span>
                         </Label>
                         <Label
                           htmlFor="organization"
@@ -327,19 +329,19 @@ export default function Auth() {
                         >
                           <RadioGroupItem value="organization" id="organization" className="sr-only" />
                           <Building2 className={`h-8 w-8 ${accountType === 'organization' ? 'text-primary' : 'text-muted-foreground'}`} />
-                          <span className="font-medium">Tổ chức</span>
+                          <span className="font-medium">{t('auth.organization')}</span>
                         </Label>
                       </RadioGroup>
                     </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="signup-name">
-                        {accountType === 'individual' ? 'Họ và tên' : 'Tên tổ chức'}
+                        {accountType === 'individual' ? t('auth.fullName') : t('auth.orgName')}
                       </Label>
                       <Input
                         id="signup-name"
                         type="text"
-                        placeholder={accountType === 'individual' ? 'Nguyễn Văn A' : 'Tên công ty/tổ chức'}
+                        placeholder={accountType === 'individual' ? t('auth.namePlaceholder') : t('auth.orgPlaceholder')}
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
                         className={errors.fullName ? 'border-destructive' : ''}
@@ -350,7 +352,7 @@ export default function Auth() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="signup-email">Email</Label>
+                      <Label htmlFor="signup-email">{t('auth.email')}</Label>
                       <Input
                         id="signup-email"
                         type="email"
@@ -365,11 +367,11 @@ export default function Auth() {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="signup-password">Mật khẩu</Label>
+                      <Label htmlFor="signup-password">{t('auth.password')}</Label>
                       <Input
                         id="signup-password"
                         type="password"
-                        placeholder="Tối thiểu 6 ký tự"
+                        placeholder={t('auth.passwordPlaceholder')}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         className={errors.password ? 'border-destructive' : ''}
@@ -385,7 +387,7 @@ export default function Auth() {
                       disabled={loading || socialLoading !== null}
                     >
                       {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                      Tạo tài khoản
+                      {t('auth.createAccount')}
                     </Button>
 
                     {/* Social Login Divider */}
@@ -395,7 +397,7 @@ export default function Auth() {
                       </div>
                       <div className="relative flex justify-center text-xs uppercase">
                         <span className="bg-card px-2 text-muted-foreground">
-                          Hoặc đăng ký với
+                          {t('auth.orSignupWith')}
                         </span>
                       </div>
                     </div>
@@ -450,17 +452,6 @@ export default function Auth() {
                         Facebook
                       </Button>
                     </div>
-
-                    <p className="text-center text-xs text-muted-foreground">
-                      Bằng việc đăng ký, bạn đồng ý với{' '}
-                      <Link to="/terms" className="text-primary hover:underline">
-                        Điều khoản sử dụng
-                      </Link>{' '}
-                      và{' '}
-                      <Link to="/privacy" className="text-primary hover:underline">
-                        Chính sách bảo mật
-                      </Link>
-                    </p>
                   </form>
                 </TabsContent>
               </CardContent>
