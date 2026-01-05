@@ -1,7 +1,8 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
-import { Leaf, Menu, X, User, LogOut, TreeDeciduous, LayoutDashboard, Coins, Users, MessageCircle, UserPlus, PlayCircle, Sun, Moon } from 'lucide-react';
+import { Leaf, Menu, X, User, LogOut, LayoutDashboard, Coins, Users, MessageCircle, UserPlus, PlayCircle, Sun, Moon } from 'lucide-react';
+import greenEarthLogo from '@/assets/green-earth-logo.png';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -79,14 +80,12 @@ export function Header() {
       
       <div className="container relative flex h-16 items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 group">
-          <div className="relative">
-            <TreeDeciduous className="h-8 w-8 text-white drop-shadow-lg transition-transform duration-300 group-hover:scale-110" />
-            <Leaf className="absolute -top-1 -right-1 h-4 w-4 text-accent animate-leaf-float" />
-          </div>
-          <span className="font-display text-xl font-bold text-white drop-shadow-md">
-            Green Earth
-          </span>
+        <Link to="/" className="flex items-center group">
+          <img 
+            src={greenEarthLogo} 
+            alt="Green Earth" 
+            className="h-12 w-auto transition-transform duration-300 group-hover:scale-105"
+          />
         </Link>
 
         {/* Desktop Navigation */}

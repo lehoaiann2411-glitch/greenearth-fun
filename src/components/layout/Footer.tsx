@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { TreeDeciduous, Leaf, Mail, Phone, MapPin, Facebook, Youtube, Globe, Heart } from 'lucide-react';
+import { Leaf, Mail, Phone, MapPin, Facebook, Youtube, Globe, Heart } from 'lucide-react';
+import greenEarthLogo from '@/assets/green-earth-logo.png';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -34,14 +35,12 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="space-y-4">
-            <Link to="/" className="flex items-center gap-2 group">
-              <div className="relative">
-                <TreeDeciduous className="h-8 w-8 text-accent drop-shadow-lg" />
-                <Leaf className="absolute -top-1 -right-1 h-4 w-4 text-white/80 animate-leaf-float" />
-              </div>
-              <span className="font-display text-xl font-bold text-white">
-                Green Earth
-              </span>
+            <Link to="/" className="flex items-center group">
+              <img 
+                src={greenEarthLogo} 
+                alt="Green Earth" 
+                className="h-14 w-auto"
+              />
             </Link>
             <p className="text-white/70 text-sm leading-relaxed">
               Nền tảng kết nối cộng đồng vì môi trường xanh. 
