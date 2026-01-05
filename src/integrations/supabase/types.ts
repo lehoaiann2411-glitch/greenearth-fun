@@ -453,6 +453,63 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          actor_id: string | null
+          camly_amount: number | null
+          created_at: string | null
+          id: string
+          is_read: boolean | null
+          message: string | null
+          reference_id: string | null
+          reference_type: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          actor_id?: string | null
+          camly_amount?: number | null
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message?: string | null
+          reference_id?: string | null
+          reference_type?: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          actor_id?: string | null
+          camly_amount?: number | null
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message?: string | null
+          reference_id?: string | null
+          reference_type?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_actor_id_fkey"
+            columns: ["actor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organizations: {
         Row: {
           created_at: string
@@ -609,8 +666,13 @@ export type Database = {
           id: string
           image_url: string | null
           likes_count: number
+          location_name: string | null
+          media_urls: string[] | null
+          post_type: string | null
+          shares_count: number | null
           updated_at: string
           user_id: string
+          visibility: string | null
         }
         Insert: {
           campaign_id?: string | null
@@ -620,8 +682,13 @@ export type Database = {
           id?: string
           image_url?: string | null
           likes_count?: number
+          location_name?: string | null
+          media_urls?: string[] | null
+          post_type?: string | null
+          shares_count?: number | null
           updated_at?: string
           user_id: string
+          visibility?: string | null
         }
         Update: {
           campaign_id?: string | null
@@ -631,8 +698,13 @@ export type Database = {
           id?: string
           image_url?: string | null
           likes_count?: number
+          location_name?: string | null
+          media_urls?: string[] | null
+          post_type?: string | null
+          shares_count?: number | null
           updated_at?: string
           user_id?: string
+          visibility?: string | null
         }
         Relationships: [
           {
@@ -653,6 +725,8 @@ export type Database = {
           campaigns_joined: number
           created_at: string
           current_streak: number | null
+          followers_count: number | null
+          following_count: number | null
           full_name: string | null
           green_points: number
           green_reputation: number | null
@@ -675,6 +749,8 @@ export type Database = {
           campaigns_joined?: number
           created_at?: string
           current_streak?: number | null
+          followers_count?: number | null
+          following_count?: number | null
           full_name?: string | null
           green_points?: number
           green_reputation?: number | null
@@ -697,6 +773,8 @@ export type Database = {
           campaigns_joined?: number
           created_at?: string
           current_streak?: number | null
+          followers_count?: number | null
+          following_count?: number | null
           full_name?: string | null
           green_points?: number
           green_reputation?: number | null
@@ -712,6 +790,83 @@ export type Database = {
           wallet_address?: string | null
         }
         Relationships: []
+      }
+      stories: {
+        Row: {
+          caption: string | null
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          media_type: string | null
+          media_url: string
+          user_id: string
+          views_count: number | null
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          media_type?: string | null
+          media_url: string
+          user_id: string
+          views_count?: number | null
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          media_type?: string | null
+          media_url?: string
+          user_id?: string
+          views_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stories_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      story_views: {
+        Row: {
+          id: string
+          story_id: string
+          viewed_at: string | null
+          viewer_id: string
+        }
+        Insert: {
+          id?: string
+          story_id: string
+          viewed_at?: string | null
+          viewer_id: string
+        }
+        Update: {
+          id?: string
+          story_id?: string
+          viewed_at?: string | null
+          viewer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "story_views_story_id_fkey"
+            columns: ["story_id"]
+            isOneToOne: false
+            referencedRelation: "stories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "story_views_viewer_id_fkey"
+            columns: ["viewer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_badges: {
         Row: {
@@ -743,6 +898,42 @@ export type Database = {
           {
             foreignKeyName: "user_badges_user_id_fkey"
             columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_follows: {
+        Row: {
+          created_at: string | null
+          follower_id: string
+          following_id: string
+          id: string
+        }
+        Insert: {
+          created_at?: string | null
+          follower_id: string
+          following_id: string
+          id?: string
+        }
+        Update: {
+          created_at?: string | null
+          follower_id?: string
+          following_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_follows_follower_id_fkey"
+            columns: ["follower_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_follows_following_id_fkey"
+            columns: ["following_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
