@@ -19,6 +19,7 @@ import CampaignManage from "./pages/CampaignManage";
 import Community from "./pages/Community";
 import ImpactDashboard from "./pages/ImpactDashboard";
 import Rewards from "./pages/Rewards";
+import Feed from "./pages/Feed";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ const App = () => (
           <Web3Provider>
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/feed" element={<Feed />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/profile" element={<Profile />} />

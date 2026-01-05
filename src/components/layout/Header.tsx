@@ -14,6 +14,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ConnectWallet } from '@/components/web3/ConnectWallet';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { NotificationBell } from '@/components/notifications/NotificationBell';
 
 export function Header() {
   const { t } = useTranslation();
@@ -27,6 +28,7 @@ export function Header() {
   };
 
   const navLinks = [
+    { href: '/feed', label: 'Feed' },
     { href: '/campaigns', label: t('nav.campaigns') },
     { href: '/community', label: t('nav.community') },
     { href: '/impact', label: t('nav.impact') },
@@ -71,7 +73,9 @@ export function Header() {
           <LanguageSwitcher />
           <ConnectWallet />
           {user ? (
-            <DropdownMenu>
+            <div className="flex items-center gap-2">
+              <NotificationBell />
+              <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button 
                   variant="ghost" 
@@ -117,6 +121,7 @@ export function Header() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+            </div>
           ) : (
             <>
               <Button 
