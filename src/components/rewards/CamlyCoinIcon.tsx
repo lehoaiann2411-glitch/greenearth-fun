@@ -122,3 +122,18 @@ export function CoinSparkles({ active = false }: { active?: boolean }) {
     </div>
   );
 }
+
+// Inline coin icon for text (replaces 🪙 emoji)
+interface CamlyCoinInlineProps {
+  className?: string;
+}
+
+export function CamlyCoinInline({ className = '' }: CamlyCoinInlineProps) {
+  return (
+    <img 
+      src={camlyCoinImage} 
+      alt="Camly" 
+      className={`inline-block w-4 h-4 align-text-bottom ${className}`}
+    />
+  );
+}

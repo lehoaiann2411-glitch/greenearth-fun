@@ -213,7 +213,7 @@ export function useAddReaction() {
 
       if (result.rewarded) {
         toast({
-          title: `+${result.amount} 🪙`,
+          title: `+${result.amount} Camly`,
           description: 'Camly Coin earned!',
         });
       }

@@ -38,7 +38,6 @@ export function useRewardNotification() {
     // Show toast with coin emoji
     toast.success(message, {
       description,
-      icon: '🪙',
       duration: 4000,
     });
 

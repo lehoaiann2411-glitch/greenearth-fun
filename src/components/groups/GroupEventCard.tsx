@@ -9,6 +9,7 @@ import { GroupEvent, useRSVPEvent, useCancelRSVP } from '@/hooks/useGroupEvents'
 import { useAuth } from '@/contexts/AuthContext';
 import { CAMLY_REWARDS } from '@/lib/camlyCoin';
 import { motion } from 'framer-motion';
+import { CamlyCoinInline } from '@/components/rewards/CamlyCoinIcon';
 
 interface GroupEventCardProps {
   event: GroupEvent;
@@ -71,9 +72,9 @@ export function GroupEventCard({ event, groupId }: GroupEventCardProps) {
 
           {/* 50+ RSVP Badge */}
           {is50Plus && (
-            <Badge className="absolute top-3 right-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white">
-              <Coins className="h-3 w-3 mr-1" />
-              +{CAMLY_REWARDS.GROUP_EVENT_50_RSVP.toLocaleString()} 🪙
+            <Badge className="absolute top-3 right-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white flex items-center gap-1">
+              <Coins className="h-3 w-3" />
+              +{CAMLY_REWARDS.GROUP_EVENT_50_RSVP.toLocaleString()} <CamlyCoinInline />
             </Badge>
           )}
         </div>

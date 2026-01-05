@@ -14,6 +14,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { CAMLY_REWARDS } from '@/lib/camlyCoin';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { CamlyCoinInline } from '@/components/rewards/CamlyCoinIcon';
 
 export default function GroupCreate() {
   const navigate = useNavigate();
@@ -89,8 +90,8 @@ export default function GroupCreate() {
             <CardTitle className="text-2xl flex items-center gap-2">
               🌳 Tạo nhóm mới
             </CardTitle>
-            <p className="text-muted-foreground">
-              Tạo cộng đồng và nhận +{CAMLY_REWARDS.GROUP_CREATE.toLocaleString()} 🪙
+            <p className="text-muted-foreground flex items-center gap-1">
+              Tạo cộng đồng và nhận +{CAMLY_REWARDS.GROUP_CREATE.toLocaleString()} <CamlyCoinInline />
             </p>
           </CardHeader>
 
@@ -256,7 +257,7 @@ export default function GroupCreate() {
                 ) : (
                   <Coins className="h-4 w-4 mr-2" />
                 )}
-                Tạo nhóm (+{CAMLY_REWARDS.GROUP_CREATE.toLocaleString()} 🪙)
+                Tạo nhóm (+{CAMLY_REWARDS.GROUP_CREATE.toLocaleString()} <CamlyCoinInline />)
               </Button>
             </form>
           </CardContent>
