@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
 import { Layout } from '@/components/layout/Layout';
@@ -15,6 +16,7 @@ import { Card } from '@/components/ui/card';
 type FeedFilter = 'all' | 'following' | 'popular' | 'campaigns';
 
 export default function Feed() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [filter, setFilter] = useState<FeedFilter>('all');
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useFeed(filter);
@@ -84,11 +86,11 @@ export default function Feed() {
             ) : allPosts.length === 0 ? (
               <Card className="p-8 text-center bg-white dark:bg-gray-900 shadow-md border-white/50 dark:border-gray-700">
                 <div className="text-4xl mb-4">🌱</div>
-                <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">No posts yet</h3>
+                <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">{t('feed.noPostsYet')}</h3>
                 <p className="text-gray-600 dark:text-gray-300">
                   {filter === 'following' 
-                    ? 'Follow some green warriors to see their posts here!'
-                    : 'Be the first to share your eco-journey!'}
+                    ? t('feed.followToSee')
+                    : t('feed.beFirst')}
                 </p>
               </Card>
             ) : (

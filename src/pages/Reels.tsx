@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ChevronUp, X } from 'lucide-react';
@@ -7,6 +8,7 @@ import { ReelCreateButton } from '@/components/reels/ReelCreateButton';
 import { useReelsFeed, REEL_REWARDS } from '@/hooks/useReels';
 import { CamlyCoinIcon } from '@/components/rewards/CamlyCoinIcon';
 export default function Reels() {
+  const { t } = useTranslation();
   const { reelId } = useParams();
   const navigate = useNavigate();
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -86,7 +88,7 @@ export default function Reels() {
                 : 'text-white/50'
             }`}
           >
-            For You
+            {t('reels.forYou')}
             {activeTab === 'for-you' && (
               <motion.div 
                 layoutId="activeTab"
@@ -103,7 +105,7 @@ export default function Reels() {
                 : 'text-white/50'
             }`}
           >
-            Following
+            {t('reels.following')}
             {activeTab === 'following' && (
               <motion.div 
                 layoutId="activeTab"
@@ -123,12 +125,12 @@ export default function Reels() {
         {isLoading ? (
           <div className="h-full w-full flex items-center justify-center">
             <div className="text-center">
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                className="w-12 h-12 border-3 border-emerald-500 border-t-transparent rounded-full mx-auto mb-4"
-              />
-              <p className="text-white/70">Loading reels...</p>
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                  className="w-12 h-12 border-3 border-emerald-500 border-t-transparent rounded-full mx-auto mb-4"
+                />
+                <p className="text-white/70">{t('reels.loading')}</p>
             </div>
           </div>
         ) : reels.length > 0 ? (
@@ -147,13 +149,13 @@ export default function Reels() {
               >
                 🌱
               </motion.div>
-              <h2 className="text-white text-2xl font-bold mb-3">No Reels Yet</h2>
+              <h2 className="text-white text-2xl font-bold mb-3">{t('reels.noReels')}</h2>
               <p className="text-white/60 mb-6 max-w-xs mx-auto">
-                Be the first to share your green journey with the community!
+                {t('reels.beFirstShare')}
               </p>
               <div className="flex items-center justify-center gap-2 text-yellow-400 text-sm bg-yellow-500/10 rounded-full px-4 py-2 w-fit mx-auto">
                 <CamlyCoinIcon size="sm" />
-                <span>+{REEL_REWARDS.CREATE.toLocaleString()} for posting</span>
+                <span>+{REEL_REWARDS.CREATE.toLocaleString()} {t('reels.forPosting')}</span>
               </div>
             </div>
           </div>
@@ -188,7 +190,7 @@ export default function Reels() {
               className="flex flex-col items-center text-white/60 text-xs"
             >
               <ChevronUp className="h-5 w-5" />
-              <span>Swipe up</span>
+              <span>{t('reels.swipeUp')}</span>
             </motion.div>
           </motion.div>
         )}

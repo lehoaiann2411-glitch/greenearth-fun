@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Layout } from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -14,6 +15,7 @@ import { CAMLY_REWARDS } from '@/lib/camlyCoin';
 import { CamlyCoinInline } from '@/components/rewards/CamlyCoinIcon';
 
 export default function Groups() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('discover');
   const [filters, setFilters] = useState<GroupFiltersType>({
@@ -32,10 +34,10 @@ export default function Groups() {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-xl p-4 shadow-md border border-white/50 dark:border-gray-700">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2 drop-shadow-sm">
-              🌍 Cộng đồng
+              🌍 {t('groups.title')}
             </h1>
             <p className="text-gray-700 dark:text-gray-300 mt-1 font-medium">
-              Tham gia các nhóm môi trường và kiếm Camly Coin
+              {t('groups.description')}
             </p>
           </div>
           
@@ -43,7 +45,7 @@ export default function Groups() {
             <Button asChild className="bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-md">
               <Link to="/groups/create" className="inline-flex items-center">
                 <Plus className="h-4 w-4 mr-2" />
-                Tạo nhóm (+{CAMLY_REWARDS.GROUP_CREATE.toLocaleString()} <CamlyCoinInline />)
+                {t('groups.createGroup')} (+{CAMLY_REWARDS.GROUP_CREATE.toLocaleString()} <CamlyCoinInline />)
               </Link>
             </Button>
           )}
@@ -54,11 +56,11 @@ export default function Groups() {
           <TabsList className="grid w-full grid-cols-3 bg-white dark:bg-gray-900 shadow-md border border-white/50 dark:border-gray-700">
             <TabsTrigger value="discover" className="flex items-center gap-2">
               <Compass className="h-4 w-4" />
-              Khám phá
+              {t('groups.discover')}
             </TabsTrigger>
             <TabsTrigger value="my-groups" className="flex items-center gap-2">
               <Users className="h-4 w-4" />
-              Nhóm của tôi
+              {t('groups.myGroups')}
               {myGroups && myGroups.length > 0 && (
                 <span className="ml-1 px-2 py-0.5 text-xs bg-primary/20 text-primary rounded-full">
                   {myGroups.length}
@@ -67,7 +69,7 @@ export default function Groups() {
             </TabsTrigger>
             <TabsTrigger value="invites" className="flex items-center gap-2">
               <Mail className="h-4 w-4" />
-              Lời mời
+              {t('groups.invites')}
             </TabsTrigger>
           </TabsList>
 
@@ -92,8 +94,8 @@ export default function Groups() {
             <div>
               <h2 className="text-lg font-bold mb-4 bg-white dark:bg-gray-900 rounded-lg px-4 py-2 inline-block shadow-md border border-white/50 dark:border-gray-700 text-gray-900 dark:text-white">
                 {filters.search || filters.category !== 'all' || filters.location
-                  ? 'Kết quả tìm kiếm'
-                  : 'Tất cả nhóm'}
+                  ? t('groups.searchResults')
+                  : t('groups.allGroups')}
               </h2>
               
               {isLoadingAll ? (
@@ -112,16 +114,16 @@ export default function Groups() {
                 <div className="text-center py-12">
                   <Users className="h-12 w-12 mx-auto text-muted-foreground/50 mb-4" />
                   <h3 className="text-lg font-medium text-foreground mb-2">
-                    Không tìm thấy nhóm nào
+                    {t('groups.noGroups')}
                   </h3>
                   <p className="text-muted-foreground mb-4">
-                    Hãy thử thay đổi bộ lọc hoặc tạo nhóm mới
+                    {t('groups.tryFilters')}
                   </p>
                   {user && (
                     <Button asChild>
                       <Link to="/groups/create">
                         <Plus className="h-4 w-4 mr-2" />
-                        Tạo nhóm mới
+                        {t('groups.createNew')}
                       </Link>
                     </Button>
                   )}
@@ -136,10 +138,10 @@ export default function Groups() {
               <div className="text-center py-12">
                 <Users className="h-12 w-12 mx-auto text-muted-foreground/50 mb-4" />
                 <h3 className="text-lg font-medium text-foreground mb-2">
-                  Đăng nhập để xem nhóm của bạn
+                  {t('groups.loginToSee')}
                 </h3>
                 <Button asChild>
-                  <Link to="/auth">Đăng nhập</Link>
+                  <Link to="/auth">{t('nav.login')}</Link>
                 </Button>
               </div>
             ) : isLoadingMy ? (
@@ -158,13 +160,13 @@ export default function Groups() {
               <div className="text-center py-12">
                 <Users className="h-12 w-12 mx-auto text-muted-foreground/50 mb-4" />
                 <h3 className="text-lg font-medium text-foreground mb-2">
-                  Bạn chưa tham gia nhóm nào
+                  {t('groups.notJoined')}
                 </h3>
                 <p className="text-muted-foreground mb-4">
-                  Khám phá và tham gia các nhóm để kết nối với cộng đồng
+                  {t('groups.exploreConnect')}
                 </p>
                 <Button onClick={() => setActiveTab('discover')}>
-                  Khám phá nhóm
+                  {t('groups.exploreGroups')}
                 </Button>
               </div>
             )}
@@ -175,10 +177,10 @@ export default function Groups() {
             <div className="text-center py-12">
               <Mail className="h-12 w-12 mx-auto text-muted-foreground/50 mb-4" />
               <h3 className="text-lg font-medium text-foreground mb-2">
-                Không có lời mời nào
+                {t('groups.noInvites')}
               </h3>
               <p className="text-muted-foreground">
-                Khi có người mời bạn tham gia nhóm, lời mời sẽ xuất hiện ở đây
+                {t('groups.inviteDescription')}
               </p>
             </div>
           </TabsContent>
