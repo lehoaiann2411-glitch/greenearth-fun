@@ -396,63 +396,6 @@ export type Database = {
           },
         ]
       }
-      green_nfts: {
-        Row: {
-          certificate_number: string | null
-          co2_absorbed: number | null
-          contract_address: string | null
-          created_at: string
-          id: string
-          image_url: string | null
-          latitude: number | null
-          location: string | null
-          longitude: number | null
-          metadata_uri: string | null
-          planted_at: string
-          token_id: string | null
-          transaction_hash: string | null
-          tree_type: string
-          user_id: string
-          verified: boolean
-        }
-        Insert: {
-          certificate_number?: string | null
-          co2_absorbed?: number | null
-          contract_address?: string | null
-          created_at?: string
-          id?: string
-          image_url?: string | null
-          latitude?: number | null
-          location?: string | null
-          longitude?: number | null
-          metadata_uri?: string | null
-          planted_at?: string
-          token_id?: string | null
-          transaction_hash?: string | null
-          tree_type: string
-          user_id: string
-          verified?: boolean
-        }
-        Update: {
-          certificate_number?: string | null
-          co2_absorbed?: number | null
-          contract_address?: string | null
-          created_at?: string
-          id?: string
-          image_url?: string | null
-          latitude?: number | null
-          location?: string | null
-          longitude?: number | null
-          metadata_uri?: string | null
-          planted_at?: string
-          token_id?: string | null
-          transaction_hash?: string | null
-          tree_type?: string
-          user_id?: string
-          verified?: boolean
-        }
-        Relationships: []
-      }
       notifications: {
         Row: {
           actor_id: string | null
