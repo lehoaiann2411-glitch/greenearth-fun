@@ -44,7 +44,10 @@ export function ClaimModal({ open, onOpenChange, greenPoints, walletAddress }: C
   const [address, setAddress] = useState(walletAddress || '');
   const [result, setResult] = useState<{ txHash: string; camlyAmount: number } | null>(null);
 
-  const { points: maxClaimable, camly: maxCamly } = getClaimableAmount(greenPoints);
+  // Defensive: sometimes props can be undefined during initial renders / cache hydration
+  const safeGreenPoints = Number.isFinite(greenPoints) ? greenPoints : 0;
+
+  const { points: maxClaimable, camly: maxCamly } = getClaimableAmount(safeGreenPoints);
   const claimableCamly = toCamlyCoin(pointsToClaim);
 
   const handleClaim = async () => {
@@ -137,7 +140,7 @@ export function ClaimModal({ open, onOpenChange, greenPoints, walletAddress }: C
                   </Button>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Available: {greenPoints.toLocaleString()} GP (max {maxClaimable.toLocaleString()} claimable)
+                  Available: {safeGreenPoints.toLocaleString()} GP (max {maxClaimable.toLocaleString()} claimable)
                 </p>
               </div>
 
