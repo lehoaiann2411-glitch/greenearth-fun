@@ -1,17 +1,21 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useParams } from 'react-router-dom';
-import { ChevronUp } from 'lucide-react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { ChevronUp, X } from 'lucide-react';
 import { ReelCard } from '@/components/reels/ReelCard';
 import { ReelCreateButton } from '@/components/reels/ReelCreateButton';
 import { useReelsFeed, REEL_REWARDS } from '@/hooks/useReels';
 import { CamlyCoinIcon } from '@/components/rewards/CamlyCoinIcon';
-
 export default function Reels() {
   const { reelId } = useParams();
+  const navigate = useNavigate();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [activeTab, setActiveTab] = useState<'for-you' | 'following'>('for-you');
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const handleClose = () => {
+    navigate(-1);
+  };
 
   const { 
     data, 
@@ -63,6 +67,14 @@ export default function Reels() {
 
   return (
     <div className="fixed inset-0 bg-black">
+      {/* Close Button - Top Left */}
+      <button
+        onClick={handleClose}
+        className="absolute top-4 left-4 z-40 w-10 h-10 bg-black/40 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/60 transition-colors"
+      >
+        <X className="h-6 w-6" />
+      </button>
+
       {/* Top Tabs - Small Pills */}
       <div className="absolute top-0 left-0 right-0 z-30 flex justify-center pt-4 pointer-events-none">
         <div className="flex items-center gap-4 pointer-events-auto">
