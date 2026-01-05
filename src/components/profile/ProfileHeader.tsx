@@ -39,7 +39,7 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
   const coverInputRef = useRef<HTMLInputElement>(null);
   const [isUploadingCover, setIsUploadingCover] = useState(false);
 
-  const currentRank = getRankByPoints(profile.green_points);
+  const currentRank = getRankByPoints(profile.green_points ?? 0);
   const RankIcon = currentRank.icon;
 
   const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -216,15 +216,15 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
               <span className="text-muted-foreground ml-1">Friends</span>
             </Link>
             <span>
-              <span className="font-bold">{profile.trees_planted}</span>
+              <span className="font-bold">{profile.trees_planted ?? 0}</span>
               <span className="text-muted-foreground ml-1">Trees</span>
             </span>
             <span>
-              <span className="font-bold">{profile.campaigns_joined}</span>
+              <span className="font-bold">{profile.campaigns_joined ?? 0}</span>
               <span className="text-muted-foreground ml-1">Campaigns</span>
             </span>
             <span>
-              <span className="font-bold">{profile.green_points.toLocaleString()}</span>
+              <span className="font-bold">{(profile.green_points ?? 0).toLocaleString()}</span>
               <span className="text-muted-foreground ml-1">Points</span>
             </span>
           </div>

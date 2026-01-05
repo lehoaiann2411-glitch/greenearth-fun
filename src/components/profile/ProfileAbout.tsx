@@ -30,32 +30,35 @@ interface ProfileAboutProps {
 }
 
 export function ProfileAbout({ profile }: ProfileAboutProps) {
-  const currentRank = getRankByPoints(profile.green_points);
+  const greenPoints = profile.green_points ?? 0;
+  const treesPlanted = profile.trees_planted ?? 0;
+  const campaignsJoined = profile.campaigns_joined ?? 0;
+  const currentRank = getRankByPoints(greenPoints);
   const RankIcon = currentRank.icon;
 
   const achievements = [
     { 
       name: 'Pioneer', 
       icon: Award, 
-      earned: profile.campaigns_joined >= 1,
+      earned: campaignsJoined >= 1,
       description: 'Joined first campaign'
     },
     { 
       name: 'Tree Guardian', 
       icon: TreePine, 
-      earned: profile.trees_planted >= 5,
+      earned: treesPlanted >= 5,
       description: 'Planted 5+ trees'
     },
     { 
       name: 'Green Warrior', 
       icon: Target, 
-      earned: profile.green_points >= 500,
+      earned: greenPoints >= 500,
       description: 'Earned 500+ points'
     },
     { 
       name: 'Eco Leader', 
       icon: Leaf, 
-      earned: profile.green_points >= 2000,
+      earned: greenPoints >= 2000,
       description: 'Earned 2000+ points'
     },
   ];
@@ -152,7 +155,7 @@ export function ProfileAbout({ profile }: ProfileAboutProps) {
             </div>
             <div>
               <p className="font-medium">{currentRank.name}</p>
-              <p className="text-sm text-muted-foreground">{profile.green_points.toLocaleString()} Green Points</p>
+              <p className="text-sm text-muted-foreground">{greenPoints.toLocaleString()} Green Points</p>
             </div>
           </div>
 
@@ -160,12 +163,12 @@ export function ProfileAbout({ profile }: ProfileAboutProps) {
           <div className="grid grid-cols-2 gap-4">
             <div className="text-center p-4 rounded-lg bg-green-50 dark:bg-green-950">
               <TreePine className="h-6 w-6 mx-auto text-green-600" />
-              <p className="mt-2 text-2xl font-bold text-green-600">{profile.trees_planted}</p>
+              <p className="mt-2 text-2xl font-bold text-green-600">{treesPlanted}</p>
               <p className="text-sm text-muted-foreground">Trees Planted</p>
             </div>
             <div className="text-center p-4 rounded-lg bg-blue-50 dark:bg-blue-950">
               <Target className="h-6 w-6 mx-auto text-blue-600" />
-              <p className="mt-2 text-2xl font-bold text-blue-600">{profile.campaigns_joined}</p>
+              <p className="mt-2 text-2xl font-bold text-blue-600">{campaignsJoined}</p>
               <p className="text-sm text-muted-foreground">Campaigns</p>
             </div>
           </div>
