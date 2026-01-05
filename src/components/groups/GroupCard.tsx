@@ -44,7 +44,7 @@ export function GroupCard({ group, showJoinButton = true }: GroupCardProps) {
       transition={{ duration: 0.3 }}
     >
       <Link to={`/groups/${group.id}`}>
-        <Card className="group overflow-hidden hover:shadow-lg transition-all duration-300 border-white/20 bg-white/80 backdrop-blur-sm hover:bg-white cursor-pointer">
+        <Card className="group overflow-hidden hover:shadow-lg transition-all duration-300 border-border bg-background/95 backdrop-blur-sm hover:bg-background cursor-pointer shadow-md">
           {/* Cover Image */}
           <div className="relative h-32 bg-gradient-to-br from-primary/30 via-accent/20 to-primary/10 overflow-hidden">
             {group.cover_image_url ? (

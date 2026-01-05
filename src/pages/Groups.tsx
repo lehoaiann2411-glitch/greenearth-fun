@@ -29,18 +29,18 @@ export default function Groups() {
     <Layout>
       <div className="container py-6 max-w-6xl">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 bg-background/80 backdrop-blur-md rounded-xl p-4 shadow-sm">
           <div>
-            <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
+            <h1 className="text-3xl font-bold text-foreground flex items-center gap-2 drop-shadow-sm">
               🌍 Cộng đồng
             </h1>
-            <p className="text-muted-foreground mt-1">
+            <p className="text-foreground/80 mt-1 font-medium">
               Tham gia các nhóm môi trường và kiếm Camly Coin
             </p>
           </div>
           
           {user && (
-            <Button asChild className="bg-gradient-to-r from-primary to-accent hover:opacity-90">
+            <Button asChild className="bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-md">
               <Link to="/groups/create" className="inline-flex items-center">
                 <Plus className="h-4 w-4 mr-2" />
                 Tạo nhóm (+{CAMLY_REWARDS.GROUP_CREATE.toLocaleString()} <CamlyCoinInline />)
@@ -51,7 +51,7 @@ export default function Groups() {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 bg-white/80 backdrop-blur-sm">
+          <TabsList className="grid w-full grid-cols-3 bg-background/90 backdrop-blur-md shadow-sm">
             <TabsTrigger value="discover" className="flex items-center gap-2">
               <Compass className="h-4 w-4" />
               Khám phá
@@ -90,7 +90,7 @@ export default function Groups() {
 
             {/* All Groups */}
             <div>
-              <h2 className="text-lg font-semibold mb-4">
+              <h2 className="text-lg font-semibold mb-4 bg-background/80 backdrop-blur-sm rounded-lg px-3 py-2 inline-block shadow-sm">
                 {filters.search || filters.category !== 'all' || filters.location
                   ? 'Kết quả tìm kiếm'
                   : 'Tất cả nhóm'}
