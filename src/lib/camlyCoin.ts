@@ -15,9 +15,13 @@ export const CAMLY_REWARDS = {
   CREATE_POLL: 500,            // Create a poll
   VOTE_POLL: 50,               // Vote in poll
   
-  // Story Actions
-  CREATE_STORY: 1000,          // Create story
+  // Story Actions - Enhanced
+  CREATE_STORY: 2000,          // Create story (+2,000)
   VIEW_STORY: 50,              // View story
+  VIEW_10_STORIES_BONUS: 1000, // Bonus for viewing 10 stories/day
+  STORY_REPLY: 200,            // Reply to a story
+  STORY_GREEN_REPLY: 500,      // Green message reply bonus
+  STORY_REACTION: 50,          // React to a story
   
   // Comment Actions
   CREATE_COMMENT: 300,         // Comment on post
@@ -50,13 +54,52 @@ export const CAMLY_REWARDS = {
 
 // Daily limits to prevent spam
 export const DAILY_LIMITS = {
-  SHARES: 10,       // Max 10 shares/day
-  LIKES: 50,        // Max 50 likes/day (legacy)
-  REACTIONS: 50,    // Max 50 reactions/day
-  POLL_VOTES: 20,   // Max 20 poll votes/day
-  COMMENTS: 30,     // Max 30 comments/day
-  STORY_VIEWS: 100, // Max 100 story views/day
+  SHARES: 10,           // Max 10 shares/day
+  LIKES: 50,            // Max 50 likes/day (legacy)
+  REACTIONS: 50,        // Max 50 reactions/day
+  POLL_VOTES: 20,       // Max 20 poll votes/day
+  COMMENTS: 30,         // Max 30 comments/day
+  STORY_VIEWS: 100,     // Max 100 story views/day
+  STORY_REPLIES: 20,    // Max 20 story replies/day
+  STORY_REACTIONS: 50,  // Max 50 story reactions/day
 };
+
+// Green keywords for bonus story replies
+export const GREEN_KEYWORDS = [
+  'tree', 'plant', 'eco', 'green', 'sustainable', 'recycle',
+  'nature', 'earth', 'environment', 'climate', 'organic', 'carbon',
+  'forest', 'leaf', 'garden', 'compost', 'renewable', 'solar',
+  // Vietnamese keywords
+  'cây', 'xanh', 'môi trường', 'tái chế', 'thiên nhiên', 'trồng',
+  'rừng', 'lá', 'vườn', 'năng lượng', 'bền vững',
+];
+
+// Check if a message contains green keywords
+export function isGreenMessage(message: string): boolean {
+  const lowerMessage = message.toLowerCase();
+  return GREEN_KEYWORDS.some(keyword => lowerMessage.includes(keyword.toLowerCase()));
+}
+
+// Story reaction types
+export const STORY_REACTIONS = ['🍃', '❤️', '🔥', '👏', '😮', '🙌'] as const;
+
+// Story stickers
+export const STORY_STICKERS = [
+  // Emojis
+  { id: 'tree', emoji: '🌳', label: 'Tree' },
+  { id: 'leaf', emoji: '🍃', label: 'Leaf' },
+  { id: 'earth', emoji: '🌍', label: 'Earth' },
+  { id: 'plant', emoji: '🌱', label: 'Plant' },
+  { id: 'flower', emoji: '🌸', label: 'Flower' },
+  { id: 'sun', emoji: '☀️', label: 'Sun' },
+  { id: 'rainbow', emoji: '🌈', label: 'Rainbow' },
+  { id: 'recycle', emoji: '♻️', label: 'Recycle' },
+  // Badges
+  { id: 'plant_today', emoji: '🌱', label: 'Plant Today', isBadge: true, text: 'PLANT TODAY' },
+  { id: 'green_life', emoji: '💚', label: 'Green Life', isBadge: true, text: 'GREEN LIFE' },
+  { id: 'eco_warrior', emoji: '🦸', label: 'Eco Warrior', isBadge: true, text: 'ECO WARRIOR' },
+  { id: 'save_earth', emoji: '🌍', label: 'Save Earth', isBadge: true, text: 'SAVE EARTH' },
+] as const;
 
 // Action type keys for tracking
 export const ACTION_TYPES = {
@@ -70,6 +113,10 @@ export const ACTION_TYPES = {
   VOTE_POLL: 'vote_poll',
   CREATE_STORY: 'create_story',
   VIEW_STORY: 'view_story',
+  VIEW_10_STORIES_BONUS: 'view_10_stories_bonus',
+  STORY_REPLY: 'story_reply',
+  STORY_GREEN_REPLY: 'story_green_reply',
+  STORY_REACTION: 'story_reaction',
   CREATE_COMMENT: 'create_comment',
   REPLY_COMMENT: 'reply_comment',
   DAILY_CHECK_IN: 'daily_check_in',
