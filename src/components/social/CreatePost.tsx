@@ -52,7 +52,7 @@ export function CreatePost() {
     await createPost.mutateAsync({
       content: content.trim(),
       imageFile: imageFile || undefined,
-      campaignId: campaignId || undefined,
+      campaignId: campaignId && campaignId !== 'none' ? campaignId : undefined,
     });
 
     // Reset form
@@ -137,7 +137,7 @@ export function CreatePost() {
                     <SelectValue placeholder="Gắn chiến dịch" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Không gắn</SelectItem>
+                    <SelectItem value="none">Không gắn</SelectItem>
                     {campaigns?.map((campaign) => (
                       <SelectItem key={campaign.id} value={campaign.id}>
                         {campaign.title}

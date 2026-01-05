@@ -121,7 +121,7 @@ export function CreatePostEnhanced() {
       await createPost.mutateAsync({
         content: content.trim(),
         imageFile: selectedImages[0], // For now, using first image
-        campaignId: selectedCampaign || undefined,
+        campaignId: selectedCampaign && selectedCampaign !== 'none' ? selectedCampaign : undefined,
       });
 
       toast.success(
@@ -334,7 +334,7 @@ export function CreatePostEnhanced() {
                   <SelectValue placeholder="🌳 Link to a campaign (optional)" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">No campaign</SelectItem>
+                  <SelectItem value="none">No campaign</SelectItem>
                   {activeCampaigns.map(campaign => (
                     <SelectItem key={campaign.id} value={campaign.id}>
                       {campaign.title}
