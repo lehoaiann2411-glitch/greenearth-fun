@@ -65,19 +65,19 @@ export default function Index() {
         <div className="container relative">
           <div className="max-w-3xl mx-auto text-center">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-sm font-medium mb-8 animate-fade-in-up">
-              <Sparkles className="h-4 w-4 text-accent" />
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/40 backdrop-blur-md border border-white/30 text-white text-sm font-semibold mb-8 animate-fade-in-up text-shadow-sm">
+              <Sparkles className="h-4 w-4 text-accent drop-shadow-md" />
               Nền tảng môi trường số #1 Việt Nam
             </div>
 
             {/* Heading */}
-            <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 animate-fade-in-up animation-delay-100 drop-shadow-lg">
+            <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 animate-fade-in-up animation-delay-100 text-shadow-lg">
               Cùng Nhau
-              <span className="block text-accent">Xanh Hóa Trái Đất</span>
+              <span className="block text-accent drop-shadow-[0_2px_8px_rgba(144,238,144,0.7)] text-shadow-md">Xanh Hóa Trái Đất</span>
             </h1>
 
             {/* Description */}
-            <p className="text-lg md:text-xl text-white/80 mb-10 max-w-2xl mx-auto animate-fade-in-up animation-delay-200">
+            <p className="text-lg md:text-xl text-white mb-10 max-w-2xl mx-auto animate-fade-in-up animation-delay-200 text-shadow font-medium">
               Tham gia cộng đồng hàng ngàn người yêu môi trường. 
               Mỗi hành động nhỏ của bạn đều được ghi nhận và tạo nên sự thay đổi lớn.
             </p>
@@ -97,11 +97,11 @@ export default function Index() {
               </Button>
               <Button 
                 size="lg" 
-                variant="outline"
                 asChild
-                className="border-white/30 text-white hover:bg-white/10 hover:text-white text-lg px-8 py-6"
+                className="btn-outline-visible text-lg px-8 py-6 hover:scale-105 transition-all duration-300"
               >
                 <Link to="/campaigns">
+                  <Globe className="h-5 w-5 mr-2" />
                   Khám phá chiến dịch
                 </Link>
               </Button>
