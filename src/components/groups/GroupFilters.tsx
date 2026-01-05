@@ -33,7 +33,7 @@ export function GroupFilters({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 bg-background/80 backdrop-blur-md rounded-xl p-4 shadow-sm">
       {/* Search Bar */}
       <div className="flex gap-2">
         <div className="relative flex-1">
@@ -42,7 +42,7 @@ export function GroupFilters({
             placeholder="Tìm kiếm nhóm..."
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="pl-10 bg-white/80 backdrop-blur-sm border-white/20"
+            className="pl-10 bg-background border-border shadow-sm"
           />
         </div>
         <Button
@@ -60,9 +60,9 @@ export function GroupFilters({
 
       {/* Filter Options */}
       {showFilters && (
-        <div className="flex flex-wrap gap-3 p-4 bg-white/60 backdrop-blur-sm rounded-lg border border-white/20">
+        <div className="flex flex-wrap gap-3 p-4 bg-background/90 backdrop-blur-sm rounded-lg border border-border shadow-sm">
           <Select value={category} onValueChange={onCategoryChange}>
-            <SelectTrigger className="w-[180px] bg-white">
+            <SelectTrigger className="w-[180px] bg-background border-border">
               <SelectValue placeholder="Danh mục" />
             </SelectTrigger>
             <SelectContent>
@@ -76,7 +76,7 @@ export function GroupFilters({
           </Select>
 
           <Select value={location} onValueChange={onLocationChange}>
-            <SelectTrigger className="w-[180px] bg-white">
+            <SelectTrigger className="w-[180px] bg-background border-border">
               <SelectValue placeholder="Địa điểm" />
             </SelectTrigger>
             <SelectContent>
@@ -106,10 +106,10 @@ export function GroupFilters({
             variant={category === cat.value ? 'default' : 'outline'}
             size="sm"
             onClick={() => onCategoryChange(cat.value)}
-            className={`flex-shrink-0 ${
+            className={`flex-shrink-0 shadow-sm ${
               category === cat.value
                 ? 'bg-gradient-to-r from-primary to-accent text-white'
-                : 'bg-white/80 hover:bg-white'
+                : 'bg-background hover:bg-muted border-border'
             }`}
           >
             {'emoji' in cat && <span className="mr-1">{cat.emoji}</span>}
