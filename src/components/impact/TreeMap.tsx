@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { TreePine, MapPin } from 'lucide-react';
@@ -19,6 +20,7 @@ const defaultIcon = L.icon({
 L.Marker.prototype.options.icon = defaultIcon;
 
 export function TreeMap() {
+  const { t } = useTranslation();
   const [mapReady, setMapReady] = useState(false);
 
   // Default center: Vietnam
@@ -34,10 +36,10 @@ export function TreeMap() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <MapPin className="h-5 w-5 text-primary" />
-          Bản đồ cây đã trồng
+          {t('impact.map.title')}
         </CardTitle>
         <CardDescription>
-          Xem vị trí cây được trồng từ các chiến dịch
+          {t('impact.map.description')}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -60,10 +62,10 @@ export function TreeMap() {
         <div className="flex flex-col items-center justify-center h-[200px] text-center">
           <TreePine className="h-12 w-12 text-muted-foreground mb-4" />
           <p className="text-muted-foreground">
-            Tham gia chiến dịch trồng cây để xem vị trí trên bản đồ
+            {t('impact.map.emptyMessage')}
           </p>
           <p className="text-sm text-muted-foreground mt-1">
-            Các vị trí sẽ được cập nhật từ dữ liệu chiến dịch
+            {t('impact.map.emptySubMessage')}
           </p>
         </div>
       </CardContent>

@@ -131,7 +131,7 @@ export function EarningsBreakdown() {
                 {formatCamly(getEstimate(profile))}
               </p>
               <p className="text-xs text-muted-foreground">
-                {getValue(profile)} {key === 'checkins' ? 'days' : key}
+                {getValue(profile)} {t(`rewards.${key}`)}
               </p>
             </motion.div>
           ))}

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { TreePine, Leaf, Users, Award, TrendingUp } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -15,37 +16,39 @@ interface GlobalStatsProps {
 }
 
 export function GlobalStats({ stats, isLoading }: GlobalStatsProps) {
+  const { t } = useTranslation();
+  
   const statCards = [
     {
-      title: 'Tổng cây đã trồng',
+      title: t('impact.totalTreesPlanted'),
       value: stats?.totalTrees.toLocaleString() || '0',
       icon: TreePine,
       color: 'text-green-600',
       bgColor: 'bg-green-500/10',
     },
     {
-      title: 'CO₂ hấp thụ/năm',
+      title: t('impact.co2AbsorbedYear'),
       value: stats ? formatCO2(stats.totalCO2) : '0 kg',
       icon: Leaf,
       color: 'text-emerald-600',
       bgColor: 'bg-emerald-500/10',
     },
     {
-      title: 'Diện tích rừng',
+      title: t('impact.forestArea'),
       value: stats ? formatArea(stats.totalForestArea) : '0 m²',
       icon: TrendingUp,
       color: 'text-teal-600',
       bgColor: 'bg-teal-500/10',
     },
     {
-      title: 'Thành viên',
+      title: t('impact.members'),
       value: stats?.totalUsers.toLocaleString() || '0',
       icon: Users,
       color: 'text-blue-600',
       bgColor: 'bg-blue-500/10',
     },
     {
-      title: 'Chiến dịch hoạt động',
+      title: t('impact.activeCampaigns'),
       value: stats?.totalCampaigns.toLocaleString() || '0',
       icon: Award,
       color: 'text-purple-600',
@@ -96,7 +99,7 @@ export function GlobalStats({ stats, isLoading }: GlobalStatsProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingUp className="h-5 w-5 text-primary" />
-            Tác động tích cực
+            {t('impact.positiveImpact')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -106,7 +109,7 @@ export function GlobalStats({ stats, isLoading }: GlobalStatsProps) {
                 {stats ? Math.round(stats.totalCO2 / 1000) : 0}
               </div>
               <div className="text-sm text-muted-foreground mt-1">
-                Tấn CO₂ được hấp thụ mỗi năm
+                {t('impact.tonsCo2Absorbed')}
               </div>
             </div>
             <div className="text-center p-4 rounded-lg bg-blue-500/10">
@@ -114,7 +117,7 @@ export function GlobalStats({ stats, isLoading }: GlobalStatsProps) {
                 {stats ? Math.round(stats.totalTrees * 0.1) : 0}
               </div>
               <div className="text-sm text-muted-foreground mt-1">
-                Loài động vật được bảo vệ
+                {t('impact.speciesProtected')}
               </div>
             </div>
             <div className="text-center p-4 rounded-lg bg-amber-500/10">
@@ -122,7 +125,7 @@ export function GlobalStats({ stats, isLoading }: GlobalStatsProps) {
                 {stats ? Math.round(stats.totalForestArea / 10000) : 0}
               </div>
               <div className="text-sm text-muted-foreground mt-1">
-                Hecta rừng được phục hồi
+                {t('impact.hectaresRestored')}
               </div>
             </div>
           </div>
