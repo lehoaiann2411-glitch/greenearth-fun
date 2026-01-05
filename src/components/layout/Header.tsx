@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
-import { Leaf, Menu, X, User, LogOut, Settings } from 'lucide-react';
+import { Leaf, Menu, X, User, LogOut, Settings, TreeDeciduous, LayoutDashboard } from 'lucide-react';
 import { useState } from 'react';
 import {
   DropdownMenu,
@@ -26,29 +26,33 @@ export function Header() {
     { href: '/campaigns', label: 'Chiến dịch' },
     { href: '/community', label: 'Cộng đồng' },
     { href: '/leaderboard', label: 'Bảng xếp hạng' },
-    { href: '/about', label: 'Về chúng tôi' },
+    { href: '/nft-gallery', label: 'Green NFT' },
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md">
-      <div className="container flex h-16 items-center justify-between">
+    <header className="sticky top-0 z-50 w-full">
+      {/* Glass morphism background */}
+      <div className="absolute inset-0 bg-white/10 backdrop-blur-lg border-b border-white/20" />
+      
+      <div className="container relative flex h-16 items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 transition-transform hover:scale-105">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full gradient-forest">
-            <Leaf className="h-5 w-5 text-primary-foreground" />
+        <Link to="/" className="flex items-center gap-2 group">
+          <div className="relative">
+            <TreeDeciduous className="h-8 w-8 text-white drop-shadow-lg transition-transform duration-300 group-hover:scale-110" />
+            <Leaf className="absolute -top-1 -right-1 h-4 w-4 text-accent animate-leaf-float" />
           </div>
-          <span className="font-display text-xl font-bold text-gradient-forest">
+          <span className="font-display text-xl font-bold text-white drop-shadow-md">
             Green Earth
           </span>
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden items-center gap-6 md:flex">
+        <nav className="hidden items-center gap-1 md:flex">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               to={link.href}
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+              className="relative px-4 py-2 text-sm font-medium transition-all duration-300 rounded-lg text-white/80 hover:text-white hover:bg-white/10"
             >
               {link.label}
             </Link>
@@ -60,8 +64,11 @@ export function Header() {
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                  <Avatar className="h-10 w-10 border-2 border-primary/20">
+                <Button 
+                  variant="ghost" 
+                  className="relative h-10 w-10 rounded-full ring-2 ring-white/30 hover:ring-white/50 transition-all"
+                >
+                  <Avatar className="h-10 w-10">
                     <AvatarImage src="" alt={user.email || ''} />
                     <AvatarFallback className="bg-primary text-primary-foreground">
                       {user.email?.charAt(0).toUpperCase()}
@@ -69,7 +76,7 @@ export function Header() {
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56" align="end">
+              <DropdownMenuContent className="w-56 glass-card" align="end">
                 <div className="flex items-center justify-start gap-2 p-2">
                   <div className="flex flex-col space-y-1 leading-none">
                     <p className="font-medium">{user.user_metadata?.full_name || 'Người dùng'}</p>
@@ -80,31 +87,44 @@ export function Header() {
                 </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link to="/dashboard" className="cursor-pointer">
-                    <User className="mr-2 h-4 w-4" />
+                  <Link to="/dashboard" className="cursor-pointer flex items-center gap-2">
+                    <LayoutDashboard className="h-4 w-4" />
                     Dashboard
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link to="/profile" className="cursor-pointer">
-                    <Settings className="mr-2 h-4 w-4" />
+                  <Link to="/profile" className="cursor-pointer flex items-center gap-2">
+                    <User className="h-4 w-4" />
                     Hồ sơ
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-destructive">
-                  <LogOut className="mr-2 h-4 w-4" />
+                <DropdownMenuItem 
+                  onClick={handleSignOut} 
+                  className="cursor-pointer text-destructive focus:text-destructive flex items-center gap-2"
+                >
+                  <LogOut className="h-4 w-4" />
                   Đăng xuất
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
             <>
-              <Button variant="ghost" asChild>
+              <Button 
+                variant="ghost" 
+                asChild
+                className="text-white hover:bg-white/10 hover:text-white"
+              >
                 <Link to="/auth">Đăng nhập</Link>
               </Button>
-              <Button asChild className="gradient-forest hover:opacity-90">
-                <Link to="/auth?mode=signup">Tham gia ngay</Link>
+              <Button 
+                asChild
+                className="btn-glow bg-white text-primary hover:bg-white/90 font-semibold"
+              >
+                <Link to="/auth?mode=signup">
+                  <Leaf className="h-4 w-4 mr-1" />
+                  Tham gia ngay
+                </Link>
               </Button>
             </>
           )}
@@ -112,7 +132,7 @@ export function Header() {
 
         {/* Mobile Menu Button */}
         <button
-          className="flex h-10 w-10 items-center justify-center rounded-md md:hidden"
+          className="flex h-10 w-10 items-center justify-center rounded-md md:hidden text-white hover:bg-white/10 transition-colors"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         >
           {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -121,45 +141,63 @@ export function Header() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="border-t bg-background md:hidden">
-          <nav className="container flex flex-col gap-2 py-4">
+        <div className="md:hidden absolute top-16 inset-x-0 bg-white/95 backdrop-blur-lg border-b border-white/20 animate-fade-in-up">
+          <nav className="container py-4 flex flex-col gap-2">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 to={link.href}
-                className="rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-muted"
+                className="px-4 py-3 rounded-lg text-foreground hover:bg-primary/10 transition-colors font-medium"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {link.label}
               </Link>
             ))}
-            <div className="mt-4 flex flex-col gap-2">
-              {user ? (
-                <>
-                  <Button variant="outline" asChild>
-                    <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)}>
-                      Dashboard
-                    </Link>
-                  </Button>
-                  <Button variant="destructive" onClick={handleSignOut}>
-                    Đăng xuất
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Button variant="outline" asChild>
-                    <Link to="/auth" onClick={() => setMobileMenuOpen(false)}>
-                      Đăng nhập
-                    </Link>
-                  </Button>
-                  <Button asChild className="gradient-forest">
-                    <Link to="/auth?mode=signup" onClick={() => setMobileMenuOpen(false)}>
-                      Tham gia ngay
-                    </Link>
-                  </Button>
-                </>
-              )}
-            </div>
+            <div className="border-t border-border my-2" />
+            {user ? (
+              <>
+                <Link
+                  to="/dashboard"
+                  className="px-4 py-3 rounded-lg text-foreground hover:bg-primary/10 transition-colors font-medium flex items-center gap-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <LayoutDashboard className="h-4 w-4" />
+                  Dashboard
+                </Link>
+                <Link
+                  to="/profile"
+                  className="px-4 py-3 rounded-lg text-foreground hover:bg-primary/10 transition-colors font-medium flex items-center gap-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <User className="h-4 w-4" />
+                  Hồ sơ
+                </Link>
+                <button
+                  onClick={() => {
+                    handleSignOut();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="px-4 py-3 rounded-lg text-destructive hover:bg-destructive/10 transition-colors font-medium flex items-center gap-2 text-left"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Đăng xuất
+                </button>
+              </>
+            ) : (
+              <div className="flex flex-col gap-2 px-4">
+                <Button variant="outline" asChild className="w-full">
+                  <Link to="/auth" onClick={() => setMobileMenuOpen(false)}>
+                    Đăng nhập
+                  </Link>
+                </Button>
+                <Button asChild className="w-full btn-glow">
+                  <Link to="/auth?mode=signup" onClick={() => setMobileMenuOpen(false)}>
+                    <Leaf className="h-4 w-4 mr-1" />
+                    Tham gia ngay
+                  </Link>
+                </Button>
+              </div>
+            )}
           </nav>
         </div>
       )}
