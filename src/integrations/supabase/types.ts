@@ -295,6 +295,9 @@ export type Database = {
           id: string
           likes_count: number | null
           limit_date: string
+          reel_comments_count: number | null
+          reel_likes_count: number | null
+          reel_shares_count: number | null
           shares_count: number | null
           user_id: string
         }
@@ -303,6 +306,9 @@ export type Database = {
           id?: string
           likes_count?: number | null
           limit_date?: string
+          reel_comments_count?: number | null
+          reel_likes_count?: number | null
+          reel_shares_count?: number | null
           shares_count?: number | null
           user_id: string
         }
@@ -311,6 +317,9 @@ export type Database = {
           id?: string
           likes_count?: number | null
           limit_date?: string
+          reel_comments_count?: number | null
+          reel_likes_count?: number | null
+          reel_shares_count?: number | null
           shares_count?: number | null
           user_id?: string
         }
@@ -1436,6 +1445,307 @@ export type Database = {
           work?: string | null
         }
         Relationships: []
+      }
+      reel_comments: {
+        Row: {
+          camly_earned: number | null
+          content: string
+          created_at: string | null
+          id: string
+          likes_count: number | null
+          parent_id: string | null
+          reel_id: string
+          user_id: string
+        }
+        Insert: {
+          camly_earned?: number | null
+          content: string
+          created_at?: string | null
+          id?: string
+          likes_count?: number | null
+          parent_id?: string | null
+          reel_id: string
+          user_id: string
+        }
+        Update: {
+          camly_earned?: number | null
+          content?: string
+          created_at?: string | null
+          id?: string
+          likes_count?: number | null
+          parent_id?: string | null
+          reel_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reel_comments_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "reel_comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reel_comments_reel_id_fkey"
+            columns: ["reel_id"]
+            isOneToOne: false
+            referencedRelation: "reels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reel_comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reel_gifts: {
+        Row: {
+          amount: number
+          created_at: string | null
+          id: string
+          receiver_id: string
+          reel_id: string
+          sender_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          id?: string
+          receiver_id: string
+          reel_id: string
+          sender_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          id?: string
+          receiver_id?: string
+          reel_id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reel_gifts_receiver_id_fkey"
+            columns: ["receiver_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reel_gifts_reel_id_fkey"
+            columns: ["reel_id"]
+            isOneToOne: false
+            referencedRelation: "reels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reel_gifts_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reel_likes: {
+        Row: {
+          camly_earned: number | null
+          created_at: string | null
+          id: string
+          reel_id: string
+          user_id: string
+        }
+        Insert: {
+          camly_earned?: number | null
+          created_at?: string | null
+          id?: string
+          reel_id: string
+          user_id: string
+        }
+        Update: {
+          camly_earned?: number | null
+          created_at?: string | null
+          id?: string
+          reel_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reel_likes_reel_id_fkey"
+            columns: ["reel_id"]
+            isOneToOne: false
+            referencedRelation: "reels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reel_likes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reel_shares: {
+        Row: {
+          camly_earned: number | null
+          created_at: string | null
+          id: string
+          reel_id: string
+          user_id: string
+        }
+        Insert: {
+          camly_earned?: number | null
+          created_at?: string | null
+          id?: string
+          reel_id: string
+          user_id: string
+        }
+        Update: {
+          camly_earned?: number | null
+          created_at?: string | null
+          id?: string
+          reel_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reel_shares_reel_id_fkey"
+            columns: ["reel_id"]
+            isOneToOne: false
+            referencedRelation: "reels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reel_shares_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reel_views: {
+        Row: {
+          id: string
+          reel_id: string
+          viewed_at: string | null
+          viewer_id: string
+          watched_seconds: number | null
+        }
+        Insert: {
+          id?: string
+          reel_id: string
+          viewed_at?: string | null
+          viewer_id: string
+          watched_seconds?: number | null
+        }
+        Update: {
+          id?: string
+          reel_id?: string
+          viewed_at?: string | null
+          viewer_id?: string
+          watched_seconds?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reel_views_reel_id_fkey"
+            columns: ["reel_id"]
+            isOneToOne: false
+            referencedRelation: "reels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reel_views_viewer_id_fkey"
+            columns: ["viewer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reels: {
+        Row: {
+          camly_earned: number | null
+          caption: string | null
+          comments_count: number | null
+          created_at: string | null
+          duration_seconds: number
+          hashtags: string[] | null
+          id: string
+          is_featured: boolean | null
+          is_trending: boolean | null
+          last_paid_views: number | null
+          likes_count: number | null
+          location_name: string | null
+          music_name: string | null
+          music_url: string | null
+          shares_count: number | null
+          tagged_friends: string[] | null
+          thumbnail_url: string | null
+          updated_at: string | null
+          user_id: string
+          video_url: string
+          views_count: number | null
+        }
+        Insert: {
+          camly_earned?: number | null
+          caption?: string | null
+          comments_count?: number | null
+          created_at?: string | null
+          duration_seconds?: number
+          hashtags?: string[] | null
+          id?: string
+          is_featured?: boolean | null
+          is_trending?: boolean | null
+          last_paid_views?: number | null
+          likes_count?: number | null
+          location_name?: string | null
+          music_name?: string | null
+          music_url?: string | null
+          shares_count?: number | null
+          tagged_friends?: string[] | null
+          thumbnail_url?: string | null
+          updated_at?: string | null
+          user_id: string
+          video_url: string
+          views_count?: number | null
+        }
+        Update: {
+          camly_earned?: number | null
+          caption?: string | null
+          comments_count?: number | null
+          created_at?: string | null
+          duration_seconds?: number
+          hashtags?: string[] | null
+          id?: string
+          is_featured?: boolean | null
+          is_trending?: boolean | null
+          last_paid_views?: number | null
+          likes_count?: number | null
+          location_name?: string | null
+          music_name?: string | null
+          music_url?: string | null
+          shares_count?: number | null
+          tagged_friends?: string[] | null
+          thumbnail_url?: string | null
+          updated_at?: string | null
+          user_id?: string
+          video_url?: string
+          views_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reels_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       stories: {
         Row: {
