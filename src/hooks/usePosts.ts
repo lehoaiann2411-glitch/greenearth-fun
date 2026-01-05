@@ -2,6 +2,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
+import { CAMLY_REWARDS, ACTION_TYPES, DAILY_LIMITS } from '@/lib/camlyCoin';
+import { useRewardNotification } from '@/hooks/useRewardNotification';
 
 export interface Post {
   id: string;
@@ -45,7 +47,6 @@ export function usePosts() {
   return useQuery({
     queryKey: ['posts'],
     queryFn: async () => {
-      // Get posts
       const { data: posts, error } = await supabase
         .from('posts')
         .select('*')
@@ -54,22 +55,18 @@ export function usePosts() {
       if (error) throw error;
       if (!posts) return [];
 
-      // Get unique user_ids and campaign_ids
       const userIds = [...new Set(posts.map(p => p.user_id))];
-      const campaignIds = [...new Set(posts.filter(p => p.campaign_id).map(p => p.campaign_id!))] ;
+      const campaignIds = [...new Set(posts.filter(p => p.campaign_id).map(p => p.campaign_id!))];
 
-      // Fetch profiles
       const { data: profiles } = await supabase
         .from('profiles')
         .select('id, full_name, avatar_url, green_points')
         .in('id', userIds);
 
-      // Fetch campaigns
       const { data: campaigns } = campaignIds.length > 0
         ? await supabase.from('campaigns').select('id, title').in('id', campaignIds)
         : { data: [] };
 
-      // Check user likes
       let likedPostIds = new Set<string>();
       if (user) {
         const { data: likes } = await supabase
@@ -79,7 +76,6 @@ export function usePosts() {
         likedPostIds = new Set(likes?.map(l => l.post_id) || []);
       }
 
-      // Map posts with related data
       return posts.map(post => ({
         ...post,
         profile: profiles?.find(p => p.id === post.user_id),
@@ -104,14 +100,12 @@ export function usePost(postId: string) {
 
       if (error) throw error;
 
-      // Fetch profile
       const { data: profile } = await supabase
         .from('profiles')
         .select('id, full_name, avatar_url, green_points')
         .eq('id', post.user_id)
         .single();
 
-      // Fetch campaign if exists
       let campaign = null;
       if (post.campaign_id) {
         const { data: campaignData } = await supabase
@@ -122,7 +116,6 @@ export function usePost(postId: string) {
         campaign = campaignData;
       }
 
-      // Check if current user liked this post
       let userLiked = false;
       if (user) {
         const { data: like } = await supabase
@@ -148,6 +141,7 @@ export function usePost(postId: string) {
 export function useCreatePost() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
+  const { showReward } = useRewardNotification();
 
   return useMutation({
     mutationFn: async ({ 
@@ -163,7 +157,6 @@ export function useCreatePost() {
 
       let imageUrl: string | null = null;
 
-      // Upload image if provided
       if (imageFile) {
         const fileExt = imageFile.name.split('.').pop();
         const fileName = `${user.id}/${Date.now()}.${fileExt}`;
@@ -193,12 +186,41 @@ export function useCreatePost() {
         .single();
 
       if (error) throw error;
+
+      // Award Camly Coins for creating post
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('camly_balance, total_posts')
+        .eq('id', user.id)
+        .single();
+
+      await supabase
+        .from('profiles')
+        .update({
+          camly_balance: (profile?.camly_balance || 0) + CAMLY_REWARDS.CREATE_POST,
+          total_posts: (profile?.total_posts || 0) + 1,
+        })
+        .eq('id', user.id);
+
+      // Log to points history
+      await supabase.from('points_history').insert({
+        user_id: user.id,
+        action_type: ACTION_TYPES.CREATE_POST,
+        points_earned: 0,
+        camly_equivalent: CAMLY_REWARDS.CREATE_POST,
+        camly_earned: CAMLY_REWARDS.CREATE_POST,
+        reference_id: data.id,
+        reference_type: 'post',
+        description: 'Posted about environment',
+      });
+
       return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['posts'] });
       queryClient.invalidateQueries({ queryKey: ['profile'] });
-      toast.success('Đăng bài thành công! +5 điểm xanh');
+      queryClient.invalidateQueries({ queryKey: ['points-history'] });
+      showReward(CAMLY_REWARDS.CREATE_POST, ACTION_TYPES.CREATE_POST, { showConfetti: true });
     },
     onError: (error: Error) => {
       toast.error(error.message || 'Không thể đăng bài');
@@ -231,13 +253,14 @@ export function useDeletePost() {
 export function useLikePost() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
+  const { showReward, showLimitReached } = useRewardNotification();
 
   return useMutation({
     mutationFn: async ({ postId, isLiked }: { postId: string; isLiked: boolean }) => {
       if (!user) throw new Error('Bạn cần đăng nhập');
 
       if (isLiked) {
-        // Unlike
+        // Unlike - no reward change
         const { error } = await supabase
           .from('post_likes')
           .delete()
@@ -245,8 +268,22 @@ export function useLikePost() {
           .eq('user_id', user.id);
 
         if (error) throw error;
+        return { postId, isLiked: false, rewarded: false };
       } else {
-        // Like
+        // Like - check daily limit first
+        const today = new Date().toISOString().split('T')[0];
+        
+        const { data: limitData } = await supabase
+          .from('daily_limits')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('limit_date', today)
+          .maybeSingle();
+
+        const currentLikes = limitData?.likes_count || 0;
+        const canReward = currentLikes < DAILY_LIMITS.LIKES;
+
+        // Insert like
         const { error } = await supabase
           .from('post_likes')
           .insert({
@@ -255,15 +292,169 @@ export function useLikePost() {
           });
 
         if (error) throw error;
-      }
 
-      return { postId, isLiked: !isLiked };
+        // Award if under limit
+        if (canReward) {
+          // Update or create daily limit
+          if (limitData) {
+            await supabase
+              .from('daily_limits')
+              .update({ likes_count: currentLikes + 1 })
+              .eq('id', limitData.id);
+          } else {
+            await supabase
+              .from('daily_limits')
+              .insert({
+                user_id: user.id,
+                limit_date: today,
+                likes_count: 1,
+                shares_count: 0,
+              });
+          }
+
+          // Award Camly Coins
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('camly_balance, total_likes_given')
+            .eq('id', user.id)
+            .single();
+
+          await supabase
+            .from('profiles')
+            .update({
+              camly_balance: (profile?.camly_balance || 0) + CAMLY_REWARDS.LIKE_POST,
+              total_likes_given: (profile?.total_likes_given || 0) + 1,
+            })
+            .eq('id', user.id);
+
+          // Log to history
+          await supabase.from('points_history').insert({
+            user_id: user.id,
+            action_type: ACTION_TYPES.LIKE_POST,
+            points_earned: 0,
+            camly_equivalent: CAMLY_REWARDS.LIKE_POST,
+            camly_earned: CAMLY_REWARDS.LIKE_POST,
+            reference_id: postId,
+            reference_type: 'post',
+            description: 'Liked a green post',
+          });
+        }
+
+        return { 
+          postId, 
+          isLiked: true, 
+          rewarded: canReward,
+          currentCount: currentLikes + 1,
+          maxCount: DAILY_LIMITS.LIKES
+        };
+      }
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['posts'] });
+      queryClient.invalidateQueries({ queryKey: ['profile'] });
+      queryClient.invalidateQueries({ queryKey: ['daily-limits'] });
+      
+      if (data.isLiked && data.rewarded) {
+        showReward(CAMLY_REWARDS.LIKE_POST, ACTION_TYPES.LIKE_POST);
+      } else if (data.isLiked && !data.rewarded) {
+        showLimitReached('likes', data.currentCount || DAILY_LIMITS.LIKES, DAILY_LIMITS.LIKES);
+      }
     },
     onError: (error: Error) => {
       toast.error(error.message || 'Không thể thực hiện');
+    },
+  });
+}
+
+export function useSharePost() {
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+  const { showReward, showLimitReached } = useRewardNotification();
+
+  return useMutation({
+    mutationFn: async ({ postId, shareType = 'copy' }: { postId: string; shareType?: 'copy' | 'twitter' | 'facebook' }) => {
+      if (!user) throw new Error('Bạn cần đăng nhập');
+
+      const today = new Date().toISOString().split('T')[0];
+      
+      // Check daily limit
+      const { data: limitData } = await supabase
+        .from('daily_limits')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('limit_date', today)
+        .maybeSingle();
+
+      const currentShares = limitData?.shares_count || 0;
+      const canReward = currentShares < DAILY_LIMITS.SHARES;
+
+      if (canReward) {
+        // Update or create daily limit
+        if (limitData) {
+          await supabase
+            .from('daily_limits')
+            .update({ shares_count: currentShares + 1 })
+            .eq('id', limitData.id);
+        } else {
+          await supabase
+            .from('daily_limits')
+            .insert({
+              user_id: user.id,
+              limit_date: today,
+              shares_count: 1,
+              likes_count: 0,
+            });
+        }
+
+        // Award Camly Coins
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('camly_balance, total_shares')
+          .eq('id', user.id)
+          .single();
+
+        await supabase
+          .from('profiles')
+          .update({
+            camly_balance: (profile?.camly_balance || 0) + CAMLY_REWARDS.SHARE_POST,
+            total_shares: (profile?.total_shares || 0) + 1,
+          })
+          .eq('id', user.id);
+
+        // Log to history
+        await supabase.from('points_history').insert({
+          user_id: user.id,
+          action_type: ACTION_TYPES.SHARE_POST,
+          points_earned: 0,
+          camly_equivalent: CAMLY_REWARDS.SHARE_POST,
+          camly_earned: CAMLY_REWARDS.SHARE_POST,
+          reference_id: postId,
+          reference_type: 'post',
+          description: `Shared a post (${shareType})`,
+        });
+      }
+
+      return { 
+        postId, 
+        shareType,
+        rewarded: canReward,
+        currentCount: currentShares + 1,
+        maxCount: DAILY_LIMITS.SHARES
+      };
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['profile'] });
+      queryClient.invalidateQueries({ queryKey: ['daily-limits'] });
+      queryClient.invalidateQueries({ queryKey: ['points-history'] });
+      
+      if (data.rewarded) {
+        showReward(CAMLY_REWARDS.SHARE_POST, ACTION_TYPES.SHARE_POST, { showConfetti: true });
+      } else {
+        showLimitReached('shares', data.currentCount, DAILY_LIMITS.SHARES);
+      }
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Không thể chia sẻ');
     },
   });
 }
@@ -281,7 +472,6 @@ export function useComments(postId: string) {
       if (error) throw error;
       if (!comments) return [];
 
-      // Fetch profiles for comments
       const userIds = [...new Set(comments.map(c => c.user_id))];
       const { data: profiles } = await supabase
         .from('profiles')

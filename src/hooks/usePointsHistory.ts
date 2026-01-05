@@ -9,6 +9,7 @@ interface PointsHistoryItem {
   action_type: string;
   points_earned: number;
   camly_equivalent: number;
+  camly_earned: number;
   reference_id: string | null;
   reference_type: string | null;
   description: string | null;

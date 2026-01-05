@@ -22,7 +22,7 @@ import {
   Coins,
 } from 'lucide-react';
 import { getRankByPoints, getNextRank, getProgressToNextRank, getPointsToNextRank } from '@/lib/greenRanks';
-import { toCamlyCoin } from '@/lib/camlyCoin';
+import { formatCamly } from '@/lib/camlyCoin';
 import { CoinAnimation } from '@/components/rewards/CoinAnimation';
 import { format } from 'date-fns';
 import { vi, enUS } from 'date-fns/locale';
@@ -75,12 +75,12 @@ export default function Dashboard() {
   const progressToNextRank = getProgressToNextRank(profile.green_points);
   const pointsToNext = getPointsToNextRank(profile.green_points);
   const RankIcon = currentRank.icon;
-  const camlyCoin = toCamlyCoin(profile.green_points);
+  const camlyBalance = profile.camly_balance || 0;
 
   const quickStats = [
-    { icon: Leaf, label: t('impact.greenPoints'), value: profile.green_points, color: 'text-primary', subValue: `≈ ${camlyCoin} CAMLY` },
     { icon: TreePine, label: t('impact.treesPlanted'), value: profile.trees_planted, color: 'text-accent' },
     { icon: Trophy, label: t('impact.campaignsJoined'), value: profile.campaigns_joined, color: 'text-sky' },
+    { icon: Leaf, label: t('impact.greenPoints'), value: profile.green_points, color: 'text-primary' },
   ];
 
   // Get upcoming campaigns (first 3)
@@ -112,7 +112,6 @@ export default function Dashboard() {
           </Button>
         </div>
 
-        {/* Stats Cards */}
         <div className="mb-8 grid gap-4 md:grid-cols-4">
           {quickStats.map((stat) => (
             <Card key={stat.label}>
@@ -123,23 +122,20 @@ export default function Dashboard() {
                 <div>
                   <p className="text-2xl font-bold">{stat.value}</p>
                   <p className="text-sm text-muted-foreground">{stat.label}</p>
-                  {stat.subValue && (
-                    <p className="text-xs text-green-600 dark:text-green-400">{stat.subValue}</p>
-                  )}
                 </div>
               </CardContent>
             </Card>
           ))}
           
           {/* Camly Coin Card */}
-          <Card className="bg-gradient-to-br from-green-50 to-emerald-100 dark:from-green-950 dark:to-emerald-900 border-green-200 dark:border-green-800">
+          <Card className="bg-gradient-to-br from-yellow-50 to-amber-100 dark:from-yellow-950/50 dark:to-amber-900/50 border-yellow-200 dark:border-yellow-800">
             <CardContent className="flex items-center gap-4 p-6">
-              <CoinAnimation size="md" animated={false} />
+              <CoinAnimation size="md" animated />
               <div>
-                <p className="text-2xl font-bold text-green-600 dark:text-green-400">{camlyCoin}</p>
-                <p className="text-sm text-muted-foreground">CAMLY</p>
-                <Link to="/rewards" className="text-xs text-green-600 hover:underline flex items-center gap-1">
-                  {t('rewards.claimNow', 'Claim')} <ArrowRight className="h-3 w-3" />
+                <p className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{formatCamly(camlyBalance)}</p>
+                <p className="text-sm text-muted-foreground">Camly Coin</p>
+                <Link to="/rewards" className="text-xs text-yellow-600 hover:underline flex items-center gap-1">
+                  {t('rewards.howToEarn', 'Earn more')} <ArrowRight className="h-3 w-3" />
                 </Link>
               </div>
             </CardContent>

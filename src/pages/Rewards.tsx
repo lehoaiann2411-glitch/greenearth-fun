@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns';
@@ -10,12 +9,13 @@ import {
   TreePine,
   Heart,
   Share2,
-  CheckCircle,
+  FileText,
+  Calendar,
+  UserPlus,
   Sparkles,
-  ArrowRight,
-  ExternalLink,
   Copy,
   Wallet,
+  TrendingUp,
 } from 'lucide-react';
 import { Layout } from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -28,25 +28,80 @@ import { useProfile } from '@/hooks/useProfile';
 import { usePointsHistory, useClaimsHistory } from '@/hooks/usePointsHistory';
 import { useToast } from '@/hooks/use-toast';
 import { CoinAnimation } from '@/components/rewards/CoinAnimation';
-import { PointsDisplay } from '@/components/rewards/PointsDisplay';
-import { ClaimModal } from '@/components/rewards/ClaimModal';
+import { DailyCheckIn } from '@/components/rewards/DailyCheckIn';
+import { EarningsBreakdown } from '@/components/rewards/EarningsBreakdown';
 import {
-  toCamlyCoin,
-  getClaimableAmount,
-  canClaim,
-  POINTS_CONFIG,
+  CAMLY_REWARDS,
+  DAILY_LIMITS,
+  formatCamly,
   getActionLabel,
-  GREEN_POINTS_PER_CAMLY,
 } from '@/lib/camlyCoin';
 
 const earnActions = [
-  { key: 'PLANT_TREE', icon: TreePine, color: 'text-green-500' },
-  { key: 'DONATE_PER_USD', icon: Heart, color: 'text-red-500', suffix: '/USD' },
-  { key: 'DAILY_CHECK_IN', icon: CheckCircle, color: 'text-blue-500' },
-  { key: 'COMPLETE_QUEST', icon: Gift, color: 'text-purple-500' },
-  { key: 'SHARE_POST', icon: Share2, color: 'text-orange-500' },
-  { key: 'VERIFY_TREE_GROWTH', icon: Sparkles, color: 'text-emerald-500' },
-  { key: 'TOP_CONTRIBUTOR_BONUS', icon: Coins, color: 'text-yellow-500' },
+  { 
+    key: 'CREATE_POST', 
+    icon: FileText, 
+    color: 'text-blue-500',
+    reward: CAMLY_REWARDS.CREATE_POST,
+    limit: 'Unlimited',
+    limitVi: 'Không giới hạn'
+  },
+  { 
+    key: 'SHARE_POST', 
+    icon: Share2, 
+    color: 'text-orange-500',
+    reward: CAMLY_REWARDS.SHARE_POST,
+    limit: `${DAILY_LIMITS.SHARES}/day`,
+    limitVi: `${DAILY_LIMITS.SHARES}/ngày`
+  },
+  { 
+    key: 'LIKE_POST', 
+    icon: Heart, 
+    color: 'text-pink-500',
+    reward: CAMLY_REWARDS.LIKE_POST,
+    limit: `${DAILY_LIMITS.LIKES}/day`,
+    limitVi: `${DAILY_LIMITS.LIKES}/ngày`
+  },
+  { 
+    key: 'DAILY_CHECK_IN', 
+    icon: Calendar, 
+    color: 'text-emerald-500',
+    reward: CAMLY_REWARDS.DAILY_CHECK_IN,
+    limit: '1/day',
+    limitVi: '1/ngày'
+  },
+  { 
+    key: 'STREAK_7_DAY_BONUS', 
+    icon: Sparkles, 
+    color: 'text-yellow-500',
+    reward: CAMLY_REWARDS.STREAK_7_DAY_BONUS,
+    limit: 'Weekly',
+    limitVi: 'Hàng tuần'
+  },
+  { 
+    key: 'PLANT_TREE', 
+    icon: TreePine, 
+    color: 'text-green-500',
+    reward: CAMLY_REWARDS.PLANT_TREE,
+    limit: 'Unlimited',
+    limitVi: 'Không giới hạn'
+  },
+  { 
+    key: 'INVITE_FRIEND', 
+    icon: UserPlus, 
+    color: 'text-purple-500',
+    reward: CAMLY_REWARDS.INVITE_FRIEND,
+    limit: 'Unlimited',
+    limitVi: 'Không giới hạn'
+  },
+  { 
+    key: 'SIGNUP_BONUS', 
+    icon: Gift, 
+    color: 'text-cyan-500',
+    reward: CAMLY_REWARDS.SIGNUP_BONUS,
+    limit: 'One-time',
+    limitVi: 'Một lần'
+  },
 ];
 
 export default function Rewards() {
@@ -57,8 +112,6 @@ export default function Rewards() {
   const { data: profile, isLoading: profileLoading } = useProfile(user?.id);
   const { data: pointsHistory, isLoading: historyLoading } = usePointsHistory();
   const { data: claimsHistory, isLoading: claimsLoading } = useClaimsHistory();
-
-  const [claimModalOpen, setClaimModalOpen] = useState(false);
 
   const isLoading = authLoading || profileLoading;
   const language = i18n.language as 'en' | 'vi';
@@ -80,9 +133,7 @@ export default function Rewards() {
     );
   }
 
-  const greenPoints = profile?.green_points || 0;
-  const totalCamlyClaimed = profile?.total_camly_claimed || 0;
-  const { points: claimablePoints, camly: claimableCamly } = getClaimableAmount(greenPoints);
+  const camlyBalance = profile?.camly_balance || 0;
 
   return (
     <Layout>
@@ -93,104 +144,16 @@ export default function Rewards() {
             {t('rewards.title', 'Rewards & Wallet')}
           </h1>
           <p className="text-muted-foreground mt-2">
-            {t('rewards.subtitle', 'Earn Green Points and claim CAMLY tokens')}
+            {t('rewards.subtitle', 'Earn Camly Coin for your green actions')}
           </p>
         </div>
 
-        {/* Wallet Overview */}
-        <div className="grid gap-6 md:grid-cols-3 mb-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-          >
-            <Card className="bg-gradient-to-br from-green-50 to-emerald-100 dark:from-green-950 dark:to-emerald-900 border-green-200 dark:border-green-800">
-              <CardContent className="p-6">
-                {isLoading ? (
-                  <Skeleton className="h-20 w-full" />
-                ) : (
-                  <>
-                    <div className="flex items-center gap-3 mb-3">
-                      <CoinAnimation size="md" animated={false} />
-                      <div>
-                        <p className="text-sm text-muted-foreground">Green Points</p>
-                        <p className="text-2xl font-bold text-green-600 dark:text-green-400">
-                          {greenPoints.toLocaleString()}
-                        </p>
-                      </div>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      ≈ {toCamlyCoin(greenPoints).toLocaleString()} CAMLY
-                    </p>
-                  </>
-                )}
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            <Card>
-              <CardContent className="p-6">
-                {isLoading ? (
-                  <Skeleton className="h-20 w-full" />
-                ) : (
-                  <>
-                    <div className="flex items-center gap-3 mb-3">
-                      <Wallet className="h-8 w-8 text-primary" />
-                      <div>
-                        <p className="text-sm text-muted-foreground">
-                          {t('rewards.totalClaimed', 'Total Claimed')}
-                        </p>
-                        <p className="text-2xl font-bold">{totalCamlyClaimed.toLocaleString()} CAMLY</p>
-                      </div>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      {claimsHistory?.length || 0} {t('rewards.transactions', 'transactions')}
-                    </p>
-                  </>
-                )}
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            <Card className="border-2 border-dashed border-green-300 dark:border-green-700">
-              <CardContent className="p-6">
-                {isLoading ? (
-                  <Skeleton className="h-20 w-full" />
-                ) : (
-                  <>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      {t('rewards.readyToClaim', 'Ready to Claim')}
-                    </p>
-                    <p className="text-2xl font-bold text-green-600 dark:text-green-400 mb-3">
-                      {claimableCamly.toLocaleString()} CAMLY
-                    </p>
-                    <Button
-                      onClick={() => setClaimModalOpen(true)}
-                      disabled={!canClaim(greenPoints)}
-                      className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
-                    >
-                      <Coins className="mr-2 h-4 w-4" />
-                      {t('rewards.claimNow', 'Claim CAMLY')}
-                    </Button>
-                  </>
-                )}
-              </CardContent>
-            </Card>
-          </motion.div>
-        </div>
-
-        <Tabs defaultValue="history" className="space-y-6">
-          <TabsList className="grid w-full max-w-md grid-cols-3">
+        <Tabs defaultValue="overview" className="space-y-6">
+          <TabsList className="grid w-full max-w-lg grid-cols-4">
+            <TabsTrigger value="overview">
+              <TrendingUp className="h-4 w-4 mr-2" />
+              {t('rewards.overview', 'Overview')}
+            </TabsTrigger>
             <TabsTrigger value="history">
               <History className="h-4 w-4 mr-2" />
               {t('rewards.history', 'History')}
@@ -205,12 +168,22 @@ export default function Rewards() {
             </TabsTrigger>
           </TabsList>
 
+          <TabsContent value="overview">
+            <div className="grid gap-6 md:grid-cols-2">
+              {/* Earnings Breakdown */}
+              <EarningsBreakdown />
+              
+              {/* Daily Check-in */}
+              <DailyCheckIn />
+            </div>
+          </TabsContent>
+
           <TabsContent value="history">
             <Card>
               <CardHeader>
-                <CardTitle>{t('rewards.pointsHistory', 'Points History')}</CardTitle>
+                <CardTitle>{t('rewards.pointsHistory', 'Rewards History')}</CardTitle>
                 <CardDescription>
-                  {t('rewards.recentEarnings', 'Your recent point earnings')}
+                  {t('rewards.recentEarnings', 'Your recent Camly Coin earnings')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -223,13 +196,15 @@ export default function Rewards() {
                 ) : pointsHistory && pointsHistory.length > 0 ? (
                   <div className="space-y-3">
                     {pointsHistory.map((item) => (
-                      <div
+                      <motion.div
                         key={item.id}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
                         className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center">
-                            <Coins className="h-5 w-5 text-green-600 dark:text-green-400" />
+                          <div className="w-10 h-10 rounded-full bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
+                            <Coins className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
                           </div>
                           <div>
                             <p className="font-medium">
@@ -241,22 +216,22 @@ export default function Rewards() {
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className="font-semibold text-green-600 dark:text-green-400">
-                            +{item.points_earned} GP
+                          <p className="font-semibold text-yellow-600 dark:text-yellow-400">
+                            +{formatCamly(item.camly_equivalent || item.camly_earned || 0)} 🪙
                           </p>
-                          <p className="text-xs text-muted-foreground">
-                            ≈ {item.camly_equivalent} CAMLY
-                          </p>
+                          {item.description && (
+                            <p className="text-xs text-muted-foreground">{item.description}</p>
+                          )}
                         </div>
-                      </div>
+                      </motion.div>
                     ))}
                   </div>
                 ) : (
                   <div className="text-center py-8 text-muted-foreground">
                     <History className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                    <p>{t('rewards.noHistory', 'No point history yet')}</p>
+                    <p>{t('rewards.noHistory', 'No rewards yet')}</p>
                     <p className="text-sm">
-                      {t('rewards.startEarning', 'Start earning points by completing actions!')}
+                      {t('rewards.startEarning', 'Start earning Camly Coin by completing actions!')}
                     </p>
                   </div>
                 )}
@@ -325,7 +300,7 @@ export default function Rewards() {
                     <Wallet className="h-12 w-12 mx-auto mb-3 opacity-50" />
                     <p>{t('rewards.noClaims', 'No claims yet')}</p>
                     <p className="text-sm">
-                      {t('rewards.claimInfo', 'Claim your CAMLY tokens when you have enough points!')}
+                      {t('rewards.claimInfo', 'Claim your CAMLY tokens when you have enough!')}
                     </p>
                   </div>
                 )}
@@ -338,42 +313,44 @@ export default function Rewards() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Gift className="h-5 w-5 text-primary" />
-                  {t('rewards.howToEarnTitle', 'How to Earn Green Points')}
+                  {t('rewards.howToEarnTitle', 'How to Earn Camly Coin')}
                 </CardTitle>
                 <CardDescription>
-                  {GREEN_POINTS_PER_CAMLY} Green Points = 1 CAMLY Token
+                  {language === 'vi' 
+                    ? 'Kiếm Camly Coin trực tiếp cho mỗi hành động!'
+                    : 'Earn Camly Coin directly for each action!'}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid gap-4 md:grid-cols-2">
-                  {earnActions.map(({ key, icon: Icon, color, suffix }) => {
-                    const points = POINTS_CONFIG[key as keyof typeof POINTS_CONFIG];
-                    const camly = toCamlyCoin(points);
-                    return (
-                      <motion.div
-                        key={key}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        className="flex items-center justify-between p-4 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className={`p-2 rounded-full bg-background ${color}`}>
-                            <Icon className="h-5 w-5" />
-                          </div>
-                          <span className="font-medium">
+                  {earnActions.map(({ key, icon: Icon, color, reward, limit, limitVi }, index) => (
+                    <motion.div
+                      key={key}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                      className="flex items-center justify-between p-4 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className={`p-2 rounded-full bg-background ${color}`}>
+                          <Icon className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <span className="font-medium block">
                             {getActionLabel(key.toLowerCase(), language)}
-                            {suffix && <span className="text-muted-foreground">{suffix}</span>}
+                          </span>
+                          <span className="text-xs text-muted-foreground">
+                            {language === 'vi' ? limitVi : limit}
                           </span>
                         </div>
-                        <div className="text-right">
-                          <p className="font-semibold text-green-600 dark:text-green-400">
-                            +{points} GP
-                          </p>
-                          <p className="text-xs text-muted-foreground">≈ {camly} CAMLY</p>
-                        </div>
-                      </motion.div>
-                    );
-                  })}
+                      </div>
+                      <div className="text-right">
+                        <p className="font-bold text-yellow-600 dark:text-yellow-400">
+                          +{formatCamly(reward)} 🪙
+                        </p>
+                      </div>
+                    </motion.div>
+                  ))}
                 </div>
 
                 <div className="mt-6 p-4 rounded-lg bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/50 dark:to-emerald-950/50 border border-green-200 dark:border-green-800">
@@ -386,7 +363,7 @@ export default function Rewards() {
                       <p className="text-sm text-green-600 dark:text-green-400">
                         {t(
                           'rewards.tipDescription',
-                          'Complete daily quests and participate in campaigns to maximize your earnings!'
+                          'Post, share, and engage with the community to maximize your earnings!'
                         )}
                       </p>
                     </div>
@@ -397,13 +374,6 @@ export default function Rewards() {
           </TabsContent>
         </Tabs>
       </div>
-
-      <ClaimModal
-        open={claimModalOpen}
-        onOpenChange={setClaimModalOpen}
-        greenPoints={greenPoints}
-        walletAddress={profile?.wallet_address || ''}
-      />
     </Layout>
   );
 }
