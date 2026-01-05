@@ -54,6 +54,11 @@
     --sun: 45 95% 55%;
     --sun-foreground: 30 40% 15%;
 
+    /* Camly Coin Gold tokens */
+    --camly-gold: 51 100% 50%;
+    --camly-gold-light: 54 100% 62%;
+    --camly-gold-dark: 38 100% 50%;
+
     /* Glass morphism tokens */
     --glass-bg: 0 0% 100% / 0.7;
     --glass-border: 120 30% 80% / 0.3;
@@ -351,4 +356,38 @@
   75% {
     transform: translateY(-8px) rotate(-3deg);
   }
+}
+
+/* Camly Coin Animations */
+@keyframes coin-shine {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes gold-glow {
+  0%, 100% { box-shadow: 0 0 10px hsl(51 100% 50% / 0.5); }
+  50% { box-shadow: 0 0 30px hsl(51 100% 50% / 0.8), 0 0 50px hsl(38 100% 50% / 0.4); }
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 0; transform: scale(0); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+.camly-coin-glow {
+  animation: gold-glow 2s ease-in-out infinite;
+}
+
+.camly-coin-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.camly-coin-shine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.4) 50%, transparent 70%);
+  background-size: 200% 100%;
+  animation: coin-shine 3s linear infinite;
 }

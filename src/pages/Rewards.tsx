@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns';
 import { motion } from 'framer-motion';
 import {
-  Coins,
   History,
   Gift,
   TreePine,
@@ -27,6 +26,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useProfile } from '@/hooks/useProfile';
 import { usePointsHistory, useClaimsHistory } from '@/hooks/usePointsHistory';
 import { useToast } from '@/hooks/use-toast';
+import { CamlyCoinIcon } from '@/components/rewards/CamlyCoinIcon';
 import { CoinAnimation } from '@/components/rewards/CoinAnimation';
 import { DailyCheckIn } from '@/components/rewards/DailyCheckIn';
 import { EarningsBreakdown } from '@/components/rewards/EarningsBreakdown';
@@ -120,7 +120,7 @@ export default function Rewards() {
     return (
       <Layout>
         <div className="container mx-auto px-4 py-16 text-center">
-          <Coins className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+          <CamlyCoinIcon size="xl" className="mx-auto mb-4" />
           <h2 className="text-2xl font-bold mb-2">{t('common.loginRequired', 'Login Required')}</h2>
           <p className="text-muted-foreground mb-4">
             {t('rewards.loginToView', 'Please login to view your rewards')}
@@ -140,7 +140,7 @@ export default function Rewards() {
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold flex items-center gap-3">
-            <CoinAnimation size="lg" animated />
+            <CamlyCoinIcon size="lg" animated />
             {t('rewards.title', 'Rewards & Wallet')}
           </h1>
           <p className="text-muted-foreground mt-2">
@@ -204,7 +204,7 @@ export default function Rewards() {
                       >
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-full bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
-                            <Coins className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
+                            <CamlyCoinIcon size="sm" />
                           </div>
                           <div>
                             <p className="font-medium">
@@ -216,8 +216,8 @@ export default function Rewards() {
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className="font-semibold text-yellow-600 dark:text-yellow-400">
-                            +{formatCamly(item.camly_equivalent || item.camly_earned || 0)} 🪙
+                          <p className="font-semibold text-yellow-600 dark:text-yellow-400 flex items-center gap-1 justify-end">
+                            +{formatCamly(item.camly_equivalent || item.camly_earned || 0)} <CamlyCoinIcon size="xs" />
                           </p>
                           {item.description && (
                             <p className="text-xs text-muted-foreground">{item.description}</p>
@@ -262,7 +262,7 @@ export default function Rewards() {
                         className="flex items-center justify-between p-3 rounded-lg bg-muted/50"
                       >
                         <div className="flex items-center gap-3">
-                          <CoinAnimation size="sm" animated={false} />
+                          <CamlyCoinIcon size="sm" />
                           <div>
                             <p className="font-medium">
                               {claim.camly_received.toLocaleString()} CAMLY
@@ -345,8 +345,8 @@ export default function Rewards() {
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="font-bold text-yellow-600 dark:text-yellow-400">
-                          +{formatCamly(reward)} 🪙
+                        <p className="font-bold text-yellow-600 dark:text-yellow-400 flex items-center gap-1 justify-end">
+                          +{formatCamly(reward)} <CamlyCoinIcon size="xs" />
                         </p>
                       </div>
                     </motion.div>

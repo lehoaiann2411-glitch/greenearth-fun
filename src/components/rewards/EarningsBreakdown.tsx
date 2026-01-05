@@ -1,11 +1,12 @@
 import { motion } from 'framer-motion';
-import { FileText, Share2, Heart, Calendar, Coins } from 'lucide-react';
+import { FileText, Share2, Heart, Calendar } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useProfile } from '@/hooks/useProfile';
 import { useAuth } from '@/contexts/AuthContext';
 import { Skeleton } from '@/components/ui/skeleton';
 import { formatCamly, CAMLY_REWARDS } from '@/lib/camlyCoin';
 import { useTranslation } from 'react-i18next';
+import { CamlyCoinIcon } from './CamlyCoinIcon';
 
 interface EarningCategory {
   key: string;
@@ -90,7 +91,7 @@ export function EarningsBreakdown() {
     <Card className="bg-gradient-to-br from-yellow-50 to-amber-100 dark:from-yellow-950/50 dark:to-amber-900/50 border-yellow-200 dark:border-yellow-800">
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center gap-2 text-lg">
-          <Coins className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
+          <CamlyCoinIcon size="sm" animated={false} />
           {t('rewards.yourBalance', 'Your Balance')}
         </CardTitle>
       </CardHeader>
@@ -101,6 +102,9 @@ export function EarningsBreakdown() {
           animate={{ scale: 1, opacity: 1 }}
           className="text-center mb-6"
         >
+          <div className="flex items-center justify-center gap-3 mb-2">
+            <CamlyCoinIcon size="lg" animated />
+          </div>
           <p className="text-4xl font-bold text-yellow-600 dark:text-yellow-400">
             {formatCamly(totalCamly)}
           </p>

@@ -6,6 +6,7 @@ import { useCheckInStatus, useDailyCheckIn } from '@/hooks/useDailyCheckIn';
 import { CAMLY_REWARDS, formatCamly } from '@/lib/camlyCoin';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
+import { CamlyCoinIcon } from './CamlyCoinIcon';
 
 export function DailyCheckIn() {
   const { t } = useTranslation();
@@ -75,7 +76,9 @@ export function DailyCheckIn() {
                 <span>{dayNumber}</span>
               )}
               {isStreakBonus && (
-                <div className="absolute -top-1 -right-1 text-xs">🎁</div>
+                <div className="absolute -top-1 -right-1">
+                  <CamlyCoinIcon size="xs" />
+                </div>
               )}
             </motion.div>
           ))}
@@ -86,8 +89,8 @@ export function DailyCheckIn() {
           <span className="text-muted-foreground">
             {t('rewards.dailyReward', 'Daily reward')}:
           </span>
-          <span className="font-semibold text-emerald-600 dark:text-emerald-400">
-            +{formatCamly(CAMLY_REWARDS.DAILY_CHECK_IN)} 🪙
+          <span className="font-semibold text-yellow-600 dark:text-yellow-400 flex items-center gap-1">
+            +{formatCamly(CAMLY_REWARDS.DAILY_CHECK_IN)} <CamlyCoinIcon size="xs" />
           </span>
         </div>
 
@@ -95,8 +98,8 @@ export function DailyCheckIn() {
           <span className="text-muted-foreground">
             {t('rewards.streakBonus', '7-day bonus')}:
           </span>
-          <span className="font-semibold text-yellow-600 dark:text-yellow-400">
-            +{formatCamly(CAMLY_REWARDS.STREAK_7_DAY_BONUS)} 🎁
+          <span className="font-semibold text-yellow-600 dark:text-yellow-400 flex items-center gap-1">
+            +{formatCamly(CAMLY_REWARDS.STREAK_7_DAY_BONUS)} <CamlyCoinIcon size="xs" /> 🎁
           </span>
         </div>
 
@@ -108,7 +111,7 @@ export function DailyCheckIn() {
             'w-full',
             hasCheckedIn
               ? 'bg-muted text-muted-foreground'
-              : 'bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700'
+              : 'bg-gradient-to-r from-yellow-400 via-amber-500 to-yellow-500 hover:from-yellow-500 hover:via-amber-600 hover:to-yellow-600 text-white shadow-lg shadow-yellow-500/25'
           )}
         >
           {checkIn.isPending ? (
@@ -123,7 +126,7 @@ export function DailyCheckIn() {
             </>
           ) : (
             <>
-              <Calendar className="mr-2 h-4 w-4" />
+              <CamlyCoinIcon size="xs" className="mr-2" />
               {t('rewards.checkInNow', 'Check In Now!')}
             </>
           )}
