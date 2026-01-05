@@ -23,7 +23,6 @@
     "campaigns": "Campaigns",
     "community": "Community",
     "leaderboard": "Leaderboard",
-    "nftGallery": "NFT Gallery",
     "impact": "Impact",
     "quests": "Quests",
     "events": "Events",
@@ -37,8 +36,8 @@
   },
   "hero": {
     "badge": "Web3 Environmental Protection Platform",
-    "title": "Plant Trees, Create NFTs, Protect the Planet",
-    "description": "Join the Green Earth community to plant real trees, receive green NFTs, and contribute to the environment with transparent blockchain technology.",
+    "title": "Plant Trees, Earn Rewards, Protect the Planet",
+    "description": "Join the Green Earth community to plant real trees, earn Camly Coins, and contribute to the environment with transparent blockchain technology.",
     "exploreCampaigns": "Explore Campaigns",
     "connectWallet": "Connect Wallet"
   },
@@ -50,7 +49,6 @@
     "forestArea": "Forest Area",
     "greenPoints": "Green Points",
     "campaignsJoined": "Campaigns Joined",
-    "nftsOwned": "NFTs Owned",
     "carbonCalculator": "Carbon Footprint Calculator",
     "calculateDescription": "Enter your daily habits to calculate your carbon emissions"
   },
@@ -74,15 +72,6 @@
     "copyAddress": "Copy Address",
     "noMetaMask": "Please install MetaMask",
     "yourWallet": "Your Wallet"
-  },
-  "nft": {
-    "mint": "Mint NFT",
-    "verified": "Verified",
-    "onChain": "On-chain",
-    "viewOnPolygon": "View on Polygonscan",
-    "co2Absorbed": "CO₂ Absorbed",
-    "location": "Location",
-    "plantedAt": "Planted At"
   },
   "rewards": {
     "title": "Rewards & Wallet",

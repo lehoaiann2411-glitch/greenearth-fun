@@ -9,7 +9,7 @@ export function Footer() {
       { href: '/campaigns', label: 'Chiến dịch' },
       { href: '/community', label: 'Cộng đồng' },
       { href: '/leaderboard', label: 'Bảng xếp hạng' },
-      { href: '/nft-gallery', label: 'Green NFT' },
+      
     ],
     about: [
       { href: '/about', label: 'Về chúng tôi' },

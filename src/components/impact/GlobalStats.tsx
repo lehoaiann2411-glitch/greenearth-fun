@@ -1,4 +1,4 @@
-import { TreePine, Leaf, Users, Award, Hexagon, TrendingUp } from 'lucide-react';
+import { TreePine, Leaf, Users, Award, TrendingUp } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { formatCO2, formatArea } from '@/lib/carbonCalculations';
@@ -10,7 +10,6 @@ interface GlobalStatsProps {
     totalForestArea: number;
     totalUsers: number;
     totalCampaigns: number;
-    totalNFTs: number;
   } | undefined;
   isLoading: boolean;
 }
@@ -52,19 +51,12 @@ export function GlobalStats({ stats, isLoading }: GlobalStatsProps) {
       color: 'text-purple-600',
       bgColor: 'bg-purple-500/10',
     },
-    {
-      title: 'Green NFTs',
-      value: stats?.totalNFTs.toLocaleString() || '0',
-      icon: Hexagon,
-      color: 'text-amber-600',
-      bgColor: 'bg-amber-500/10',
-    },
   ];
 
   if (isLoading) {
     return (
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {[...Array(6)].map((_, i) => (
+        {[...Array(5)].map((_, i) => (
           <Card key={i}>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <Skeleton className="h-4 w-24" />

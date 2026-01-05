@@ -34,7 +34,7 @@ export function Header() {
     { href: '/impact', label: t('nav.impact') },
     { href: '/rewards', label: t('nav.rewards'), icon: Coins },
     { href: '/leaderboard', label: t('nav.leaderboard') },
-    { href: '/nft-gallery', label: 'Green NFT' },
+    
   ];
 
   return (

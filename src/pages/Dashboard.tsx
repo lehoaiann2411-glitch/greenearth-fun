@@ -198,12 +198,6 @@ export default function Dashboard() {
                 </Link>
               </Button>
               <Button variant="outline" className="w-full justify-start gap-2" asChild>
-                <Link to="/nft-gallery">
-                  <TreePine className="h-4 w-4" />
-                  Bộ sưu tập NFT
-                </Link>
-              </Button>
-              <Button variant="outline" className="w-full justify-start gap-2" asChild>
                 <Link to="/leaderboard">
                   <Trophy className="h-4 w-4" />
                   Bảng xếp hạng

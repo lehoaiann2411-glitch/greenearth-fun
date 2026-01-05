@@ -23,7 +23,6 @@
     "campaigns": "Chiến dịch",
     "community": "Cộng đồng",
     "leaderboard": "Bảng xếp hạng",
-    "nftGallery": "Bộ sưu tập NFT",
     "impact": "Tác động",
     "quests": "Nhiệm vụ",
     "events": "Sự kiện",
@@ -37,8 +36,8 @@
   },
   "hero": {
     "badge": "Nền tảng Web3 Bảo vệ Môi trường",
-    "title": "Trồng Cây, Tạo NFT, Bảo Vệ Hành Tinh",
-    "description": "Tham gia cộng đồng Green Earth để trồng cây thật, nhận NFT xanh và đóng góp cho môi trường với công nghệ blockchain minh bạch.",
+    "title": "Trồng Cây, Nhận Thưởng, Bảo Vệ Hành Tinh",
+    "description": "Tham gia cộng đồng Green Earth để trồng cây thật, nhận Camly Coin và đóng góp cho môi trường với công nghệ blockchain minh bạch.",
     "exploreCampaigns": "Khám phá chiến dịch",
     "connectWallet": "Kết nối ví"
   },
@@ -50,7 +49,6 @@
     "forestArea": "Diện tích rừng",
     "greenPoints": "Điểm xanh",
     "campaignsJoined": "Chiến dịch tham gia",
-    "nftsOwned": "NFT sở hữu",
     "carbonCalculator": "Tính toán Carbon Footprint",
     "calculateDescription": "Nhập thói quen hàng ngày để tính lượng carbon phát thải"
   },
@@ -74,15 +72,6 @@
     "copyAddress": "Sao chép địa chỉ",
     "noMetaMask": "Vui lòng cài đặt MetaMask",
     "yourWallet": "Ví của bạn"
-  },
-  "nft": {
-    "mint": "Tạo NFT",
-    "verified": "Đã xác minh",
-    "onChain": "On-chain",
-    "viewOnPolygon": "Xem trên Polygonscan",
-    "co2Absorbed": "CO₂ hấp thụ",
-    "location": "Vị trí",
-    "plantedAt": "Ngày trồng"
   },
   "rewards": {
     "title": "Phần thưởng & Ví",
