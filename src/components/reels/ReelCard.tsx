@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, MessageCircle, Share2, Gift, Music, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -25,15 +25,22 @@ export function ReelCard({ reel, isActive }: ReelCardProps) {
   const [showHeartAnimation, setShowHeartAnimation] = useState(false);
   const [localLiked, setLocalLiked] = useState(reel.user_has_liked || false);
   const [localLikesCount, setLocalLikesCount] = useState(reel.likes_count);
+  const hasRecordedView = useRef(false);
 
   const likeMutation = useLikeReel();
   const shareMutation = useShareReel();
   const recordView = useRecordReelView();
 
-  // Record view when active
-  if (isActive && user) {
-    recordView.mutate({ reelId: reel.id, watchedSeconds: 5 });
-  }
+  // Record view when active - use useEffect to prevent infinite loops
+  useEffect(() => {
+    if (isActive && user && !hasRecordedView.current) {
+      hasRecordedView.current = true;
+      recordView.mutate({ reelId: reel.id, watchedSeconds: 5 });
+    }
+    if (!isActive) {
+      hasRecordedView.current = false;
+    }
+  }, [isActive, user, reel.id]);
 
   const handleLike = () => {
     if (!user) return;
