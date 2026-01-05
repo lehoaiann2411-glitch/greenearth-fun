@@ -20,6 +20,9 @@ import Community from "./pages/Community";
 import ImpactDashboard from "./pages/ImpactDashboard";
 import Rewards from "./pages/Rewards";
 import Feed from "./pages/Feed";
+import Groups from "./pages/Groups";
+import GroupCreate from "./pages/GroupCreate";
+import GroupDetail from "./pages/GroupDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -46,6 +49,9 @@ const App = () => (
               <Route path="/campaigns/:id" element={<CampaignDetail />} />
               <Route path="/campaigns/:id/manage" element={<CampaignManage />} />
               <Route path="/community" element={<Community />} />
+              <Route path="/groups" element={<Groups />} />
+              <Route path="/groups/create" element={<GroupCreate />} />
+              <Route path="/groups/:id" element={<GroupDetail />} />
               <Route path="/impact" element={<ImpactDashboard />} />
               <Route path="/rewards" element={<Rewards />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
