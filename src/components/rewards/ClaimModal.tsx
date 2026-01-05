@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Loader2, Check, ExternalLink, Copy, Coins } from 'lucide-react';
+import { Loader2, Check, ExternalLink, Copy } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -15,7 +15,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useClaimCamly } from '@/hooks/usePointsHistory';
 import { useConfetti } from '@/hooks/useConfetti';
-import { CoinAnimation } from './CoinAnimation';
+import { CamlyCoinIcon } from './CamlyCoinIcon';
 import {
   toCamlyCoin,
   getClaimableAmount,
@@ -88,7 +88,7 @@ export function ClaimModal({ open, onOpenChange, greenPoints, walletAddress }: C
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <CoinAnimation size="sm" animated={false} />
+            <CamlyCoinIcon size="sm" />
             {t('rewards.claimCamly', 'Claim CAMLY Tokens')}
           </DialogTitle>
           <DialogDescription>
@@ -151,20 +151,23 @@ export function ClaimModal({ open, onOpenChange, greenPoints, walletAddress }: C
               </div>
 
               {pointsToClaim >= MINIMUM_CLAIM_POINTS && (
-                <div className="bg-green-50 dark:bg-green-950/50 rounded-lg p-4 text-center">
+                <div className="bg-yellow-50 dark:bg-yellow-950/50 rounded-lg p-4 text-center border border-yellow-200 dark:border-yellow-800">
                   <p className="text-sm text-muted-foreground">You will receive</p>
-                  <p className="text-2xl font-bold text-green-600 dark:text-green-400">
-                    {claimableCamly.toLocaleString()} CAMLY
-                  </p>
+                  <div className="flex items-center justify-center gap-2 mt-1">
+                    <CamlyCoinIcon size="md" animated />
+                    <p className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">
+                      {claimableCamly.toLocaleString()} CAMLY
+                    </p>
+                  </div>
                 </div>
               )}
 
               <Button
                 onClick={handleClaim}
                 disabled={!canClaim(pointsToClaim) || !address}
-                className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
+                className="w-full bg-gradient-to-r from-yellow-400 via-amber-500 to-yellow-500 hover:from-yellow-500 hover:via-amber-600 hover:to-yellow-600 text-white shadow-lg shadow-yellow-500/25"
               >
-                <Coins className="mr-2 h-4 w-4" />
+                <CamlyCoinIcon size="xs" className="mr-2" />
                 {t('rewards.claimNow', 'Claim CAMLY')}
               </Button>
             </motion.div>
@@ -199,14 +202,14 @@ export function ClaimModal({ open, onOpenChange, greenPoints, walletAddress }: C
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: 'spring', duration: 0.5 }}
-                  className="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4"
+                  className="w-20 h-20 mx-auto mb-4 flex items-center justify-center"
                 >
-                  <Check className="h-8 w-8 text-green-600 dark:text-green-400" />
+                  <CamlyCoinIcon size="xl" animated />
                 </motion.div>
-                <h3 className="text-lg font-semibold text-green-600 dark:text-green-400">
+                <h3 className="text-lg font-semibold text-yellow-600 dark:text-yellow-400">
                   {t('rewards.claimSuccess', 'Claim Successful!')}
                 </h3>
-                <p className="text-3xl font-bold mt-2">
+                <p className="text-3xl font-bold mt-2 text-yellow-600 dark:text-yellow-400">
                   {result.camlyAmount.toLocaleString()} CAMLY
                 </p>
               </div>

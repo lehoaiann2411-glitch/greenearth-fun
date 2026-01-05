@@ -19,11 +19,10 @@ import {
   Calendar,
   ArrowRight,
   MapPin,
-  Coins,
 } from 'lucide-react';
 import { getRankByPoints, getNextRank, getProgressToNextRank, getPointsToNextRank } from '@/lib/greenRanks';
 import { formatCamly } from '@/lib/camlyCoin';
-import { CoinAnimation } from '@/components/rewards/CoinAnimation';
+import { CamlyCoinIcon } from '@/components/rewards/CamlyCoinIcon';
 import { format } from 'date-fns';
 import { vi, enUS } from 'date-fns/locale';
 
@@ -130,7 +129,7 @@ export default function Dashboard() {
           {/* Camly Coin Card */}
           <Card className="bg-gradient-to-br from-yellow-50 to-amber-100 dark:from-yellow-950/50 dark:to-amber-900/50 border-yellow-200 dark:border-yellow-800">
             <CardContent className="flex items-center gap-4 p-6">
-              <CoinAnimation size="md" animated />
+              <CamlyCoinIcon size="lg" animated />
               <div>
                 <p className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{formatCamly(camlyBalance)}</p>
                 <p className="text-sm text-muted-foreground">Camly Coin</p>
