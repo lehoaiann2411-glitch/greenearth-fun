@@ -90,9 +90,9 @@ export default function Auth() {
     
     setLoading(true);
     const { error } = await signUp(email, password, fullName, accountType);
-    setLoading(false);
     
     if (error) {
+      setLoading(false);
       let message = error.message;
       if (error.message.includes('already registered')) {
         message = 'Email này đã được đăng ký. Vui lòng đăng nhập hoặc sử dụng email khác.';
@@ -103,10 +103,23 @@ export default function Auth() {
         description: message,
       });
     } else {
-      toast({
-        title: 'Đăng ký thành công!',
-        description: 'Vui lòng kiểm tra email để xác nhận tài khoản.',
-      });
+      // Auto login after signup
+      const { error: signInError } = await signIn(email, password);
+      setLoading(false);
+      
+      if (signInError) {
+        toast({
+          title: 'Đăng ký thành công!',
+          description: 'Vui lòng đăng nhập với tài khoản vừa tạo.',
+        });
+        setActiveTab('login');
+      } else {
+        toast({
+          title: 'Chào mừng bạn đến Green Earth! 🌱',
+          description: 'Tài khoản đã được tạo thành công.',
+        });
+        navigate('/dashboard');
+      }
     }
   };
 
