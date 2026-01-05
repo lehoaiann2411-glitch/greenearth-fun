@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { TreePine, Leaf, Award, TrendingUp } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -18,6 +19,8 @@ interface PersonalImpactProps {
 }
 
 export function PersonalImpact({ stats, isLoading }: PersonalImpactProps) {
+  const { t } = useTranslation();
+  
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -41,7 +44,7 @@ export function PersonalImpact({ stats, isLoading }: PersonalImpactProps) {
     return (
       <Card>
         <CardContent className="py-12 text-center">
-          <p className="text-muted-foreground">Không có dữ liệu</p>
+          <p className="text-muted-foreground">{t('impact.noData')}</p>
         </CardContent>
       </Card>
     );
@@ -49,28 +52,28 @@ export function PersonalImpact({ stats, isLoading }: PersonalImpactProps) {
 
   const statCards = [
     {
-      title: 'Camly Coin',
+      title: t('impact.camlyCoin'),
       value: formatCamly(stats.camlyBalance || 0),
       icon: () => <CamlyCoinIcon size="sm" />,
       color: 'text-yellow-600',
       bgColor: 'bg-yellow-500/10',
     },
     {
-      title: 'Cây đã trồng',
+      title: t('impact.treesPlanted'),
       value: stats.treesPlanted.toString(),
       icon: TreePine,
       color: 'text-green-600',
       bgColor: 'bg-green-500/10',
     },
     {
-      title: 'CO₂ hấp thụ/năm',
+      title: t('impact.co2AbsorbedYear'),
       value: formatCO2(stats.co2Absorbed),
       icon: Leaf,
       color: 'text-emerald-600',
       bgColor: 'bg-emerald-500/10',
     },
     {
-      title: 'Chiến dịch',
+      title: t('impact.campaigns'),
       value: stats.campaignsJoined.toString(),
       icon: Award,
       color: 'text-purple-600',
@@ -81,6 +84,7 @@ export function PersonalImpact({ stats, isLoading }: PersonalImpactProps) {
   // Calculate next milestone
   const nextTreeMilestone = Math.ceil((stats.treesPlanted + 1) / 10) * 10;
   const treeProgress = (stats.treesPlanted / nextTreeMilestone) * 100;
+  const nextMilestoneText = t('impact.nextMilestone', { count: nextTreeMilestone });
 
   return (
     <div className="space-y-6">
@@ -110,14 +114,14 @@ export function PersonalImpact({ stats, isLoading }: PersonalImpactProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingUp className="h-5 w-5 text-primary" />
-            Tiến độ trồng cây
+            {t('impact.plantingProgress')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
             <div className="flex justify-between mb-2">
               <span className="text-sm text-muted-foreground">
-                Mốc tiếp theo: {nextTreeMilestone} cây
+                {nextMilestoneText}
               </span>
               <span className="text-sm font-medium">
                 {stats.treesPlanted}/{nextTreeMilestone}

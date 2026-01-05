@@ -29,7 +29,7 @@ export default function ImpactDashboard() {
             {t('impact.globalTitle')}
           </h1>
           <p className="text-muted-foreground mt-2">
-            Theo dõi tác động môi trường của cộng đồng Green Earth
+            {t('impact.description')}
           </p>
         </div>
 
@@ -38,19 +38,19 @@ export default function ImpactDashboard() {
           <TabsList className="grid w-full max-w-md grid-cols-4">
             <TabsTrigger value="global" className="gap-2">
               <Globe className="h-4 w-4" />
-              <span className="hidden sm:inline">Toàn cầu</span>
+              <span className="hidden sm:inline">{t('impact.tabs.global')}</span>
             </TabsTrigger>
             <TabsTrigger value="personal" className="gap-2" disabled={!user}>
               <User className="h-4 w-4" />
-              <span className="hidden sm:inline">Cá nhân</span>
+              <span className="hidden sm:inline">{t('impact.tabs.personal')}</span>
             </TabsTrigger>
             <TabsTrigger value="map" className="gap-2">
               <MapIcon className="h-4 w-4" />
-              <span className="hidden sm:inline">Bản đồ</span>
+              <span className="hidden sm:inline">{t('impact.tabs.map')}</span>
             </TabsTrigger>
             <TabsTrigger value="calculator" className="gap-2">
               <Calculator className="h-4 w-4" />
-              <span className="hidden sm:inline">Tính CO₂</span>
+              <span className="hidden sm:inline">{t('impact.tabs.calculator')}</span>
             </TabsTrigger>
           </TabsList>
 
@@ -68,7 +68,7 @@ export default function ImpactDashboard() {
                 <CardContent className="py-12 text-center">
                   <User className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                   <p className="text-muted-foreground">
-                    Đăng nhập để xem tác động cá nhân của bạn
+                    {t('impact.loginToSee')}
                   </p>
                 </CardContent>
               </Card>

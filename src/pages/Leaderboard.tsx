@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Layout } from '@/components/layout/Layout';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLeaderboard, LeaderboardPeriod } from '@/hooks/useLeaderboard';
@@ -74,6 +75,7 @@ function ChampionConfetti() {
 }
 
 export default function Leaderboard() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [period, setPeriod] = useState<LeaderboardPeriod>('all');
   const { data: leaderboard, isLoading } = useLeaderboard(period);
@@ -190,7 +192,7 @@ export default function Leaderboard() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
             >
-              Bảng Xếp Hạng Camly Coin
+              {t('leaderboard.title')}
             </motion.h1>
             <motion.p 
               className="mt-3 text-lg text-white/90 font-medium drop-shadow-md"
@@ -198,7 +200,7 @@ export default function Leaderboard() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
             >
-              Top những người sở hữu nhiều Camly Coin nhất
+              {t('leaderboard.description')}
             </motion.p>
           </div>
 
@@ -214,19 +216,19 @@ export default function Leaderboard() {
                   value="week"
                   className="rounded-full px-4 py-2.5 text-white/80 font-medium transition-all data-[state=active]:bg-gradient-to-r data-[state=active]:from-yellow-400 data-[state=active]:to-amber-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-yellow-500/30"
                 >
-                  Tuần này
+                  {t('leaderboard.thisWeek')}
                 </TabsTrigger>
                 <TabsTrigger 
                   value="month"
                   className="rounded-full px-4 py-2.5 text-white/80 font-medium transition-all data-[state=active]:bg-gradient-to-r data-[state=active]:from-yellow-400 data-[state=active]:to-amber-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-yellow-500/30"
                 >
-                  Tháng này
+                  {t('leaderboard.thisMonth')}
                 </TabsTrigger>
                 <TabsTrigger 
                   value="all"
                   className="rounded-full px-4 py-2.5 text-white/80 font-medium transition-all data-[state=active]:bg-gradient-to-r data-[state=active]:from-yellow-400 data-[state=active]:to-amber-500 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-yellow-500/30"
                 >
-                  Tất cả
+                  {t('leaderboard.allTime')}
                 </TabsTrigger>
               </TabsList>
             </Tabs>
@@ -241,7 +243,7 @@ export default function Leaderboard() {
           >
             <div className="flex items-center gap-3 mb-6">
               <CamlyCoinIcon size="md" animated />
-              <h2 className="text-2xl font-bold text-white">Top Ranking</h2>
+              <h2 className="text-2xl font-bold text-white">{t('leaderboard.topRanking')}</h2>
             </div>
 
             {isLoading ? (
@@ -256,7 +258,7 @@ export default function Leaderboard() {
             ) : leaderboard?.length === 0 ? (
               <div className="py-16 text-center text-white/70">
                 <Trophy className="h-16 w-16 mx-auto mb-4 opacity-50" />
-                <p className="text-lg">Chưa có dữ liệu xếp hạng</p>
+                <p className="text-lg">{t('leaderboard.noData')}</p>
               </div>
             ) : (
               <AnimatePresence mode="wait">
@@ -355,19 +357,19 @@ export default function Leaderboard() {
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2">
                                 <p className={`font-bold truncate group-hover:underline ${isChampion ? 'text-xl text-gray-900' : 'text-lg text-gray-800'}`}>
-                                  {entry.full_name || 'Người dùng ẩn danh'}
+                                  {entry.full_name || t('leaderboard.anonymousUser')}
                                 </p>
                                 {isCurrentUser && (
-                                  <Badge className="shrink-0 bg-green-500 text-white">Bạn</Badge>
+                                  <Badge className="shrink-0 bg-green-500 text-white">{t('leaderboard.you')}</Badge>
                                 )}
                               </div>
                               <div className="flex items-center gap-2">
                                 <p className="text-sm text-gray-500">
-                                  {entry.trees_planted} cây đã trồng
+                                  {entry.trees_planted} {t('leaderboard.treesPlanted')}
                                 </p>
                                 <span className="text-xs text-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
                                   <ExternalLink className="h-3 w-3" />
-                                  Xem hồ sơ
+                                  {t('leaderboard.viewProfile')}
                                 </span>
                               </div>
                             </div>
