@@ -266,12 +266,6 @@ export default function Profile() {
               </Link>
             </Button>
             <Button asChild variant="outline" className="gap-2">
-              <Link to="/nft-gallery">
-                <TreePine className="h-4 w-4" />
-                {t('impact.nftsOwned', 'NFT Collection')}
-              </Link>
-            </Button>
-            <Button asChild variant="outline" className="gap-2">
               <Link to="/leaderboard">
                 <Trophy className="h-4 w-4" />
                 {t('nav.leaderboard', 'Leaderboard')}

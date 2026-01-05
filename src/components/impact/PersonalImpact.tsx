@@ -1,4 +1,4 @@
-import { TreePine, Leaf, Award, Hexagon, Star, TrendingUp } from 'lucide-react';
+import { TreePine, Leaf, Award, Star, TrendingUp } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -12,7 +12,6 @@ interface PersonalImpactProps {
     forestArea: number;
     greenPoints: number;
     campaignsJoined: number;
-    nftsOwned: number;
     greenReputation: number;
   } | null | undefined;
   isLoading: boolean;
@@ -25,7 +24,7 @@ export function PersonalImpact({ stats, isLoading }: PersonalImpactProps) {
     return (
       <div className="space-y-6">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {[...Array(6)].map((_, i) => (
+          {[...Array(5)].map((_, i) => (
             <Card key={i}>
               <CardHeader className="pb-2">
                 <Skeleton className="h-4 w-24" />
@@ -78,13 +77,6 @@ export function PersonalImpact({ stats, isLoading }: PersonalImpactProps) {
       icon: Award,
       color: 'text-purple-600',
       bgColor: 'bg-purple-500/10',
-    },
-    {
-      title: 'Green NFTs',
-      value: stats.nftsOwned.toString(),
-      icon: Hexagon,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-500/10',
     },
     {
       title: 'Uy tín xanh',

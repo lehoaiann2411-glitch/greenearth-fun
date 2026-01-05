@@ -9,7 +9,6 @@ interface GlobalStats {
   totalForestArea: number;
   totalUsers: number;
   totalCampaigns: number;
-  totalNFTs: number;
 }
 
 interface PersonalStats {
@@ -18,7 +17,6 @@ interface PersonalStats {
   forestArea: number;
   greenPoints: number;
   campaignsJoined: number;
-  nftsOwned: number;
   greenReputation: number;
 }
 
@@ -46,18 +44,12 @@ export function useGlobalStats() {
         .select('*', { count: 'exact', head: true })
         .eq('status', 'active');
 
-      // Get total NFTs
-      const { count: totalNFTs } = await supabase
-        .from('green_nfts')
-        .select('*', { count: 'exact', head: true });
-
       const stats: GlobalStats = {
         totalTrees,
         totalCO2: calculateCO2Absorbed(totalTrees),
         totalForestArea: calculateForestArea(totalTrees),
         totalUsers: totalUsers || 0,
         totalCampaigns: totalCampaigns || 0,
-        totalNFTs: totalNFTs || 0,
       };
 
       return stats;
@@ -82,19 +74,12 @@ export function usePersonalStats() {
 
       if (profileError) throw profileError;
 
-      // Get NFT count
-      const { count: nftsOwned } = await supabase
-        .from('green_nfts')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', user.id);
-
       const stats: PersonalStats = {
         treesPlanted: profile?.trees_planted || 0,
         co2Absorbed: calculateCO2Absorbed(profile?.trees_planted || 0),
         forestArea: calculateForestArea(profile?.trees_planted || 0),
         greenPoints: profile?.green_points || 0,
         campaignsJoined: profile?.campaigns_joined || 0,
-        nftsOwned: nftsOwned || 0,
         greenReputation: profile?.green_reputation || 0,
       };
 
@@ -104,18 +89,3 @@ export function usePersonalStats() {
   });
 }
 
-export function useTreeLocations() {
-  return useQuery({
-    queryKey: ['tree-locations'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('green_nfts')
-        .select('id, tree_type, latitude, longitude, location, planted_at, verified')
-        .not('latitude', 'is', null)
-        .not('longitude', 'is', null);
-
-      if (error) throw error;
-      return data;
-    },
-  });
-}

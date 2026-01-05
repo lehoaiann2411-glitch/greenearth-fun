@@ -11,7 +11,7 @@ import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import ProfileEdit from "./pages/ProfileEdit";
 import Leaderboard from "./pages/Leaderboard";
-import NFTGallery from "./pages/NFTGallery";
+
 import Campaigns from "./pages/Campaigns";
 import CampaignDetail from "./pages/CampaignDetail";
 import CampaignCreate from "./pages/CampaignCreate";
@@ -40,7 +40,7 @@ const App = () => (
               <Route path="/profile" element={<Profile />} />
               <Route path="/profile/edit" element={<ProfileEdit />} />
               <Route path="/leaderboard" element={<Leaderboard />} />
-              <Route path="/nft-gallery" element={<NFTGallery />} />
+              
               <Route path="/campaigns" element={<Campaigns />} />
               <Route path="/campaigns/create" element={<CampaignCreate />} />
               <Route path="/campaigns/:id" element={<CampaignDetail />} />
