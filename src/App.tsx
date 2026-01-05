@@ -25,6 +25,8 @@ import GroupCreate from "./pages/GroupCreate";
 import GroupDetail from "./pages/GroupDetail";
 import Messages from "./pages/Messages";
 import Friends from "./pages/Friends";
+import Reels from "./pages/Reels";
+import ReelCreate from "./pages/ReelCreate";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -62,6 +64,11 @@ const App = () => (
               <Route path="/messages" element={<Messages />} />
               <Route path="/messages/:conversationId" element={<Messages />} />
               <Route path="/friends" element={<Friends />} />
+              
+              {/* Reels Routes */}
+              <Route path="/reels" element={<Reels />} />
+              <Route path="/reels/create" element={<ReelCreate />} />
+              <Route path="/reels/:reelId" element={<Reels />} />
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
