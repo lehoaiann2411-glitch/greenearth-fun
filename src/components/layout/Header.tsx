@@ -44,7 +44,6 @@ export function Header() {
     }
   }, [isDark]);
 
-  // Initialize theme from localStorage
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
@@ -64,10 +63,10 @@ export function Header() {
   };
 
   const navLinks = [
-    { href: '/feed', label: 'Feed' },
-    { href: '/reels', label: 'Reels', icon: PlayCircle },
+    { href: '/feed', label: t('nav.feed') },
+    { href: '/reels', label: t('nav.reels'), icon: PlayCircle },
     { href: '/campaigns', label: t('nav.campaigns') },
-    { href: '/groups', label: 'Cộng đồng', icon: Users },
+    { href: '/groups', label: t('nav.groups'), icon: Users },
     { href: '/impact', label: t('nav.impact') },
     { href: '/rewards', label: t('nav.rewards'), icon: Coins },
     { href: '/leaderboard', label: t('nav.leaderboard') },
@@ -75,16 +74,11 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full">
-      {/* Glass morphism background */}
       <div className="absolute inset-0 bg-white/10 backdrop-blur-lg border-b border-white/20" />
       
       <div className="container relative flex h-28 items-center justify-between">
-        {/* Logo with Glow Effect */}
         <Link to="/" className="flex items-center group relative">
-          {/* Quầng ánh sáng phía sau */}
           <div className="absolute inset-0 bg-[radial-gradient(circle,_rgba(255,255,255,0.5)_0%,_rgba(74,222,128,0.4)_40%,_transparent_70%)] blur-2xl scale-[2.5] animate-glow-pulse pointer-events-none" />
-          
-          {/* Logo chính */}
           <img 
             src={greenEarthLogo} 
             alt="Green Earth" 
@@ -92,7 +86,6 @@ export function Header() {
           />
         </Link>
 
-        {/* Desktop Navigation */}
         <nav className="hidden items-center gap-1 md:flex">
           {navLinks.map((link) => (
             <Link
@@ -106,15 +99,13 @@ export function Header() {
           ))}
         </nav>
 
-        {/* Auth Buttons / User Menu */}
         <div className="hidden items-center gap-2 md:flex">
-          {/* Dark Mode Toggle */}
           <Button
             variant="ghost"
             size="icon"
             onClick={toggleDarkMode}
             className="text-white hover:bg-white/10"
-            title={isDark ? 'Chế độ sáng' : 'Chế độ tối'}
+            title={isDark ? t('header.lightMode') : t('header.darkMode')}
           >
             {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
           </Button>
@@ -122,13 +113,7 @@ export function Header() {
           <ConnectWallet />
           {user ? (
             <div className="flex items-center gap-2">
-              {/* Messages Icon */}
-              <Button
-                variant="ghost"
-                size="icon"
-                asChild
-                className="relative text-white hover:bg-white/10"
-              >
+              <Button variant="ghost" size="icon" asChild className="relative text-white hover:bg-white/10">
                 <Link to="/messages">
                   <MessageCircle className="h-5 w-5" />
                   {unreadMessages && unreadMessages > 0 && (
@@ -139,13 +124,7 @@ export function Header() {
                 </Link>
               </Button>
 
-              {/* Friend Requests Icon */}
-              <Button
-                variant="ghost"
-                size="icon"
-                asChild
-                className="relative text-white hover:bg-white/10"
-              >
+              <Button variant="ghost" size="icon" asChild className="relative text-white hover:bg-white/10">
                 <Link to="/friends">
                   <UserPlus className="h-5 w-5" />
                   {friendRequests && friendRequests > 0 && (
@@ -159,10 +138,7 @@ export function Header() {
               <NotificationBell />
               <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button 
-                  variant="ghost" 
-                  className="relative h-10 w-10 rounded-full ring-2 ring-white/30 hover:ring-white/50 transition-all"
-                >
+                <Button variant="ghost" className="relative h-10 w-10 rounded-full ring-2 ring-white/30 hover:ring-white/50 transition-all">
                   <Avatar className="h-10 w-10">
                     <AvatarImage src="" alt={user.email || ''} />
                     <AvatarFallback className="bg-primary text-primary-foreground">
@@ -174,59 +150,46 @@ export function Header() {
               <DropdownMenuContent className="w-56 glass-card" align="end">
                 <div className="flex items-center justify-start gap-2 p-2">
                   <div className="flex flex-col space-y-1 leading-none">
-                    <p className="font-medium">{user.user_metadata?.full_name || 'Người dùng'}</p>
-                    <p className="w-[200px] truncate text-sm text-muted-foreground">
-                      {user.email}
-                    </p>
+                    <p className="font-medium">{user.user_metadata?.full_name || t('common.user')}</p>
+                    <p className="w-[200px] truncate text-sm text-muted-foreground">{user.email}</p>
                   </div>
                 </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link to="/dashboard" className="cursor-pointer flex items-center gap-2">
                     <LayoutDashboard className="h-4 w-4" />
-                    Dashboard
+                    {t('nav.dashboard')}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to="/profile" className="cursor-pointer flex items-center gap-2">
                     <User className="h-4 w-4" />
-                    Hồ sơ
+                    {t('nav.profile')}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem 
-                  onClick={handleSignOut} 
-                  className="cursor-pointer text-destructive focus:text-destructive flex items-center gap-2"
-                >
+                <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-destructive focus:text-destructive flex items-center gap-2">
                   <LogOut className="h-4 w-4" />
-                  Đăng xuất
+                  {t('nav.logout')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
             </div>
           ) : (
             <>
-              <Button 
-                variant="ghost" 
-                asChild
-                className="text-white hover:bg-white/10 hover:text-white"
-              >
-                <Link to="/auth">Đăng nhập</Link>
+              <Button variant="ghost" asChild className="text-white hover:bg-white/10 hover:text-white">
+                <Link to="/auth">{t('nav.login')}</Link>
               </Button>
-              <Button 
-                asChild
-                className="btn-glow bg-white text-primary hover:bg-white/90 font-semibold"
-              >
+              <Button asChild className="btn-glow bg-white text-primary hover:bg-white/90 font-semibold">
                 <Link to="/auth?mode=signup">
                   <Leaf className="h-4 w-4 mr-1" />
-                  Tham gia ngay
+                  {t('header.joinNow')}
                 </Link>
               </Button>
             </>
           )}
         </div>
 
-        {/* Mobile Menu Button */}
         <button
           className="flex h-10 w-10 items-center justify-center rounded-md md:hidden text-white hover:bg-white/10 transition-colors"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -235,7 +198,6 @@ export function Header() {
         </button>
       </div>
 
-      {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden absolute top-16 inset-x-0 bg-white/95 backdrop-blur-lg border-b border-white/20 animate-fade-in-up">
           <nav className="container py-4 flex flex-col gap-2">
@@ -252,44 +214,28 @@ export function Header() {
             <div className="border-t border-border my-2" />
             {user ? (
               <>
-                <Link
-                  to="/dashboard"
-                  className="px-4 py-3 rounded-lg text-foreground hover:bg-primary/10 transition-colors font-medium flex items-center gap-2"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
+                <Link to="/dashboard" className="px-4 py-3 rounded-lg text-foreground hover:bg-primary/10 transition-colors font-medium flex items-center gap-2" onClick={() => setMobileMenuOpen(false)}>
                   <LayoutDashboard className="h-4 w-4" />
-                  Dashboard
+                  {t('nav.dashboard')}
                 </Link>
-                <Link
-                  to="/profile"
-                  className="px-4 py-3 rounded-lg text-foreground hover:bg-primary/10 transition-colors font-medium flex items-center gap-2"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
+                <Link to="/profile" className="px-4 py-3 rounded-lg text-foreground hover:bg-primary/10 transition-colors font-medium flex items-center gap-2" onClick={() => setMobileMenuOpen(false)}>
                   <User className="h-4 w-4" />
-                  Hồ sơ
+                  {t('nav.profile')}
                 </Link>
-                <button
-                  onClick={() => {
-                    handleSignOut();
-                    setMobileMenuOpen(false);
-                  }}
-                  className="px-4 py-3 rounded-lg text-destructive hover:bg-destructive/10 transition-colors font-medium flex items-center gap-2 text-left"
-                >
+                <button onClick={() => { handleSignOut(); setMobileMenuOpen(false); }} className="px-4 py-3 rounded-lg text-destructive hover:bg-destructive/10 transition-colors font-medium flex items-center gap-2 text-left">
                   <LogOut className="h-4 w-4" />
-                  Đăng xuất
+                  {t('nav.logout')}
                 </button>
               </>
             ) : (
               <div className="flex flex-col gap-2 px-4">
                 <Button variant="outline" asChild className="w-full">
-                  <Link to="/auth" onClick={() => setMobileMenuOpen(false)}>
-                    Đăng nhập
-                  </Link>
+                  <Link to="/auth" onClick={() => setMobileMenuOpen(false)}>{t('nav.login')}</Link>
                 </Button>
                 <Button asChild className="w-full btn-glow">
                   <Link to="/auth?mode=signup" onClick={() => setMobileMenuOpen(false)}>
                     <Leaf className="h-4 w-4 mr-1" />
-                    Tham gia ngay
+                    {t('header.joinNow')}
                   </Link>
                 </Button>
               </div>
