@@ -75,9 +75,9 @@ export default function Leaderboard() {
           {/* Leaderboard */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <CamlyCoinIcon size="sm" />
-                Top 50 Camly Coin
+            <CardTitle className="flex items-center gap-2">
+              <CamlyCoinIcon size="sm" />
+              Top Ranking
               </CardTitle>
               <CardDescription>
                 Xếp hạng dựa trên số Camly Coin sở hữu
