@@ -217,6 +217,78 @@ export type Database = {
           },
         ]
       }
+      conversation_participants: {
+        Row: {
+          conversation_id: string
+          id: string
+          is_muted: boolean | null
+          joined_at: string | null
+          last_read_at: string | null
+          user_id: string
+        }
+        Insert: {
+          conversation_id: string
+          id?: string
+          is_muted?: boolean | null
+          joined_at?: string | null
+          last_read_at?: string | null
+          user_id: string
+        }
+        Update: {
+          conversation_id?: string
+          id?: string
+          is_muted?: boolean | null
+          joined_at?: string | null
+          last_read_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversation_participants_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversation_participants_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      conversations: {
+        Row: {
+          created_at: string | null
+          id: string
+          last_message_at: string | null
+          last_message_preview: string | null
+          name: string | null
+          type: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          last_message_at?: string | null
+          last_message_preview?: string | null
+          name?: string | null
+          type?: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          last_message_at?: string | null
+          last_message_preview?: string | null
+          name?: string | null
+          type?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       daily_limits: {
         Row: {
           created_at: string | null
@@ -390,6 +462,48 @@ export type Database = {
           {
             foreignKeyName: "events_created_by_fkey"
             columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      friendships: {
+        Row: {
+          accepted_at: string | null
+          addressee_id: string
+          created_at: string | null
+          id: string
+          requester_id: string
+          status: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          addressee_id: string
+          created_at?: string | null
+          id?: string
+          requester_id: string
+          status?: string
+        }
+        Update: {
+          accepted_at?: string | null
+          addressee_id?: string
+          created_at?: string | null
+          id?: string
+          requester_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "friendships_addressee_id_fkey"
+            columns: ["addressee_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "friendships_requester_id_fkey"
+            columns: ["requester_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -852,6 +966,60 @@ export type Database = {
           },
         ]
       }
+      messages: {
+        Row: {
+          camly_amount: number | null
+          content: string | null
+          conversation_id: string
+          created_at: string | null
+          id: string
+          is_read: boolean | null
+          media_url: string | null
+          message_type: string | null
+          sender_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          camly_amount?: number | null
+          content?: string | null
+          conversation_id: string
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          media_url?: string | null
+          message_type?: string | null
+          sender_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          camly_amount?: number | null
+          content?: string | null
+          conversation_id?: string
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          media_url?: string | null
+          message_type?: string | null
+          sender_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notifications: {
         Row: {
           actor_id: string | null
@@ -1056,6 +1224,51 @@ export type Database = {
           },
         ]
       }
+      post_shares: {
+        Row: {
+          camly_earned: number | null
+          created_at: string | null
+          id: string
+          original_post_id: string
+          share_caption: string | null
+          shared_by: string
+          visibility: string | null
+        }
+        Insert: {
+          camly_earned?: number | null
+          created_at?: string | null
+          id?: string
+          original_post_id: string
+          share_caption?: string | null
+          shared_by: string
+          visibility?: string | null
+        }
+        Update: {
+          camly_earned?: number | null
+          created_at?: string | null
+          id?: string
+          original_post_id?: string
+          share_caption?: string | null
+          shared_by?: string
+          visibility?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_shares_original_post_id_fkey"
+            columns: ["original_post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_shares_shared_by_fkey"
+            columns: ["shared_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       posts: {
         Row: {
           campaign_id: string | null
@@ -1064,10 +1277,13 @@ export type Database = {
           created_at: string
           id: string
           image_url: string | null
+          is_repost: boolean | null
           likes_count: number
           location_name: string | null
           media_urls: string[] | null
+          original_post_id: string | null
           post_type: string | null
+          share_caption: string | null
           shares_count: number | null
           updated_at: string
           user_id: string
@@ -1080,10 +1296,13 @@ export type Database = {
           created_at?: string
           id?: string
           image_url?: string | null
+          is_repost?: boolean | null
           likes_count?: number
           location_name?: string | null
           media_urls?: string[] | null
+          original_post_id?: string | null
           post_type?: string | null
+          share_caption?: string | null
           shares_count?: number | null
           updated_at?: string
           user_id: string
@@ -1096,10 +1315,13 @@ export type Database = {
           created_at?: string
           id?: string
           image_url?: string | null
+          is_repost?: boolean | null
           likes_count?: number
           location_name?: string | null
           media_urls?: string[] | null
+          original_post_id?: string | null
           post_type?: string | null
+          share_caption?: string | null
           shares_count?: number | null
           updated_at?: string
           user_id?: string
@@ -1113,6 +1335,13 @@ export type Database = {
             referencedRelation: "campaigns"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "posts_original_post_id_fkey"
+            columns: ["original_post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
         ]
       }
       profiles: {
@@ -1122,16 +1351,20 @@ export type Database = {
           bio: string | null
           camly_balance: number | null
           campaigns_joined: number
+          cover_photo_url: string | null
           created_at: string
           current_streak: number | null
+          education: string | null
           followers_count: number | null
           following_count: number | null
+          friends_count: number | null
           full_name: string | null
           green_points: number
           green_reputation: number | null
           id: string
           last_check_in: string | null
           location: string | null
+          show_online_status: boolean | null
           total_camly_claimed: number | null
           total_likes_given: number | null
           total_posts: number | null
@@ -1139,6 +1372,8 @@ export type Database = {
           trees_planted: number
           updated_at: string
           wallet_address: string | null
+          website: string | null
+          work: string | null
         }
         Insert: {
           account_type?: Database["public"]["Enums"]["account_type"]
@@ -1146,16 +1381,20 @@ export type Database = {
           bio?: string | null
           camly_balance?: number | null
           campaigns_joined?: number
+          cover_photo_url?: string | null
           created_at?: string
           current_streak?: number | null
+          education?: string | null
           followers_count?: number | null
           following_count?: number | null
+          friends_count?: number | null
           full_name?: string | null
           green_points?: number
           green_reputation?: number | null
           id: string
           last_check_in?: string | null
           location?: string | null
+          show_online_status?: boolean | null
           total_camly_claimed?: number | null
           total_likes_given?: number | null
           total_posts?: number | null
@@ -1163,6 +1402,8 @@ export type Database = {
           trees_planted?: number
           updated_at?: string
           wallet_address?: string | null
+          website?: string | null
+          work?: string | null
         }
         Update: {
           account_type?: Database["public"]["Enums"]["account_type"]
@@ -1170,16 +1411,20 @@ export type Database = {
           bio?: string | null
           camly_balance?: number | null
           campaigns_joined?: number
+          cover_photo_url?: string | null
           created_at?: string
           current_streak?: number | null
+          education?: string | null
           followers_count?: number | null
           following_count?: number | null
+          friends_count?: number | null
           full_name?: string | null
           green_points?: number
           green_reputation?: number | null
           id?: string
           last_check_in?: string | null
           location?: string | null
+          show_online_status?: boolean | null
           total_camly_claimed?: number | null
           total_likes_given?: number | null
           total_posts?: number | null
@@ -1187,6 +1432,8 @@ export type Database = {
           trees_planted?: number
           updated_at?: string
           wallet_address?: string | null
+          website?: string | null
+          work?: string | null
         }
         Relationships: []
       }
@@ -1449,6 +1696,35 @@ export type Database = {
             foreignKeyName: "user_follows_following_id_fkey"
             columns: ["following_id"]
             isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_online_status: {
+        Row: {
+          is_online: boolean | null
+          last_seen: string | null
+          show_status: boolean | null
+          user_id: string
+        }
+        Insert: {
+          is_online?: boolean | null
+          last_seen?: string | null
+          show_status?: boolean | null
+          user_id: string
+        }
+        Update: {
+          is_online?: boolean | null
+          last_seen?: string | null
+          show_status?: boolean | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_online_status_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
