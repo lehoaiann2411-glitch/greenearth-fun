@@ -3,15 +3,15 @@
 @tailwind utilities;
 
 /* Green Earth Platform Design System
-   Primary: Deep Forest Green
-   Accent: Vibrant Leaf Green
-   All colors in HSL format
+   Enhanced with Nature Background & Glass Morphism
+   Primary: Forest Green #228B22
+   Accent: Light Green #90EE90
 */
 
 @layer base {
   :root {
     --background: 120 20% 98%;
-    --foreground: 150 30% 10%;
+    --foreground: 150 40% 12%;
 
     --card: 0 0% 100%;
     --card-foreground: 150 30% 10%;
@@ -19,7 +19,8 @@
     --popover: 0 0% 100%;
     --popover-foreground: 150 30% 10%;
 
-    --primary: 142 70% 35%;
+    /* Forest Green #228B22 */
+    --primary: 120 61% 34%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 120 25% 92%;
@@ -28,43 +29,50 @@
     --muted: 120 15% 94%;
     --muted-foreground: 150 10% 40%;
 
-    --accent: 80 65% 45%;
-    --accent-foreground: 0 0% 100%;
+    /* Light Green #90EE90 */
+    --accent: 120 73% 75%;
+    --accent-foreground: 120 61% 20%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 120 20% 88%;
     --input: 120 20% 88%;
-    --ring: 142 70% 35%;
+    --ring: 120 61% 34%;
 
     --radius: 0.75rem;
 
     /* Custom Green Earth tokens */
     --earth: 30 40% 25%;
     --earth-foreground: 40 30% 95%;
-    --leaf: 100 60% 40%;
-    --leaf-foreground: 0 0% 100%;
-    --forest: 150 45% 20%;
-    --forest-foreground: 120 30% 95%;
+    --leaf: 120 73% 75%;
+    --leaf-foreground: 120 61% 20%;
+    --forest: 120 61% 34%;
+    --forest-foreground: 0 0% 100%;
     --sky: 200 70% 50%;
     --sky-foreground: 0 0% 100%;
     --sun: 45 95% 55%;
     --sun-foreground: 30 40% 15%;
 
+    /* Glass morphism tokens */
+    --glass-bg: 0 0% 100% / 0.7;
+    --glass-border: 120 30% 80% / 0.3;
+    --glass-shadow: 120 61% 34% / 0.1;
+
     /* Gradient tokens */
-    --gradient-forest: linear-gradient(135deg, hsl(150 45% 20%) 0%, hsl(142 70% 35%) 100%);
-    --gradient-leaf: linear-gradient(135deg, hsl(142 70% 35%) 0%, hsl(80 65% 45%) 100%);
+    --gradient-forest: linear-gradient(135deg, hsl(120 61% 34%) 0%, hsl(120 73% 75%) 100%);
+    --gradient-leaf: linear-gradient(135deg, hsl(120 73% 75%) 0%, hsl(80 65% 45%) 100%);
     --gradient-earth: linear-gradient(180deg, hsl(120 20% 98%) 0%, hsl(120 25% 92%) 100%);
+    --gradient-glow: linear-gradient(135deg, hsl(120 61% 34%) 0%, hsl(120 73% 60%) 50%, hsl(120 61% 34%) 100%);
 
     --sidebar-background: 150 30% 8%;
     --sidebar-foreground: 120 20% 90%;
-    --sidebar-primary: 142 70% 45%;
+    --sidebar-primary: 120 61% 45%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 150 25% 15%;
     --sidebar-accent-foreground: 120 20% 90%;
     --sidebar-border: 150 20% 18%;
-    --sidebar-ring: 142 70% 45%;
+    --sidebar-ring: 120 61% 45%;
   }
 
   .dark {
@@ -77,7 +85,7 @@
     --popover: 150 25% 10%;
     --popover-foreground: 120 20% 95%;
 
-    --primary: 142 70% 45%;
+    --primary: 120 61% 45%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 150 20% 15%;
@@ -86,7 +94,7 @@
     --muted: 150 15% 18%;
     --muted-foreground: 120 10% 60%;
 
-    --accent: 80 55% 50%;
+    --accent: 120 60% 60%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 62% 40%;
@@ -94,28 +102,33 @@
 
     --border: 150 20% 18%;
     --input: 150 20% 18%;
-    --ring: 142 70% 45%;
+    --ring: 120 61% 45%;
 
     /* Custom Green Earth tokens - Dark mode */
     --earth: 30 35% 35%;
     --earth-foreground: 40 30% 95%;
-    --leaf: 100 55% 50%;
+    --leaf: 120 55% 55%;
     --leaf-foreground: 0 0% 100%;
-    --forest: 150 40% 30%;
+    --forest: 120 50% 40%;
     --forest-foreground: 120 30% 95%;
     --sky: 200 65% 55%;
     --sky-foreground: 0 0% 100%;
     --sun: 45 90% 60%;
     --sun-foreground: 30 40% 10%;
 
+    /* Glass morphism tokens - Dark */
+    --glass-bg: 150 30% 10% / 0.8;
+    --glass-border: 120 30% 30% / 0.3;
+    --glass-shadow: 120 61% 45% / 0.2;
+
     --sidebar-background: 150 30% 5%;
     --sidebar-foreground: 120 20% 90%;
-    --sidebar-primary: 142 70% 50%;
+    --sidebar-primary: 120 61% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 150 25% 12%;
     --sidebar-accent-foreground: 120 20% 90%;
     --sidebar-border: 150 20% 12%;
-    --sidebar-ring: 142 70% 50%;
+    --sidebar-ring: 120 61% 50%;
   }
 }
 
@@ -131,6 +144,7 @@
 }
 
 @layer utilities {
+  /* Gradient utilities */
   .gradient-forest {
     background: var(--gradient-forest);
   }
@@ -155,5 +169,159 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+  }
+
+  /* Glass morphism utilities */
+  .glass {
+    @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-lg;
+  }
+
+  .glass-card {
+    @apply bg-white/80 backdrop-blur-lg border border-white/30 shadow-xl;
+  }
+
+  .glass-dark {
+    @apply bg-black/30 backdrop-blur-md border border-white/10;
+  }
+
+  /* Glow effects */
+  .glow-green {
+    box-shadow: 0 0 20px hsl(120 61% 34% / 0.4), 0 0 40px hsl(120 73% 75% / 0.2);
+  }
+
+  .glow-green-sm {
+    box-shadow: 0 0 10px hsl(120 61% 34% / 0.3);
+  }
+
+  .hover-glow:hover {
+    box-shadow: 0 0 25px hsl(120 61% 34% / 0.5), 0 0 50px hsl(120 73% 75% / 0.3);
+  }
+
+  /* Animation utilities */
+  .animate-fade-in-up {
+    animation: fade-in-up 0.6s ease-out forwards;
+  }
+
+  .animate-glow-pulse {
+    animation: glow-pulse 2s ease-in-out infinite;
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .animate-leaf-float {
+    animation: leaf-float 4s ease-in-out infinite;
+  }
+
+  /* Animation delays */
+  .animation-delay-100 { animation-delay: 100ms; }
+  .animation-delay-200 { animation-delay: 200ms; }
+  .animation-delay-300 { animation-delay: 300ms; }
+  .animation-delay-400 { animation-delay: 400ms; }
+  .animation-delay-500 { animation-delay: 500ms; }
+  .animation-delay-700 { animation-delay: 700ms; }
+  .animation-delay-1000 { animation-delay: 1000ms; }
+
+  /* Nature background */
+  .nature-bg {
+    background-image: url('https://thumbs.dreamstime.com/b/serene-earth-day-green-nature-planet-earth-background-illustration-serene-earth-day-themed-background-showcasing-lush-369529167.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+  }
+
+  @media (max-width: 768px) {
+    .nature-bg {
+      background-attachment: scroll;
+    }
+  }
+
+  .nature-overlay {
+    background: linear-gradient(
+      to bottom,
+      hsl(120 61% 34% / 0.35),
+      hsl(120 40% 20% / 0.5) 50%,
+      hsl(120 30% 15% / 0.6)
+    );
+  }
+
+  /* Hover scale */
+  .hover-scale {
+    @apply transition-transform duration-300;
+  }
+
+  .hover-scale:hover {
+    @apply scale-105;
+  }
+
+  /* Eco badge */
+  .eco-badge {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium;
+    @apply bg-primary/10 text-primary border border-primary/20;
+  }
+}
+
+@layer components {
+  /* Glowing button component */
+  .btn-glow {
+    @apply relative overflow-hidden transition-all duration-300;
+    @apply bg-primary text-primary-foreground;
+    @apply hover:shadow-[0_0_25px_hsl(120_61%_34%/0.5),0_0_50px_hsl(120_73%_75%/0.3)];
+  }
+
+  .btn-glow::before {
+    content: '';
+    @apply absolute inset-0 opacity-0 transition-opacity duration-300;
+    background: linear-gradient(135deg, hsl(120 73% 75% / 0.3) 0%, transparent 50%, hsl(120 73% 75% / 0.3) 100%);
+  }
+
+  .btn-glow:hover::before {
+    @apply opacity-100;
+  }
+}
+
+/* Keyframes */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 5px hsl(120 73% 75% / 0.5);
+  }
+  50% {
+    box-shadow: 0 0 25px hsl(120 73% 75% / 0.8), 0 0 50px hsl(120 61% 34% / 0.4);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes leaf-float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-8px) rotate(3deg);
+  }
+  50% {
+    transform: translateY(-15px) rotate(0deg);
+  }
+  75% {
+    transform: translateY(-8px) rotate(-3deg);
   }
 }
