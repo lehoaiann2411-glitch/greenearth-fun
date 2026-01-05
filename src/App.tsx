@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { Web3Provider } from "@/contexts/Web3Context";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
@@ -16,6 +17,7 @@ import CampaignDetail from "./pages/CampaignDetail";
 import CampaignCreate from "./pages/CampaignCreate";
 import CampaignManage from "./pages/CampaignManage";
 import Community from "./pages/Community";
+import ImpactDashboard from "./pages/ImpactDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,22 +29,25 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/profile/edit" element={<ProfileEdit />} />
-            <Route path="/leaderboard" element={<Leaderboard />} />
-            <Route path="/nft-gallery" element={<NFTGallery />} />
-            <Route path="/campaigns" element={<Campaigns />} />
-            <Route path="/campaigns/create" element={<CampaignCreate />} />
-            <Route path="/campaigns/:id" element={<CampaignDetail />} />
-            <Route path="/campaigns/:id/manage" element={<CampaignManage />} />
-            <Route path="/community" element={<Community />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <Web3Provider>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/profile/edit" element={<ProfileEdit />} />
+              <Route path="/leaderboard" element={<Leaderboard />} />
+              <Route path="/nft-gallery" element={<NFTGallery />} />
+              <Route path="/campaigns" element={<Campaigns />} />
+              <Route path="/campaigns/create" element={<CampaignCreate />} />
+              <Route path="/campaigns/:id" element={<CampaignDetail />} />
+              <Route path="/campaigns/:id/manage" element={<CampaignManage />} />
+              <Route path="/community" element={<Community />} />
+              <Route path="/impact" element={<ImpactDashboard />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Web3Provider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

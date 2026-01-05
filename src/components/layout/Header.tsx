@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
-import { Leaf, Menu, X, User, LogOut, Settings, TreeDeciduous, LayoutDashboard } from 'lucide-react';
+import { Leaf, Menu, X, User, LogOut, TreeDeciduous, LayoutDashboard, Globe } from 'lucide-react';
 import { useState } from 'react';
 import {
   DropdownMenu,
@@ -11,6 +11,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { ConnectWallet } from '@/components/web3/ConnectWallet';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 
 export function Header() {
   const { user, signOut } = useAuth();
@@ -25,6 +27,7 @@ export function Header() {
   const navLinks = [
     { href: '/campaigns', label: 'Chiến dịch' },
     { href: '/community', label: 'Cộng đồng' },
+    { href: '/impact', label: 'Tác động' },
     { href: '/leaderboard', label: 'Bảng xếp hạng' },
     { href: '/nft-gallery', label: 'Green NFT' },
   ];
@@ -60,7 +63,9 @@ export function Header() {
         </nav>
 
         {/* Auth Buttons / User Menu */}
-        <div className="hidden items-center gap-3 md:flex">
+        <div className="hidden items-center gap-2 md:flex">
+          <LanguageSwitcher />
+          <ConnectWallet />
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

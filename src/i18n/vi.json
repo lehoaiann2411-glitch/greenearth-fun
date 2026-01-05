@@ -1,0 +1,84 @@
+{
+  "common": {
+    "loading": "Đang tải...",
+    "error": "Có lỗi xảy ra",
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "delete": "Xóa",
+    "edit": "Chỉnh sửa",
+    "create": "Tạo mới",
+    "search": "Tìm kiếm",
+    "filter": "Lọc",
+    "all": "Tất cả",
+    "back": "Quay lại",
+    "next": "Tiếp theo",
+    "previous": "Trước",
+    "submit": "Gửi",
+    "confirm": "Xác nhận"
+  },
+  "nav": {
+    "home": "Trang chủ",
+    "campaigns": "Chiến dịch",
+    "community": "Cộng đồng",
+    "leaderboard": "Bảng xếp hạng",
+    "nftGallery": "Bộ sưu tập NFT",
+    "impact": "Tác động",
+    "quests": "Nhiệm vụ",
+    "events": "Sự kiện",
+    "marketplace": "Marketplace",
+    "profile": "Hồ sơ",
+    "dashboard": "Bảng điều khiển",
+    "login": "Đăng nhập",
+    "signup": "Đăng ký",
+    "logout": "Đăng xuất"
+  },
+  "hero": {
+    "badge": "Nền tảng Web3 Bảo vệ Môi trường",
+    "title": "Trồng Cây, Tạo NFT, Bảo Vệ Hành Tinh",
+    "description": "Tham gia cộng đồng Green Earth để trồng cây thật, nhận NFT xanh và đóng góp cho môi trường với công nghệ blockchain minh bạch.",
+    "exploreCampaigns": "Khám phá chiến dịch",
+    "connectWallet": "Kết nối ví"
+  },
+  "impact": {
+    "title": "Tác động của bạn",
+    "globalTitle": "Tác động toàn cầu",
+    "treesPlanted": "Cây đã trồng",
+    "co2Absorbed": "CO₂ hấp thụ",
+    "forestArea": "Diện tích rừng",
+    "greenPoints": "Điểm xanh",
+    "campaignsJoined": "Chiến dịch tham gia",
+    "nftsOwned": "NFT sở hữu",
+    "carbonCalculator": "Tính toán Carbon Footprint",
+    "calculateDescription": "Nhập thói quen hàng ngày để tính lượng carbon phát thải"
+  },
+  "quests": {
+    "title": "Nhiệm vụ hàng ngày",
+    "description": "Hoàn thành nhiệm vụ để nhận điểm xanh",
+    "completed": "Đã hoàn thành",
+    "claim": "Nhận thưởng",
+    "points": "điểm"
+  },
+  "badges": {
+    "title": "Huy hiệu",
+    "earned": "Đã đạt được",
+    "locked": "Chưa mở khóa"
+  },
+  "wallet": {
+    "connect": "Kết nối ví",
+    "disconnect": "Ngắt kết nối",
+    "connecting": "Đang kết nối...",
+    "balance": "Số dư",
+    "copyAddress": "Sao chép địa chỉ",
+    "noMetaMask": "Vui lòng cài đặt MetaMask",
+    "yourWallet": "Ví của bạn"
+  },
+  "nft": {
+    "mint": "Tạo NFT",
+    "verified": "Đã xác minh",
+    "onChain": "On-chain",
+    "viewOnPolygon": "Xem trên Polygonscan",
+    "co2Absorbed": "CO₂ hấp thụ",
+    "location": "Vị trí",
+    "plantedAt": "Ngày trồng"
+  }
+}

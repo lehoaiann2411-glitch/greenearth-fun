@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      badges: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          description_vi: string | null
+          icon: string | null
+          id: string
+          name: string
+          name_vi: string | null
+          requirement_type: string
+          requirement_value: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          description_vi?: string | null
+          icon?: string | null
+          id?: string
+          name: string
+          name_vi?: string | null
+          requirement_type: string
+          requirement_value?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          description_vi?: string | null
+          icon?: string | null
+          id?: string
+          name?: string
+          name_vi?: string | null
+          requirement_type?: string
+          requirement_value?: number | null
+        }
+        Relationships: []
+      }
       campaign_participants: {
         Row: {
           campaign_id: string
@@ -140,36 +176,201 @@ export type Database = {
           },
         ]
       }
+      daily_quests: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          description_vi: string | null
+          id: string
+          is_active: boolean | null
+          points_reward: number | null
+          quest_type: string
+          title: string
+          title_vi: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          description_vi?: string | null
+          id?: string
+          is_active?: boolean | null
+          points_reward?: number | null
+          quest_type: string
+          title: string
+          title_vi?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          description_vi?: string | null
+          id?: string
+          is_active?: boolean | null
+          points_reward?: number | null
+          quest_type?: string
+          title?: string
+          title_vi?: string | null
+        }
+        Relationships: []
+      }
+      event_attendees: {
+        Row: {
+          event_id: string
+          id: string
+          registered_at: string | null
+          rsvp_status: string | null
+          user_id: string
+        }
+        Insert: {
+          event_id: string
+          id?: string
+          registered_at?: string | null
+          rsvp_status?: string | null
+          user_id: string
+        }
+        Update: {
+          event_id?: string
+          id?: string
+          registered_at?: string | null
+          rsvp_status?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_attendees_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_attendees_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          campaign_id: string | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          description_vi: string | null
+          end_time: string | null
+          event_date: string
+          id: string
+          latitude: number | null
+          location: string | null
+          longitude: number | null
+          max_attendees: number | null
+          start_time: string | null
+          title: string
+          title_vi: string | null
+        }
+        Insert: {
+          campaign_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          description_vi?: string | null
+          end_time?: string | null
+          event_date: string
+          id?: string
+          latitude?: number | null
+          location?: string | null
+          longitude?: number | null
+          max_attendees?: number | null
+          start_time?: string | null
+          title: string
+          title_vi?: string | null
+        }
+        Update: {
+          campaign_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          description_vi?: string | null
+          end_time?: string | null
+          event_date?: string
+          id?: string
+          latitude?: number | null
+          location?: string | null
+          longitude?: number | null
+          max_attendees?: number | null
+          start_time?: string | null
+          title?: string
+          title_vi?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "events_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "events_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       green_nfts: {
         Row: {
           certificate_number: string | null
+          co2_absorbed: number | null
+          contract_address: string | null
           created_at: string
           id: string
           image_url: string | null
+          latitude: number | null
           location: string | null
+          longitude: number | null
+          metadata_uri: string | null
           planted_at: string
+          token_id: string | null
+          transaction_hash: string | null
           tree_type: string
           user_id: string
           verified: boolean
         }
         Insert: {
           certificate_number?: string | null
+          co2_absorbed?: number | null
+          contract_address?: string | null
           created_at?: string
           id?: string
           image_url?: string | null
+          latitude?: number | null
           location?: string | null
+          longitude?: number | null
+          metadata_uri?: string | null
           planted_at?: string
+          token_id?: string | null
+          transaction_hash?: string | null
           tree_type: string
           user_id: string
           verified?: boolean
         }
         Update: {
           certificate_number?: string | null
+          co2_absorbed?: number | null
+          contract_address?: string | null
           created_at?: string
           id?: string
           image_url?: string | null
+          latitude?: number | null
           location?: string | null
+          longitude?: number | null
+          metadata_uri?: string | null
           planted_at?: string
+          token_id?: string | null
+          transaction_hash?: string | null
           tree_type?: string
           user_id?: string
           verified?: boolean
@@ -329,10 +530,12 @@ export type Database = {
           created_at: string
           full_name: string | null
           green_points: number
+          green_reputation: number | null
           id: string
           location: string | null
           trees_planted: number
           updated_at: string
+          wallet_address: string | null
         }
         Insert: {
           account_type?: Database["public"]["Enums"]["account_type"]
@@ -342,10 +545,12 @@ export type Database = {
           created_at?: string
           full_name?: string | null
           green_points?: number
+          green_reputation?: number | null
           id: string
           location?: string | null
           trees_planted?: number
           updated_at?: string
+          wallet_address?: string | null
         }
         Update: {
           account_type?: Database["public"]["Enums"]["account_type"]
@@ -355,12 +560,89 @@ export type Database = {
           created_at?: string
           full_name?: string | null
           green_points?: number
+          green_reputation?: number | null
           id?: string
           location?: string | null
           trees_planted?: number
           updated_at?: string
+          wallet_address?: string | null
         }
         Relationships: []
+      }
+      user_badges: {
+        Row: {
+          badge_id: string
+          earned_at: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          badge_id: string
+          earned_at?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          badge_id?: string
+          earned_at?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_badges_badge_id_fkey"
+            columns: ["badge_id"]
+            isOneToOne: false
+            referencedRelation: "badges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_badges_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_quest_progress: {
+        Row: {
+          completed_at: string | null
+          id: string
+          quest_date: string | null
+          quest_id: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          id?: string
+          quest_date?: string | null
+          quest_id: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          id?: string
+          quest_date?: string | null
+          quest_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_quest_progress_quest_id_fkey"
+            columns: ["quest_id"]
+            isOneToOne: false
+            referencedRelation: "daily_quests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_quest_progress_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {

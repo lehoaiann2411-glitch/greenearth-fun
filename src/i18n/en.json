@@ -1,0 +1,84 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search",
+    "filter": "Filter",
+    "all": "All",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "confirm": "Confirm"
+  },
+  "nav": {
+    "home": "Home",
+    "campaigns": "Campaigns",
+    "community": "Community",
+    "leaderboard": "Leaderboard",
+    "nftGallery": "NFT Gallery",
+    "impact": "Impact",
+    "quests": "Quests",
+    "events": "Events",
+    "marketplace": "Marketplace",
+    "profile": "Profile",
+    "dashboard": "Dashboard",
+    "login": "Login",
+    "signup": "Sign Up",
+    "logout": "Logout"
+  },
+  "hero": {
+    "badge": "Web3 Environmental Protection Platform",
+    "title": "Plant Trees, Create NFTs, Protect the Planet",
+    "description": "Join the Green Earth community to plant real trees, receive green NFTs, and contribute to the environment with transparent blockchain technology.",
+    "exploreCampaigns": "Explore Campaigns",
+    "connectWallet": "Connect Wallet"
+  },
+  "impact": {
+    "title": "Your Impact",
+    "globalTitle": "Global Impact",
+    "treesPlanted": "Trees Planted",
+    "co2Absorbed": "CO₂ Absorbed",
+    "forestArea": "Forest Area",
+    "greenPoints": "Green Points",
+    "campaignsJoined": "Campaigns Joined",
+    "nftsOwned": "NFTs Owned",
+    "carbonCalculator": "Carbon Footprint Calculator",
+    "calculateDescription": "Enter your daily habits to calculate your carbon emissions"
+  },
+  "quests": {
+    "title": "Daily Quests",
+    "description": "Complete quests to earn green points",
+    "completed": "Completed",
+    "claim": "Claim Reward",
+    "points": "points"
+  },
+  "badges": {
+    "title": "Badges",
+    "earned": "Earned",
+    "locked": "Locked"
+  },
+  "wallet": {
+    "connect": "Connect Wallet",
+    "disconnect": "Disconnect",
+    "connecting": "Connecting...",
+    "balance": "Balance",
+    "copyAddress": "Copy Address",
+    "noMetaMask": "Please install MetaMask",
+    "yourWallet": "Your Wallet"
+  },
+  "nft": {
+    "mint": "Mint NFT",
+    "verified": "Verified",
+    "onChain": "On-chain",
+    "viewOnPolygon": "View on Polygonscan",
+    "co2Absorbed": "CO₂ Absorbed",
+    "location": "Location",
+    "plantedAt": "Planted At"
+  }
+}
