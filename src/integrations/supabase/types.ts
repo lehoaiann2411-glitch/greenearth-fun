@@ -14,6 +14,118 @@ export type Database = {
   }
   public: {
     Tables: {
+      campaign_participants: {
+        Row: {
+          campaign_id: string
+          checked_in_at: string | null
+          id: string
+          notes: string | null
+          registered_at: string
+          status: Database["public"]["Enums"]["participant_status"]
+          trees_planted: number | null
+          user_id: string
+        }
+        Insert: {
+          campaign_id: string
+          checked_in_at?: string | null
+          id?: string
+          notes?: string | null
+          registered_at?: string
+          status?: Database["public"]["Enums"]["participant_status"]
+          trees_planted?: number | null
+          user_id: string
+        }
+        Update: {
+          campaign_id?: string
+          checked_in_at?: string | null
+          id?: string
+          notes?: string | null
+          registered_at?: string
+          status?: Database["public"]["Enums"]["participant_status"]
+          trees_planted?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campaign_participants_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      campaigns: {
+        Row: {
+          category: Database["public"]["Enums"]["campaign_category"]
+          created_at: string
+          creator_id: string
+          description: string | null
+          end_date: string
+          green_points_reward: number
+          id: string
+          image_url: string | null
+          latitude: number | null
+          location: string | null
+          longitude: number | null
+          organization_id: string | null
+          start_date: string
+          status: Database["public"]["Enums"]["campaign_status"]
+          target_participants: number
+          target_trees: number | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: Database["public"]["Enums"]["campaign_category"]
+          created_at?: string
+          creator_id: string
+          description?: string | null
+          end_date: string
+          green_points_reward?: number
+          id?: string
+          image_url?: string | null
+          latitude?: number | null
+          location?: string | null
+          longitude?: number | null
+          organization_id?: string | null
+          start_date: string
+          status?: Database["public"]["Enums"]["campaign_status"]
+          target_participants?: number
+          target_trees?: number | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["campaign_category"]
+          created_at?: string
+          creator_id?: string
+          description?: string | null
+          end_date?: string
+          green_points_reward?: number
+          id?: string
+          image_url?: string | null
+          latitude?: number | null
+          location?: string | null
+          longitude?: number | null
+          organization_id?: string | null
+          start_date?: string
+          status?: Database["public"]["Enums"]["campaign_status"]
+          target_participants?: number
+          target_trees?: number | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campaigns_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       green_nfts: {
         Row: {
           certificate_number: string | null
@@ -165,6 +277,23 @@ export type Database = {
     Enums: {
       account_type: "individual" | "organization"
       app_role: "admin" | "moderator" | "user"
+      campaign_category:
+        | "tree_planting"
+        | "cleanup"
+        | "recycling"
+        | "awareness"
+        | "other"
+      campaign_status:
+        | "draft"
+        | "pending"
+        | "active"
+        | "completed"
+        | "cancelled"
+      participant_status:
+        | "registered"
+        | "checked_in"
+        | "completed"
+        | "cancelled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -294,6 +423,20 @@ export const Constants = {
     Enums: {
       account_type: ["individual", "organization"],
       app_role: ["admin", "moderator", "user"],
+      campaign_category: [
+        "tree_planting",
+        "cleanup",
+        "recycling",
+        "awareness",
+        "other",
+      ],
+      campaign_status: ["draft", "pending", "active", "completed", "cancelled"],
+      participant_status: [
+        "registered",
+        "checked_in",
+        "completed",
+        "cancelled",
+      ],
     },
   },
 } as const
