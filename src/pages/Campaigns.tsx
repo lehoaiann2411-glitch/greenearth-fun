@@ -18,10 +18,10 @@ export default function Campaigns() {
     <Layout>
       <div className="container py-8">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8 bg-white/95 dark:bg-gray-900/95 rounded-xl p-4 shadow-md border border-white/50 dark:border-gray-700">
           <div>
-            <h1 className="text-3xl font-bold">Chiến Dịch Xanh</h1>
-            <p className="text-muted-foreground mt-1">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Chiến Dịch Xanh</h1>
+            <p className="text-gray-700 dark:text-gray-300 mt-1 font-medium">
               Tham gia các chiến dịch bảo vệ môi trường và nhận điểm xanh
             </p>
           </div>
@@ -37,7 +37,7 @@ export default function Campaigns() {
         </div>
 
         {/* Filters */}
-        <div className="mb-6">
+        <div className="mb-6 bg-white/95 dark:bg-gray-900/95 rounded-xl p-4 shadow-md border border-white/50 dark:border-gray-700">
           <CampaignFilters filters={filters} onFiltersChange={setFilters} />
         </div>
 
@@ -59,10 +59,10 @@ export default function Campaigns() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-16">
-            <Leaf className="h-16 w-16 mx-auto text-muted-foreground/50 mb-4" />
-            <h3 className="text-lg font-medium mb-2">Chưa có chiến dịch nào</h3>
-            <p className="text-muted-foreground mb-6">
+          <div className="text-center py-16 bg-white/95 dark:bg-gray-900/95 rounded-xl shadow-md border border-white/50 dark:border-gray-700">
+            <Leaf className="h-16 w-16 mx-auto text-gray-400 mb-4" />
+            <h3 className="text-lg font-bold mb-2 text-gray-900 dark:text-white">Chưa có chiến dịch nào</h3>
+            <p className="text-gray-600 dark:text-gray-300 mb-6 font-medium">
               {filters.search || filters.category || filters.location
                 ? 'Không tìm thấy chiến dịch phù hợp với bộ lọc'
                 : 'Hãy là người đầu tiên tạo chiến dịch xanh!'}

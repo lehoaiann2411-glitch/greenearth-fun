@@ -151,7 +151,7 @@ export function PostCardEnhanced({ post, showComments = false }: PostCardEnhance
   const feeling = getFeelingDisplay();
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden bg-white dark:bg-gray-900 border-2 border-white/50 dark:border-gray-700 shadow-lg">
       {/* Header */}
       <div className="p-4 flex items-start gap-3">
         <Link to={`/profile/${post.user.id}`} className="group">

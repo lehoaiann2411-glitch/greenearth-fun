@@ -18,16 +18,16 @@ const filters: { id: FeedFilter; label: string; icon: React.ReactNode }[] = [
 
 export function FeedFilters({ activeFilter, onFilterChange }: FeedFiltersProps) {
   return (
-    <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
+    <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide bg-white/95 dark:bg-gray-900/95 rounded-lg p-2 shadow-md border border-white/50 dark:border-gray-700">
       {filters.map((filter) => (
         <Button
           key={filter.id}
           variant={activeFilter === filter.id ? 'default' : 'outline'}
           size="sm"
-          className={`relative whitespace-nowrap ${
+          className={`relative whitespace-nowrap font-medium ${
             activeFilter === filter.id 
               ? 'bg-primary text-primary-foreground' 
-              : 'bg-background hover:bg-muted'
+              : 'bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-600'
           }`}
           onClick={() => onFilterChange(filter.id)}
         >

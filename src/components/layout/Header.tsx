@@ -1,8 +1,8 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
-import { Leaf, Menu, X, User, LogOut, TreeDeciduous, LayoutDashboard, Coins, Users, MessageCircle, UserPlus, PlayCircle } from 'lucide-react';
-import { useState } from 'react';
+import { Leaf, Menu, X, User, LogOut, TreeDeciduous, LayoutDashboard, Coins, Users, MessageCircle, UserPlus, PlayCircle, Sun, Moon } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   DropdownMenu,
@@ -23,9 +23,39 @@ export function Header() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return document.documentElement.classList.contains('dark');
+    }
+    return false;
+  });
   
   const { data: unreadMessages } = useUnreadMessagesCount();
   const { data: friendRequests } = useFriendRequestsCount();
+
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [isDark]);
+
+  // Initialize theme from localStorage
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      setIsDark(true);
+      document.documentElement.classList.add('dark');
+    } else if (savedTheme === 'light') {
+      setIsDark(false);
+      document.documentElement.classList.remove('dark');
+    }
+  }, []);
+
+  const toggleDarkMode = () => setIsDark(!isDark);
 
   const handleSignOut = async () => {
     await signOut();
@@ -75,6 +105,16 @@ export function Header() {
 
         {/* Auth Buttons / User Menu */}
         <div className="hidden items-center gap-2 md:flex">
+          {/* Dark Mode Toggle */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleDarkMode}
+            className="text-white hover:bg-white/10"
+            title={isDark ? 'Chế độ sáng' : 'Chế độ tối'}
+          >
+            {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+          </Button>
           <LanguageSwitcher />
           <ConnectWallet />
           {user ? (

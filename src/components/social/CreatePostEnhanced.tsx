@@ -190,7 +190,7 @@ export function CreatePostEnhanced() {
   const reward = calculateReward();
 
   return (
-    <Card className="p-4">
+    <Card className="p-4 bg-white dark:bg-gray-900 border-2 border-white/50 dark:border-gray-700 shadow-lg">
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
           <div className="flex items-center gap-3 cursor-pointer group">

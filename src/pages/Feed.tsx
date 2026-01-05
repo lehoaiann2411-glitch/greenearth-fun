@@ -54,7 +54,7 @@ export default function Feed() {
           {/* Main Feed */}
           <div className="lg:col-span-2 space-y-4">
             {/* Stories Bar */}
-            <Card className="overflow-hidden">
+            <Card className="overflow-hidden bg-white dark:bg-gray-900 border-white/50 dark:border-gray-700 shadow-md">
               <StoriesBar />
             </Card>
 
@@ -68,7 +68,7 @@ export default function Feed() {
             {isLoading ? (
               <div className="space-y-4">
                 {[1, 2, 3].map((i) => (
-                  <Card key={i} className="p-4 space-y-4">
+                  <Card key={i} className="p-4 space-y-4 bg-white dark:bg-gray-900 shadow-md border-white/50 dark:border-gray-700">
                     <div className="flex items-center gap-3">
                       <Skeleton className="w-10 h-10 rounded-full" />
                       <div className="space-y-2">
@@ -82,10 +82,10 @@ export default function Feed() {
                 ))}
               </div>
             ) : allPosts.length === 0 ? (
-              <Card className="p-8 text-center">
+              <Card className="p-8 text-center bg-white dark:bg-gray-900 shadow-md border-white/50 dark:border-gray-700">
                 <div className="text-4xl mb-4">🌱</div>
-                <h3 className="text-lg font-semibold mb-2">No posts yet</h3>
-                <p className="text-muted-foreground">
+                <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">No posts yet</h3>
+                <p className="text-gray-600 dark:text-gray-300">
                   {filter === 'following' 
                     ? 'Follow some green warriors to see their posts here!'
                     : 'Be the first to share your eco-journey!'}
