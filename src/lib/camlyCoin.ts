@@ -221,9 +221,9 @@ export function formatEarnedMessage(camlyAmount: number, action: string, languag
   const label = actionLabels[action] || action;
   
   if (language === 'vi') {
-    return `+${formatCamly(camlyAmount)} 🪙 từ ${label}`;
+    return `+${formatCamly(camlyAmount)} Camly từ ${label}`;
   }
-  return `+${formatCamly(camlyAmount)} 🪙 from ${label}`;
+  return `+${formatCamly(camlyAmount)} Camly from ${label}`;
 }
 
 /**

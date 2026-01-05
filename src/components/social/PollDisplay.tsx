@@ -8,6 +8,7 @@ import { usePoll, useVotePoll } from '@/hooks/usePolls';
 import { CAMLY_REWARDS } from '@/lib/camlyCoin';
 import { formatDistanceToNow } from 'date-fns';
 import { vi, enUS } from 'date-fns/locale';
+import { CamlyCoinInline } from '@/components/rewards/CamlyCoinIcon';
 
 interface PollDisplayProps {
   pollId: string;
@@ -148,8 +149,8 @@ export function PollDisplay({ pollId, language = 'en' }: PollDisplayProps) {
           ) : (
             <>
               {language === 'vi' ? 'Bình chọn' : 'Vote'}
-              <span className="text-xs bg-white/20 px-1.5 py-0.5 rounded">
-                +{CAMLY_REWARDS.VOTE_POLL} 🪙
+              <span className="text-xs bg-white/20 px-1.5 py-0.5 rounded inline-flex items-center gap-1">
+                +{CAMLY_REWARDS.VOTE_POLL} <CamlyCoinInline />
               </span>
             </>
           )}

@@ -107,7 +107,7 @@ export function useVotePoll() {
 
       if (result.rewarded) {
         toast({
-          title: `+${result.amount} 🪙`,
+          title: `+${result.amount} Camly`,
           description: 'Thanks for voting!',
         });
       }

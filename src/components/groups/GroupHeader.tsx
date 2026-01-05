@@ -6,6 +6,7 @@ import { Users, Lock, Globe, MapPin, Settings, Share2, Bell, Coins, Calendar } f
 import { useAuth } from '@/contexts/AuthContext';
 import { CAMLY_REWARDS } from '@/lib/camlyCoin';
 import { Link } from 'react-router-dom';
+import { CamlyCoinInline } from '@/components/rewards/CamlyCoinIcon';
 
 interface GroupHeaderProps {
   group: Group;
@@ -117,7 +118,7 @@ export function GroupHeader({ group }: GroupHeaderProps) {
                     className="bg-gradient-to-r from-primary to-accent hover:opacity-90"
                   >
                     <Coins className="h-4 w-4 mr-2" />
-                    Tham gia (+{CAMLY_REWARDS.GROUP_JOIN.toLocaleString()} 🪙)
+                    <span className="flex items-center gap-1">Tham gia (+{CAMLY_REWARDS.GROUP_JOIN.toLocaleString()} <CamlyCoinInline />)</span>
                   </Button>
                 )}
 
@@ -147,10 +148,10 @@ export function GroupHeader({ group }: GroupHeaderProps) {
               {/* Reward hint */}
               {isMember && (
                 <div className="mt-4 p-3 bg-gradient-to-r from-amber-50 to-yellow-50 rounded-lg border border-amber-200/50">
-                  <p className="text-sm text-amber-800">
-                    💰 Đăng bài trong nhóm: <strong>+{CAMLY_REWARDS.GROUP_POST.toLocaleString()} 🪙</strong>
+                  <p className="text-sm text-amber-800 flex items-center gap-1 flex-wrap">
+                    💰 Đăng bài trong nhóm: <strong className="flex items-center gap-1">+{CAMLY_REWARDS.GROUP_POST.toLocaleString()} <CamlyCoinInline /></strong>
                     {' • '}
-                    Mời bạn đăng bài: <strong>+{CAMLY_REWARDS.GROUP_INVITE_POSTED.toLocaleString()} 🪙</strong>
+                    Mời bạn đăng bài: <strong className="flex items-center gap-1">+{CAMLY_REWARDS.GROUP_INVITE_POSTED.toLocaleString()} <CamlyCoinInline /></strong>
                   </p>
                 </div>
               )}

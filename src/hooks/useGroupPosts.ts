@@ -139,7 +139,7 @@ export function useCreateGroupPost() {
     onSuccess: ({ reward }, { group_id }) => {
       queryClient.invalidateQueries({ queryKey: ['group-posts', group_id] });
       queryClient.invalidateQueries({ queryKey: ['group', group_id] });
-      toast.success(`+${reward.toLocaleString()} 🪙 Đã đăng bài trong nhóm!`);
+      toast.success(`+${reward.toLocaleString()} Camly - Đã đăng bài trong nhóm!`);
     },
     onError: (error) => {
       toast.error('Failed to create post');

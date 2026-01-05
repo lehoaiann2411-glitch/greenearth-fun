@@ -265,7 +265,7 @@ export function useCreateGroup() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['groups'] });
       queryClient.invalidateQueries({ queryKey: ['my-groups'] });
-      toast.success(`+${CAMLY_REWARDS.GROUP_CREATE.toLocaleString()} 🪙 Đã tạo nhóm mới!`);
+      toast.success(`+${CAMLY_REWARDS.GROUP_CREATE.toLocaleString()} Camly - Đã tạo nhóm mới!`);
     },
     onError: (error) => {
       toast.error('Failed to create group');
@@ -321,7 +321,7 @@ export function useJoinGroup() {
       queryClient.invalidateQueries({ queryKey: ['group', variables.groupId] });
       
       if (variables.privacy === 'public') {
-        toast.success(`+${CAMLY_REWARDS.GROUP_JOIN.toLocaleString()} 🪙 Đã tham gia nhóm!`);
+        toast.success(`+${CAMLY_REWARDS.GROUP_JOIN.toLocaleString()} Camly - Đã tham gia nhóm!`);
       } else {
         toast.success('Yêu cầu tham gia đã được gửi!');
       }

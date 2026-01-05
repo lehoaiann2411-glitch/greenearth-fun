@@ -13,6 +13,7 @@ import { CAMLY_REWARDS, FEELINGS } from '@/lib/camlyCoin';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { CamlyCoinInline } from '@/components/rewards/CamlyCoinIcon';
 
 interface CreateGroupPostProps {
   groupId: string;
@@ -91,7 +92,7 @@ export function CreateGroupPost({ groupId, isAdmin = false }: CreateGroupPostPro
         {/* Reward Banner */}
         <div className="mb-3 p-2 bg-gradient-to-r from-primary/10 to-accent/10 rounded-lg flex items-center justify-center gap-2 text-sm">
           <Coins className="h-4 w-4 text-primary" />
-          <span className="font-medium">Đăng bài: +{reward.toLocaleString()} 🪙</span>
+          <span className="font-medium flex items-center gap-1">Đăng bài: +{reward.toLocaleString()} <CamlyCoinInline /></span>
         </div>
 
         <div className="flex gap-3">
@@ -214,7 +215,7 @@ export function CreateGroupPost({ groupId, isAdmin = false }: CreateGroupPostPro
                 ) : (
                   <Coins className="h-4 w-4 mr-2" />
                 )}
-                Đăng (+{reward.toLocaleString()} 🪙)
+                <span className="flex items-center gap-1">Đăng (+{reward.toLocaleString()} <CamlyCoinInline />)</span>
               </Button>
             </div>
           </div>

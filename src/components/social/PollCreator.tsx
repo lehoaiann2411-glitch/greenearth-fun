@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { POLL_DURATIONS, CAMLY_REWARDS } from '@/lib/camlyCoin';
+import { CamlyCoinInline } from '@/components/rewards/CamlyCoinIcon';
 
 interface PollData {
   question: string;
@@ -99,8 +100,8 @@ export function PollCreator({ onPollChange, language = 'en' }: PollCreatorProps)
         <BarChart3 className="w-4 h-4" />
         <span>{language === 'vi' ? 'Khảo sát' : 'Poll'}</span>
         {isOpen && (
-          <span className="text-xs bg-primary/20 text-primary px-1.5 py-0.5 rounded">
-            +{CAMLY_REWARDS.CREATE_POLL} 🪙
+          <span className="text-xs bg-primary/20 text-primary px-1.5 py-0.5 rounded inline-flex items-center gap-1">
+            +{CAMLY_REWARDS.CREATE_POLL} <CamlyCoinInline />
           </span>
         )}
       </Button>

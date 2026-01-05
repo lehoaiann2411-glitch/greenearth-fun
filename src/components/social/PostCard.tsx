@@ -19,6 +19,7 @@ import { vi } from 'date-fns/locale';
 import { getRankByPoints } from '@/lib/greenRanks';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { CamlyCoinInline } from '@/components/rewards/CamlyCoinIcon';
 
 interface PostCardProps {
   post: Post;
@@ -205,11 +206,11 @@ export function PostCard({ post }: PostCardProps) {
               <DropdownMenuContent align="start">
                 <DropdownMenuItem onClick={() => handleShare('copy')}>
                   <Copy className="mr-2 h-4 w-4" />
-                  Copy link (+1,500 🪙)
+                  Copy link (+1,500 <CamlyCoinInline />)
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleShare('twitter')}>
                   <Twitter className="mr-2 h-4 w-4" />
-                  Share on X (+1,500 🪙)
+                  Share on X (+1,500 <CamlyCoinInline />)
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

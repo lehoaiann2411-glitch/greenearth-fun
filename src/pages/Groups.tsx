@@ -11,6 +11,7 @@ import { GroupCard } from '@/components/groups/GroupCard';
 import { GroupFilters } from '@/components/groups/GroupFilters';
 import { FeaturedGroups } from '@/components/groups/FeaturedGroups';
 import { CAMLY_REWARDS } from '@/lib/camlyCoin';
+import { CamlyCoinInline } from '@/components/rewards/CamlyCoinIcon';
 
 export default function Groups() {
   const { user } = useAuth();
@@ -40,9 +41,9 @@ export default function Groups() {
           
           {user && (
             <Button asChild className="bg-gradient-to-r from-primary to-accent hover:opacity-90">
-              <Link to="/groups/create">
+              <Link to="/groups/create" className="inline-flex items-center">
                 <Plus className="h-4 w-4 mr-2" />
-                Tạo nhóm (+{CAMLY_REWARDS.GROUP_CREATE.toLocaleString()} 🪙)
+                Tạo nhóm (+{CAMLY_REWARDS.GROUP_CREATE.toLocaleString()} <CamlyCoinInline />)
               </Link>
             </Button>
           )}

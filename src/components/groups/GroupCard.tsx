@@ -8,6 +8,7 @@ import { Group, useJoinGroup, useGroupMembership, useLeaveGroup } from '@/hooks/
 import { useAuth } from '@/contexts/AuthContext';
 import { CAMLY_REWARDS } from '@/lib/camlyCoin';
 import { motion } from 'framer-motion';
+import { CamlyCoinInline } from '@/components/rewards/CamlyCoinIcon';
 
 interface GroupCardProps {
   group: Group;
@@ -142,7 +143,7 @@ export function GroupCard({ group, showJoinButton = true }: GroupCardProps) {
                     className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90"
                   >
                     <Coins className="h-4 w-4 mr-2" />
-                    Tham gia (+{CAMLY_REWARDS.GROUP_JOIN.toLocaleString()} 🪙)
+                    Tham gia (+{CAMLY_REWARDS.GROUP_JOIN.toLocaleString()} <CamlyCoinInline />)
                   </Button>
                 )}
               </div>
@@ -150,8 +151,8 @@ export function GroupCard({ group, showJoinButton = true }: GroupCardProps) {
 
             {/* Reward hint */}
             {!isMember && !isPending && (
-              <p className="mt-2 text-xs text-center text-muted-foreground">
-                +{CAMLY_REWARDS.GROUP_POST.toLocaleString()} 🪙 mỗi bài đăng trong nhóm
+              <p className="mt-2 text-xs text-center text-muted-foreground flex items-center justify-center gap-1">
+                +{CAMLY_REWARDS.GROUP_POST.toLocaleString()} <CamlyCoinInline /> mỗi bài đăng trong nhóm
               </p>
             )}
           </CardContent>
