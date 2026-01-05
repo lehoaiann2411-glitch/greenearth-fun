@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Plus, Leaf } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface ReelCreateButtonProps {
@@ -10,26 +10,24 @@ export function ReelCreateButton({ className }: ReelCreateButtonProps) {
   return (
     <Link to="/reels/create">
       <motion.button
-        whileHover={{ scale: 1.1 }}
+        whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className={`relative w-14 h-14 rounded-full bg-gradient-to-br from-emerald-500 to-green-600 shadow-lg shadow-emerald-500/30 flex items-center justify-center ${className}`}
+        className={`relative w-16 h-16 rounded-full flex items-center justify-center overflow-hidden ${className}`}
       >
-        {/* Glow effect */}
-        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-emerald-400 to-green-500 animate-pulse opacity-50" />
+        {/* Gradient Border */}
+        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-emerald-500 to-yellow-500 animate-spin-slow" style={{ animationDuration: '3s' }} />
         
-        {/* Icon */}
-        <div className="relative z-10 flex items-center justify-center">
-          <Plus className="h-7 w-7 text-white" strokeWidth={3} />
+        {/* Inner Circle */}
+        <div className="absolute inset-[3px] rounded-full bg-black flex items-center justify-center">
+          <Plus className="h-8 w-8 text-white" strokeWidth={2.5} />
         </div>
 
-        {/* Leaf accent */}
+        {/* Glow Effect */}
         <motion.div
-          animate={{ rotate: [0, 10, -10, 0] }}
+          animate={{ opacity: [0.5, 1, 0.5] }}
           transition={{ duration: 2, repeat: Infinity }}
-          className="absolute -top-1 -right-1"
-        >
-          <Leaf className="h-4 w-4 text-white drop-shadow-md" />
-        </motion.div>
+          className="absolute inset-0 rounded-full bg-emerald-500/30 blur-lg"
+        />
       </motion.button>
     </Link>
   );
