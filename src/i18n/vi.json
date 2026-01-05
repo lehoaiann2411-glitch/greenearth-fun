@@ -14,7 +14,9 @@
     "next": "Tiếp theo",
     "previous": "Trước",
     "submit": "Gửi",
-    "confirm": "Xác nhận"
+    "confirm": "Xác nhận",
+    "done": "Hoàn tất",
+    "loginRequired": "Cần đăng nhập"
   },
   "nav": {
     "home": "Trang chủ",
@@ -30,7 +32,8 @@
     "dashboard": "Bảng điều khiển",
     "login": "Đăng nhập",
     "signup": "Đăng ký",
-    "logout": "Đăng xuất"
+    "logout": "Đăng xuất",
+    "rewards": "Phần thưởng"
   },
   "hero": {
     "badge": "Nền tảng Web3 Bảo vệ Môi trường",
@@ -80,5 +83,40 @@
     "co2Absorbed": "CO₂ hấp thụ",
     "location": "Vị trí",
     "plantedAt": "Ngày trồng"
+  },
+  "rewards": {
+    "title": "Phần thưởng & Ví",
+    "subtitle": "Kiếm Green Points và đổi thành CAMLY tokens",
+    "greenPoints": "Điểm Xanh",
+    "camlyCoin": "Camly Coin",
+    "equivalent": "tương đương",
+    "claimCamly": "Đổi CAMLY Tokens",
+    "claimDescription": "Chuyển đổi Green Points thành CAMLY tokens",
+    "claimNow": "Đổi CAMLY",
+    "claimSuccess": "Đổi thành công!",
+    "conversionRate": "Tỷ lệ chuyển đổi",
+    "minimumClaim": "Tối thiểu",
+    "pointsToClaim": "Điểm cần đổi",
+    "totalClaimed": "Tổng đã đổi",
+    "transactions": "giao dịch",
+    "readyToClaim": "Sẵn sàng đổi",
+    "history": "Lịch sử",
+    "claims": "Đã đổi",
+    "howToEarn": "Cách kiếm",
+    "pointsHistory": "Lịch sử điểm",
+    "recentEarnings": "Điểm nhận được gần đây",
+    "claimHistory": "Lịch sử đổi",
+    "yourClaims": "Các lần đổi CAMLY của bạn",
+    "noHistory": "Chưa có lịch sử điểm",
+    "startEarning": "Bắt đầu kiếm điểm bằng cách hoàn thành các hoạt động!",
+    "noClaims": "Chưa có lần đổi nào",
+    "claimInfo": "Đổi CAMLY tokens khi bạn có đủ điểm!",
+    "howToEarnTitle": "Cách kiếm Green Points",
+    "tip": "Mẹo hay",
+    "tipDescription": "Hoàn thành nhiệm vụ hàng ngày và tham gia chiến dịch để kiếm nhiều điểm hơn!",
+    "loginToView": "Vui lòng đăng nhập để xem phần thưởng",
+    "processing": "Đang xử lý...",
+    "pleaseWait": "Vui lòng đợi trong khi chúng tôi xử lý giao dịch",
+    "earnedPoints": "Bạn nhận được {{points}} Green Points ≈ {{camly}} CAMLY!"
   }
 }
