@@ -2,11 +2,13 @@ import { useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useProfile } from '@/hooks/useProfile';
+import { useCampaigns, useMyParticipations, CATEGORY_LABELS } from '@/hooks/useCampaigns';
 import { Layout } from '@/components/layout/Layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Badge } from '@/components/ui/badge';
 import { 
   Leaf, 
   TreePine, 
@@ -15,13 +17,18 @@ import {
   TrendingUp, 
   Calendar,
   ArrowRight,
+  MapPin,
 } from 'lucide-react';
 import { getRankByPoints, getNextRank, getProgressToNextRank, getPointsToNextRank } from '@/lib/greenRanks';
+import { format } from 'date-fns';
+import { vi } from 'date-fns/locale';
 
 export default function Dashboard() {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { data: profile, isLoading: profileLoading } = useProfile();
+  const { data: campaigns } = useCampaigns();
+  const { data: myParticipations } = useMyParticipations();
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -67,11 +74,13 @@ export default function Dashboard() {
     { icon: Trophy, label: 'Chiến dịch', value: profile.campaigns_joined, color: 'text-sky' },
   ];
 
-  const upcomingCampaigns = [
-    { id: 1, title: 'Trồng cây tại Sóc Sơn', date: '15/01/2026', points: 50 },
-    { id: 2, title: 'Dọn rác bãi biển Đà Nẵng', date: '20/01/2026', points: 30 },
-    { id: 3, title: 'Workshop tái chế', date: '25/01/2026', points: 20 },
-  ];
+  // Get upcoming campaigns (first 3)
+  const upcomingCampaigns = campaigns?.slice(0, 3) || [];
+  
+  // Get user's current participations
+  const activeParticipations = myParticipations?.filter(
+    p => p.status !== 'cancelled' && p.status !== 'completed'
+  ).slice(0, 3) || [];
 
   return (
     <Layout>
@@ -183,6 +192,44 @@ export default function Dashboard() {
           </Card>
         </div>
 
+        {/* My Participations */}
+        {activeParticipations.length > 0 && (
+          <Card className="mt-8">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Target className="h-5 w-5 text-primary" />
+                Chiến dịch đang tham gia
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {activeParticipations.map((participation) => (
+                  <Link
+                    key={participation.id}
+                    to={`/campaigns/${participation.campaign_id}`}
+                    className="flex items-center justify-between rounded-lg border p-4 transition-colors hover:bg-muted/50"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                        <TreePine className="h-5 w-5 text-primary" />
+                      </div>
+                      <div>
+                        <p className="font-medium">{(participation as { campaign?: { title?: string } }).campaign?.title}</p>
+                        <p className="text-sm text-muted-foreground">
+                          Trạng thái: {participation.status === 'registered' ? 'Đã đăng ký' : 'Đã check-in'}
+                        </p>
+                      </div>
+                    </div>
+                    <Badge variant="secondary">
+                      {participation.status === 'registered' ? 'Chờ check-in' : 'Đang tham gia'}
+                    </Badge>
+                  </Link>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Upcoming Campaigns */}
         <Card className="mt-8">
           <CardHeader className="flex flex-row items-center justify-between">
@@ -203,31 +250,52 @@ export default function Dashboard() {
             </Button>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {upcomingCampaigns.map((campaign) => (
-                <div
-                  key={campaign.id}
-                  className="flex items-center justify-between rounded-lg border p-4 transition-colors hover:bg-muted/50"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                      <TreePine className="h-5 w-5 text-primary" />
+            {upcomingCampaigns.length > 0 ? (
+              <div className="space-y-4">
+                {upcomingCampaigns.map((campaign) => (
+                  <Link
+                    key={campaign.id}
+                    to={`/campaigns/${campaign.id}`}
+                    className="flex items-center justify-between rounded-lg border p-4 transition-colors hover:bg-muted/50"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                        <TreePine className="h-5 w-5 text-primary" />
+                      </div>
+                      <div>
+                        <p className="font-medium">{campaign.title}</p>
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <span>{format(new Date(campaign.start_date), 'dd/MM/yyyy', { locale: vi })}</span>
+                          {campaign.location && (
+                            <>
+                              <span>•</span>
+                              <span className="flex items-center gap-1">
+                                <MapPin className="h-3 w-3" />
+                                {campaign.location}
+                              </span>
+                            </>
+                          )}
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-medium">{campaign.title}</p>
-                      <p className="text-sm text-muted-foreground">{campaign.date}</p>
+                    <div className="flex items-center gap-4">
+                      <Badge variant="outline">{CATEGORY_LABELS[campaign.category]}</Badge>
+                      <div className="text-right">
+                        <p className="font-medium text-primary">+{campaign.green_points_reward}</p>
+                        <p className="text-xs text-muted-foreground">điểm</p>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <div className="text-right">
-                      <p className="font-medium text-primary">+{campaign.points}</p>
-                      <p className="text-xs text-muted-foreground">điểm</p>
-                    </div>
-                    <Button size="sm">Tham gia</Button>
-                  </div>
-                </div>
-              ))}
-            </div>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-muted-foreground">
+                <p>Chưa có chiến dịch nào</p>
+                <Button asChild className="mt-4">
+                  <Link to="/campaigns/create">Tạo chiến dịch đầu tiên</Link>
+                </Button>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

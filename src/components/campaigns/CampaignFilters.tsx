@@ -1,0 +1,74 @@
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
+import { Search, X } from 'lucide-react';
+import { CampaignCategory, CampaignFilters as FiltersType, CATEGORY_LABELS } from '@/hooks/useCampaigns';
+
+interface CampaignFiltersProps {
+  filters: FiltersType;
+  onFiltersChange: (filters: FiltersType) => void;
+}
+
+export function CampaignFilters({ filters, onFiltersChange }: CampaignFiltersProps) {
+  const handleSearchChange = (value: string) => {
+    onFiltersChange({ ...filters, search: value || undefined });
+  };
+
+  const handleCategoryChange = (value: string) => {
+    onFiltersChange({ 
+      ...filters, 
+      category: value === 'all' ? undefined : value as CampaignCategory 
+    });
+  };
+
+  const handleLocationChange = (value: string) => {
+    onFiltersChange({ ...filters, location: value || undefined });
+  };
+
+  const clearFilters = () => {
+    onFiltersChange({});
+  };
+
+  const hasFilters = filters.search || filters.category || filters.location;
+
+  return (
+    <div className="flex flex-col sm:flex-row gap-3">
+      <div className="relative flex-1">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input
+          placeholder="Tìm kiếm chiến dịch..."
+          value={filters.search || ''}
+          onChange={(e) => handleSearchChange(e.target.value)}
+          className="pl-10"
+        />
+      </div>
+      
+      <Select value={filters.category || 'all'} onValueChange={handleCategoryChange}>
+        <SelectTrigger className="w-full sm:w-[180px]">
+          <SelectValue placeholder="Danh mục" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">Tất cả danh mục</SelectItem>
+          {Object.entries(CATEGORY_LABELS).map(([value, label]) => (
+            <SelectItem key={value} value={value}>
+              {label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      
+      <Input
+        placeholder="Địa điểm..."
+        value={filters.location || ''}
+        onChange={(e) => handleLocationChange(e.target.value)}
+        className="w-full sm:w-[180px]"
+      />
+      
+      {hasFilters && (
+        <Button variant="ghost" size="icon" onClick={clearFilters}>
+          <X className="h-4 w-4" />
+        </Button>
+      )}
+    </div>
+  );
+}
