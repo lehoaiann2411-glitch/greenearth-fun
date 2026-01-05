@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Send, Heart } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -74,18 +75,29 @@ export function ReelComments({ reelId, isOpen, onClose }: ReelCommentsProps) {
               ) : comments && comments.length > 0 ? (
                 <div className="space-y-4">
                   {comments.map((comment) => (
-                    <div key={comment.id} className="flex gap-3">
-                      <Avatar className="h-10 w-10 flex-shrink-0">
-                        <AvatarImage src={comment.profiles?.avatar_url || ''} />
-                        <AvatarFallback className="bg-emerald-500 text-white text-sm">
-                          {comment.profiles?.full_name?.charAt(0) || 'U'}
-                        </AvatarFallback>
-                      </Avatar>
+                    <div key={comment.id} className="flex gap-3 group">
+                      <Link to={`/profile/${comment.user_id}`} className="flex-shrink-0 hover:opacity-80 transition-opacity">
+                        <Avatar className="h-10 w-10">
+                          <AvatarImage src={comment.profiles?.avatar_url || ''} />
+                          <AvatarFallback className="bg-emerald-500 text-white text-sm">
+                            {comment.profiles?.full_name?.charAt(0) || 'U'}
+                          </AvatarFallback>
+                        </Avatar>
+                      </Link>
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <span className="font-semibold text-sm">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <Link 
+                            to={`/profile/${comment.user_id}`}
+                            className="font-semibold text-sm hover:underline"
+                          >
                             {comment.profiles?.full_name || 'User'}
-                          </span>
+                          </Link>
+                          <Link 
+                            to={`/profile/${comment.user_id}`}
+                            className="text-xs text-emerald-500 hover:underline opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            Xem hồ sơ
+                          </Link>
                           <span className="text-xs text-muted-foreground">
                             {formatDistanceToNow(new Date(comment.created_at), { 
                               addSuffix: true, 
