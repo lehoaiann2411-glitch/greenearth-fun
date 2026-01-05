@@ -47,22 +47,15 @@
     "treesPlanted": "Cây đã trồng",
     "co2Absorbed": "CO₂ hấp thụ",
     "forestArea": "Diện tích rừng",
-    "greenPoints": "Điểm xanh",
     "campaignsJoined": "Chiến dịch tham gia",
     "carbonCalculator": "Tính toán Carbon Footprint",
     "calculateDescription": "Nhập thói quen hàng ngày để tính lượng carbon phát thải"
   },
   "quests": {
     "title": "Nhiệm vụ hàng ngày",
-    "description": "Hoàn thành nhiệm vụ để nhận điểm xanh",
+    "description": "Hoàn thành nhiệm vụ để nhận Camly Coin",
     "completed": "Đã hoàn thành",
-    "claim": "Nhận thưởng",
-    "points": "điểm"
-  },
-  "badges": {
-    "title": "Huy hiệu",
-    "earned": "Đã đạt được",
-    "locked": "Chưa mở khóa"
+    "claim": "Nhận thưởng"
   },
   "wallet": {
     "connect": "Kết nối ví",
@@ -113,12 +106,16 @@
     "perDay": "mỗi ngày",
     "oneTime": "Một lần",
     "earnPost": "+3,000 Camly cho đăng bài",
-    "earnShare": "+1,500 Camly cho chia sẻ",
+    "earnShare": "+2,000 Camly cho chia sẻ",
     "earnLike": "+200 Camly cho thích bài",
     "earnCheckin": "+500 Camly điểm danh",
     "earnStreak": "+2,000 Camly streak 7 ngày",
     "earnSignup": "+10,000 Camly bonus đăng ký",
     "earnTree": "+5,000 Camly trồng cây",
     "earnInvite": "+5,000 Camly mời bạn"
+  },
+  "leaderboard": {
+    "title": "Bảng Xếp Hạng Camly Coin",
+    "description": "Top những người bạn giàu Camly Coin nhất"
   }
 }

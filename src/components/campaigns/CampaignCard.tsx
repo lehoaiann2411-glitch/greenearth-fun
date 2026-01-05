@@ -7,6 +7,8 @@ import { CalendarDays, MapPin, Users, Leaf } from 'lucide-react';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import { Campaign, CATEGORY_LABELS } from '@/hooks/useCampaigns';
+import { CamlyCoinIcon } from '@/components/rewards/CamlyCoinIcon';
+import { formatCamly } from '@/lib/camlyCoin';
 
 interface CampaignCardProps {
   campaign: Campaign;
@@ -28,6 +30,9 @@ export function CampaignCard({ campaign }: CampaignCardProps) {
   
   const startDate = new Date(campaign.start_date);
   const isUpcoming = startDate > new Date();
+
+  // Convert green_points_reward to Camly Coin equivalent
+  const camlyReward = campaign.green_points_reward * 100;
 
   return (
     <Link to={`/campaigns/${campaign.id}`}>
@@ -55,8 +60,9 @@ export function CampaignCard({ campaign }: CampaignCardProps) {
           </div>
           
           <div className="absolute top-3 right-3">
-            <Badge variant="outline" className="bg-background/80 backdrop-blur">
-              +{campaign.green_points_reward} điểm
+            <Badge variant="outline" className="bg-background/80 backdrop-blur flex items-center gap-1">
+              <CamlyCoinIcon size="sm" />
+              <span className="text-yellow-600 dark:text-yellow-400 font-medium">+{formatCamly(camlyReward)}</span>
             </Badge>
           </div>
         </div>

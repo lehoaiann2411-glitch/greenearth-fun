@@ -47,22 +47,15 @@
     "treesPlanted": "Trees Planted",
     "co2Absorbed": "CO₂ Absorbed",
     "forestArea": "Forest Area",
-    "greenPoints": "Green Points",
     "campaignsJoined": "Campaigns Joined",
     "carbonCalculator": "Carbon Footprint Calculator",
     "calculateDescription": "Enter your daily habits to calculate your carbon emissions"
   },
   "quests": {
     "title": "Daily Quests",
-    "description": "Complete quests to earn green points",
+    "description": "Complete quests to earn Camly Coin",
     "completed": "Completed",
-    "claim": "Claim Reward",
-    "points": "points"
-  },
-  "badges": {
-    "title": "Badges",
-    "earned": "Earned",
-    "locked": "Locked"
+    "claim": "Claim Reward"
   },
   "wallet": {
     "connect": "Connect Wallet",
@@ -113,12 +106,16 @@
     "perDay": "per day",
     "oneTime": "One-time",
     "earnPost": "+3,000 Camly for posting",
-    "earnShare": "+1,500 Camly for sharing",
+    "earnShare": "+2,000 Camly for sharing",
     "earnLike": "+200 Camly for liking",
     "earnCheckin": "+500 Camly daily check-in",
     "earnStreak": "+2,000 Camly 7-day streak",
     "earnSignup": "+10,000 Camly signup bonus",
     "earnTree": "+5,000 Camly plant tree",
     "earnInvite": "+5,000 Camly invite friend"
+  },
+  "leaderboard": {
+    "title": "Camly Coin Leaderboard",
+    "description": "Top Camly Coin holders"
   }
 }

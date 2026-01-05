@@ -2,15 +2,15 @@ import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Camera, Edit, MapPin, Briefcase, GraduationCap, Link as LinkIcon, Calendar, Users } from 'lucide-react';
-import { getRankByPoints } from '@/lib/greenRanks';
+import { Camera, Edit, MapPin, Briefcase, GraduationCap, Link as LinkIcon, Calendar } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { AddFriendButton } from './AddFriendButton';
 import { OnlineIndicator } from '@/components/messages/OnlineIndicator';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useQueryClient } from '@tanstack/react-query';
+import { CamlyCoinIcon } from '@/components/rewards/CamlyCoinIcon';
+import { formatCamly } from '@/lib/camlyCoin';
 
 interface ProfileHeaderProps {
   profile: {
@@ -23,10 +23,10 @@ interface ProfileHeaderProps {
     work?: string | null;
     education?: string | null;
     website?: string | null;
-    green_points: number;
     trees_planted: number;
     campaigns_joined: number;
     friends_count?: number;
+    camly_balance?: number;
     created_at: string;
   };
   isOwnProfile: boolean;
@@ -39,8 +39,7 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
   const coverInputRef = useRef<HTMLInputElement>(null);
   const [isUploadingCover, setIsUploadingCover] = useState(false);
 
-  const currentRank = getRankByPoints(profile.green_points ?? 0);
-  const RankIcon = currentRank.icon;
+  const camlyBalance = profile.camly_balance ?? 0;
 
   const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -134,11 +133,8 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
                 {profile.full_name?.charAt(0) || '?'}
               </AvatarFallback>
             </Avatar>
-            <div className={`absolute -bottom-1 -right-1 flex h-10 w-10 items-center justify-center rounded-full ${currentRank.bgClass} ${currentRank.colorClass} ring-4 ring-background`}>
-              <RankIcon className="h-5 w-5" />
-            </div>
             {!isOwnProfile && (
-              <OnlineIndicator userId={profile.id} className="absolute bottom-0 right-8" />
+              <OnlineIndicator userId={profile.id} className="absolute bottom-0 right-4" />
             )}
           </div>
         </div>
@@ -163,9 +159,6 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
             <h1 className="font-display text-2xl md:text-3xl font-bold">
               {profile.full_name || 'Green Earth User'}
             </h1>
-            <Badge variant="secondary" className={currentRank.colorClass}>
-              {currentRank.name}
-            </Badge>
           </div>
 
           {profile.bio && (
@@ -223,9 +216,9 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
               <span className="font-bold">{profile.campaigns_joined ?? 0}</span>
               <span className="text-muted-foreground ml-1">Campaigns</span>
             </span>
-            <span>
-              <span className="font-bold">{(profile.green_points ?? 0).toLocaleString()}</span>
-              <span className="text-muted-foreground ml-1">Points</span>
+            <span className="flex items-center gap-1">
+              <CamlyCoinIcon size="sm" />
+              <span className="font-bold text-yellow-600 dark:text-yellow-400">{formatCamly(camlyBalance)}</span>
             </span>
           </div>
         </div>

@@ -7,34 +7,28 @@ import { useCampaigns, useMyParticipations, CATEGORY_LABELS } from '@/hooks/useC
 import { Layout } from '@/components/layout/Layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { 
-  Leaf, 
   TreePine, 
   Trophy, 
   Target, 
-  TrendingUp, 
   Calendar,
   ArrowRight,
   MapPin,
 } from 'lucide-react';
-import { getRankByPoints, getNextRank, getProgressToNextRank, getPointsToNextRank } from '@/lib/greenRanks';
 import { formatCamly } from '@/lib/camlyCoin';
 import { CamlyCoinIcon } from '@/components/rewards/CamlyCoinIcon';
 import { format } from 'date-fns';
-import { vi, enUS } from 'date-fns/locale';
+import { vi } from 'date-fns/locale';
 
 export default function Dashboard() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { data: profile, isLoading: profileLoading } = useProfile();
   const { data: campaigns } = useCampaigns();
   const { data: myParticipations } = useMyParticipations();
-
-  const dateLocale = i18n.language === 'vi' ? vi : enUS;
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -52,8 +46,7 @@ export default function Dashboard() {
             <Skeleton className="h-10 w-64" />
             <Skeleton className="mt-2 h-5 w-48" />
           </div>
-          <div className="mb-8 grid gap-4 md:grid-cols-4">
-            <Skeleton className="h-24 w-full" />
+          <div className="mb-8 grid gap-4 md:grid-cols-3">
             <Skeleton className="h-24 w-full" />
             <Skeleton className="h-24 w-full" />
             <Skeleton className="h-24 w-full" />
@@ -69,17 +62,11 @@ export default function Dashboard() {
 
   if (!user || !profile) return null;
 
-  const currentRank = getRankByPoints(profile.green_points);
-  const nextRank = getNextRank(currentRank);
-  const progressToNextRank = getProgressToNextRank(profile.green_points);
-  const pointsToNext = getPointsToNextRank(profile.green_points);
-  const RankIcon = currentRank.icon;
   const camlyBalance = profile.camly_balance || 0;
 
   const quickStats = [
-    { icon: TreePine, label: t('impact.treesPlanted'), value: profile.trees_planted, color: 'text-accent' },
-    { icon: Trophy, label: t('impact.campaignsJoined'), value: profile.campaigns_joined, color: 'text-sky' },
-    { icon: Leaf, label: t('impact.greenPoints'), value: profile.green_points, color: 'text-primary' },
+    { icon: TreePine, label: t('impact.treesPlanted'), value: profile.trees_planted, color: 'text-green-600' },
+    { icon: Trophy, label: t('impact.campaignsJoined'), value: profile.campaigns_joined, color: 'text-blue-600' },
   ];
 
   // Get upcoming campaigns (first 3)
@@ -111,7 +98,21 @@ export default function Dashboard() {
           </Button>
         </div>
 
-        <div className="mb-8 grid gap-4 md:grid-cols-4">
+        <div className="mb-8 grid gap-4 md:grid-cols-3">
+          {/* Camly Coin Card - Featured */}
+          <Card className="bg-gradient-to-br from-yellow-50 to-amber-100 dark:from-yellow-950/50 dark:to-amber-900/50 border-yellow-200 dark:border-yellow-800">
+            <CardContent className="flex items-center gap-4 p-6">
+              <CamlyCoinIcon size="lg" animated />
+              <div>
+                <p className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{formatCamly(camlyBalance)}</p>
+                <p className="text-sm text-muted-foreground">Camly Coin</p>
+                <Link to="/rewards" className="text-xs text-yellow-600 hover:underline flex items-center gap-1">
+                  {t('rewards.howToEarn', 'Earn more')} <ArrowRight className="h-3 w-3" />
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+          
           {quickStats.map((stat) => (
             <Card key={stat.label}>
               <CardContent className="flex items-center gap-4 p-6">
@@ -125,132 +126,111 @@ export default function Dashboard() {
               </CardContent>
             </Card>
           ))}
-          
-          {/* Camly Coin Card */}
-          <Card className="bg-gradient-to-br from-yellow-50 to-amber-100 dark:from-yellow-950/50 dark:to-amber-900/50 border-yellow-200 dark:border-yellow-800">
-            <CardContent className="flex items-center gap-4 p-6">
-              <CamlyCoinIcon size="lg" animated />
-              <div>
-                <p className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{formatCamly(camlyBalance)}</p>
-                <p className="text-sm text-muted-foreground">Camly Coin</p>
-                <Link to="/rewards" className="text-xs text-yellow-600 hover:underline flex items-center gap-1">
-                  {t('rewards.howToEarn', 'Earn more')} <ArrowRight className="h-3 w-3" />
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
         </div>
 
         <div className="grid gap-8 lg:grid-cols-3">
-          {/* Rank Progress */}
+          {/* Quick Actions */}
           <Card className="lg:col-span-2">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <RankIcon className={`h-5 w-5 ${currentRank.colorClass}`} />
-                Cấp bậc của bạn
-              </CardTitle>
-              <CardDescription>
-                Tiến độ thăng hạng
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className={`flex h-16 w-16 items-center justify-center rounded-full ${currentRank.bgClass}`}>
-                    <RankIcon className={`h-8 w-8 ${currentRank.colorClass}`} />
-                  </div>
-                  <div>
-                    <p className="font-display text-xl font-bold">{currentRank.name}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {profile.green_points} / {nextRank?.minPoints || profile.green_points} điểm
-                    </p>
-                  </div>
-                </div>
-                {nextRank && (
-                  <div className="text-right">
-                    <p className="text-sm text-muted-foreground">Cấp tiếp theo</p>
-                    <p className="font-medium text-primary">{nextRank.name}</p>
-                  </div>
-                )}
-              </div>
-              <div className="mt-6">
-                <Progress value={progressToNextRank} className="h-3" />
-                <p className="mt-2 text-center text-sm text-muted-foreground">
-                  {nextRank ? `Còn ${pointsToNext} điểm để lên cấp` : 'Bạn đã đạt cấp cao nhất!'}
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Quick Actions */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Target className="h-5 w-5 text-accent" />
+                <Target className="h-5 w-5 text-primary" />
                 Hành động nhanh
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3">
-              <Button variant="outline" className="w-full justify-start gap-2" asChild>
+            <CardContent className="grid gap-3 md:grid-cols-2">
+              <Button variant="outline" className="w-full justify-start gap-2 h-auto py-4" asChild>
                 <Link to="/profile">
-                  <TrendingUp className="h-4 w-4" />
-                  Xem hồ sơ
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                    <Trophy className="h-5 w-5 text-primary" />
+                  </div>
+                  <div className="text-left">
+                    <p className="font-medium">Xem hồ sơ</p>
+                    <p className="text-xs text-muted-foreground">Cập nhật thông tin cá nhân</p>
+                  </div>
                 </Link>
               </Button>
-              <Button variant="outline" className="w-full justify-start gap-2" asChild>
+              <Button variant="outline" className="w-full justify-start gap-2 h-auto py-4" asChild>
                 <Link to="/leaderboard">
-                  <Trophy className="h-4 w-4" />
-                  Bảng xếp hạng
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-yellow-100 dark:bg-yellow-900/30">
+                    <CamlyCoinIcon size="sm" />
+                  </div>
+                  <div className="text-left">
+                    <p className="font-medium">Bảng xếp hạng</p>
+                    <p className="text-xs text-muted-foreground">Top Camly Coin</p>
+                  </div>
+                </Link>
+              </Button>
+              <Button variant="outline" className="w-full justify-start gap-2 h-auto py-4" asChild>
+                <Link to="/rewards">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-100 dark:bg-amber-900/30">
+                    <CamlyCoinIcon size="sm" />
+                  </div>
+                  <div className="text-left">
+                    <p className="font-medium">Phần thưởng</p>
+                    <p className="text-xs text-muted-foreground">Kiếm thêm Camly Coin</p>
+                  </div>
+                </Link>
+              </Button>
+              <Button variant="outline" className="w-full justify-start gap-2 h-auto py-4" asChild>
+                <Link to="/campaigns/create">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-100 dark:bg-green-900/30">
+                    <TreePine className="h-5 w-5 text-green-600" />
+                  </div>
+                  <div className="text-left">
+                    <p className="font-medium">Tạo chiến dịch</p>
+                    <p className="text-xs text-muted-foreground">Khởi động hoạt động xanh</p>
+                  </div>
                 </Link>
               </Button>
             </CardContent>
           </Card>
-        </div>
 
-        {/* My Participations */}
-        {activeParticipations.length > 0 && (
-          <Card className="mt-8">
+          {/* My Participations or Placeholder */}
+          <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Target className="h-5 w-5 text-primary" />
-                Chiến dịch đang tham gia
+                Đang tham gia
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {activeParticipations.map((participation) => (
-                  <Link
-                    key={participation.id}
-                    to={`/campaigns/${participation.campaign_id}`}
-                    className="flex items-center justify-between rounded-lg border p-4 transition-colors hover:bg-muted/50"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                        <TreePine className="h-5 w-5 text-primary" />
-                      </div>
-                      <div>
-                        <p className="font-medium">{(participation as { campaign?: { title?: string } }).campaign?.title}</p>
-                        <p className="text-sm text-muted-foreground">
-                          Trạng thái: {participation.status === 'registered' ? 'Đã đăng ký' : 'Đã check-in'}
+              {activeParticipations.length > 0 ? (
+                <div className="space-y-3">
+                  {activeParticipations.map((participation) => (
+                    <Link
+                      key={participation.id}
+                      to={`/campaigns/${participation.campaign_id}`}
+                      className="flex items-center gap-3 p-3 rounded-lg border hover:bg-muted/50 transition-colors"
+                    >
+                      <TreePine className="h-5 w-5 text-primary" />
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-sm truncate">{(participation as { campaign?: { title?: string } }).campaign?.title}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {participation.status === 'registered' ? 'Chờ check-in' : 'Đang tham gia'}
                         </p>
                       </div>
-                    </div>
-                    <Badge variant="secondary">
-                      {participation.status === 'registered' ? 'Chờ check-in' : 'Đang tham gia'}
-                    </Badge>
-                  </Link>
-                ))}
-              </div>
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-6 text-muted-foreground">
+                  <TreePine className="h-10 w-10 mx-auto mb-2 opacity-50" />
+                  <p className="text-sm">Chưa tham gia chiến dịch nào</p>
+                  <Button asChild size="sm" className="mt-3">
+                    <Link to="/campaigns">Khám phá</Link>
+                  </Button>
+                </div>
+              )}
             </CardContent>
           </Card>
-        )}
+        </div>
 
         {/* Upcoming Campaigns */}
         <Card className="mt-8">
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
               <CardTitle className="flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-sky" />
+                <Calendar className="h-5 w-5 text-primary" />
                 Chiến dịch sắp tới
               </CardTitle>
               <CardDescription>
@@ -295,9 +275,9 @@ export default function Dashboard() {
                     </div>
                     <div className="flex items-center gap-4">
                       <Badge variant="outline">{CATEGORY_LABELS[campaign.category]}</Badge>
-                      <div className="text-right">
-                        <p className="font-medium text-primary">+{campaign.green_points_reward}</p>
-                        <p className="text-xs text-muted-foreground">điểm</p>
+                      <div className="text-right flex items-center gap-1">
+                        <CamlyCoinIcon size="sm" />
+                        <span className="font-medium text-yellow-600 dark:text-yellow-400">+{formatCamly(campaign.green_points_reward * 100)}</span>
                       </div>
                     </div>
                   </Link>

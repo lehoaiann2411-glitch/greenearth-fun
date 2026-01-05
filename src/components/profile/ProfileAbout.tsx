@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { 
   MapPin, 
   Briefcase, 
@@ -7,11 +6,10 @@ import {
   Link as LinkIcon, 
   Calendar,
   TreePine,
-  Award,
   Target,
-  Leaf,
 } from 'lucide-react';
-import { getRankByPoints } from '@/lib/greenRanks';
+import { CamlyCoinIcon } from '@/components/rewards/CamlyCoinIcon';
+import { formatCamly } from '@/lib/camlyCoin';
 
 interface ProfileAboutProps {
   profile: {
@@ -22,46 +20,17 @@ interface ProfileAboutProps {
     work?: string | null;
     education?: string | null;
     website?: string | null;
-    green_points: number;
     trees_planted: number;
     campaigns_joined: number;
+    camly_balance?: number;
     created_at: string;
   };
 }
 
 export function ProfileAbout({ profile }: ProfileAboutProps) {
-  const greenPoints = profile.green_points ?? 0;
   const treesPlanted = profile.trees_planted ?? 0;
   const campaignsJoined = profile.campaigns_joined ?? 0;
-  const currentRank = getRankByPoints(greenPoints);
-  const RankIcon = currentRank.icon;
-
-  const achievements = [
-    { 
-      name: 'Pioneer', 
-      icon: Award, 
-      earned: campaignsJoined >= 1,
-      description: 'Joined first campaign'
-    },
-    { 
-      name: 'Tree Guardian', 
-      icon: TreePine, 
-      earned: treesPlanted >= 5,
-      description: 'Planted 5+ trees'
-    },
-    { 
-      name: 'Green Warrior', 
-      icon: Target, 
-      earned: greenPoints >= 500,
-      description: 'Earned 500+ points'
-    },
-    { 
-      name: 'Eco Leader', 
-      icon: Leaf, 
-      earned: greenPoints >= 2000,
-      description: 'Earned 2000+ points'
-    },
-  ];
+  const camlyBalance = profile.camly_balance ?? 0;
 
   return (
     <div className="grid gap-6 md:grid-cols-2">
@@ -142,20 +111,18 @@ export function ProfileAbout({ profile }: ProfileAboutProps) {
         </CardContent>
       </Card>
 
-      {/* Green Stats */}
+      {/* Eco Stats */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Green Impact</CardTitle>
+          <CardTitle className="text-lg">Eco Impact</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* Rank */}
-          <div className="flex items-center gap-4 p-4 rounded-lg bg-muted/50">
-            <div className={`flex h-12 w-12 items-center justify-center rounded-full ${currentRank.bgClass} ${currentRank.colorClass}`}>
-              <RankIcon className="h-6 w-6" />
-            </div>
+          {/* Camly Balance */}
+          <div className="flex items-center gap-4 p-4 rounded-lg bg-gradient-to-br from-yellow-50 to-amber-100 dark:from-yellow-950/50 dark:to-amber-900/50 border border-yellow-200 dark:border-yellow-800">
+            <CamlyCoinIcon size="lg" animated />
             <div>
-              <p className="font-medium">{currentRank.name}</p>
-              <p className="text-sm text-muted-foreground">{greenPoints.toLocaleString()} Green Points</p>
+              <p className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{formatCamly(camlyBalance)}</p>
+              <p className="text-sm text-muted-foreground">Camly Coin</p>
             </div>
           </div>
 
@@ -171,38 +138,6 @@ export function ProfileAbout({ profile }: ProfileAboutProps) {
               <p className="mt-2 text-2xl font-bold text-blue-600">{campaignsJoined}</p>
               <p className="text-sm text-muted-foreground">Campaigns</p>
             </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Achievements */}
-      <Card className="md:col-span-2">
-        <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Award className="h-5 w-5 text-yellow-500" />
-            Achievements
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {achievements.map((achievement) => (
-              <div
-                key={achievement.name}
-                className={`flex flex-col items-center gap-2 p-4 rounded-xl border text-center transition-all ${
-                  achievement.earned
-                    ? 'border-primary/30 bg-primary/5'
-                    : 'opacity-40 grayscale'
-                }`}
-              >
-                <div className={`flex h-12 w-12 items-center justify-center rounded-full ${
-                  achievement.earned ? 'bg-primary/20 text-primary' : 'bg-muted text-muted-foreground'
-                }`}>
-                  <achievement.icon className="h-6 w-6" />
-                </div>
-                <span className="text-sm font-medium">{achievement.name}</span>
-                <span className="text-xs text-muted-foreground">{achievement.description}</span>
-              </div>
-            ))}
           </div>
         </CardContent>
       </Card>

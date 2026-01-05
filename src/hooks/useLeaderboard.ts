@@ -14,12 +14,11 @@ export function useLeaderboard(period: LeaderboardPeriod = 'all', limit: number 
   return useQuery({
     queryKey: ['leaderboard', period, limit],
     queryFn: async () => {
-      // For now, we'll fetch all users sorted by green_points
-      // In a real app, you'd have period-based tracking
+      // Sort by camly_balance (Camly Coin) instead of green_points
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
-        .order('green_points', { ascending: false })
+        .order('camly_balance', { ascending: false })
         .limit(limit);
 
       if (error) throw error;
@@ -41,20 +40,20 @@ export function useUserRank(userId?: string) {
     queryFn: async () => {
       if (!userId) return null;
 
-      // Get user's points
+      // Get user's camly_balance
       const { data: userProfile, error: userError } = await supabase
         .from('profiles')
-        .select('green_points')
+        .select('camly_balance')
         .eq('id', userId)
         .single();
 
       if (userError) throw userError;
 
-      // Count users with more points
+      // Count users with more Camly Coin
       const { count, error: countError } = await supabase
         .from('profiles')
         .select('*', { count: 'exact', head: true })
-        .gt('green_points', userProfile.green_points);
+        .gt('camly_balance', userProfile.camly_balance || 0);
 
       if (countError) throw countError;
 

@@ -16,7 +16,6 @@ import { CommentSection } from './CommentSection';
 import { Heart, MessageCircle, Share2, MoreHorizontal, Trash2, TreePine, Copy, Twitter } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { vi } from 'date-fns/locale';
-import { getRankByPoints } from '@/lib/greenRanks';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { CamlyCoinInline } from '@/components/rewards/CamlyCoinIcon';
@@ -35,7 +34,6 @@ export function PostCard({ post }: PostCardProps) {
   const sharePost = useSharePost();
 
   const isOwner = user?.id === post.user_id;
-  const rank = post.profile ? getRankByPoints(post.profile.green_points) : null;
 
   const handleLike = async () => {
     if (!user || isLiking) return;
@@ -98,19 +96,12 @@ export function PostCard({ post }: PostCardProps) {
               </Avatar>
             </Link>
             <div>
-              <div className="flex items-center gap-2">
-                <Link
-                  to={`/profile?id=${post.user_id}`}
-                  className="font-medium hover:underline"
-                >
-                  {post.profile?.full_name || 'Người dùng'}
-                </Link>
-                {rank && (
-                  <Badge variant="secondary" className={cn('text-xs', rank.colorClass)}>
-                    {rank.name}
-                  </Badge>
-                )}
-              </div>
+              <Link
+                to={`/profile?id=${post.user_id}`}
+                className="font-medium hover:underline"
+              >
+                {post.profile?.full_name || 'Người dùng'}
+              </Link>
               <p className="text-xs text-muted-foreground">
                 {formatDistanceToNow(new Date(post.created_at), {
                   addSuffix: true,
@@ -206,11 +197,11 @@ export function PostCard({ post }: PostCardProps) {
               <DropdownMenuContent align="start">
                 <DropdownMenuItem onClick={() => handleShare('copy')}>
                   <Copy className="mr-2 h-4 w-4" />
-                  Copy link (+1,500 <CamlyCoinInline />)
+                  Copy link (+2,000 <CamlyCoinInline />)
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleShare('twitter')}>
                   <Twitter className="mr-2 h-4 w-4" />
-                  Share on X (+1,500 <CamlyCoinInline />)
+                  Share on X (+2,000 <CamlyCoinInline />)
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
