@@ -29,12 +29,12 @@ export default function Groups() {
     <Layout>
       <div className="container py-6 max-w-6xl">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 bg-background/80 backdrop-blur-md rounded-xl p-4 shadow-sm">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-xl p-4 shadow-md border border-white/50 dark:border-gray-700">
           <div>
-            <h1 className="text-3xl font-bold text-foreground flex items-center gap-2 drop-shadow-sm">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2 drop-shadow-sm">
               🌍 Cộng đồng
             </h1>
-            <p className="text-foreground/80 mt-1 font-medium">
+            <p className="text-gray-700 dark:text-gray-300 mt-1 font-medium">
               Tham gia các nhóm môi trường và kiếm Camly Coin
             </p>
           </div>
@@ -51,7 +51,7 @@ export default function Groups() {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 bg-background/90 backdrop-blur-md shadow-sm">
+          <TabsList className="grid w-full grid-cols-3 bg-white dark:bg-gray-900 shadow-md border border-white/50 dark:border-gray-700">
             <TabsTrigger value="discover" className="flex items-center gap-2">
               <Compass className="h-4 w-4" />
               Khám phá
@@ -90,7 +90,7 @@ export default function Groups() {
 
             {/* All Groups */}
             <div>
-              <h2 className="text-lg font-semibold mb-4 bg-background/80 backdrop-blur-sm rounded-lg px-3 py-2 inline-block shadow-sm">
+              <h2 className="text-lg font-bold mb-4 bg-white dark:bg-gray-900 rounded-lg px-4 py-2 inline-block shadow-md border border-white/50 dark:border-gray-700 text-gray-900 dark:text-white">
                 {filters.search || filters.category !== 'all' || filters.location
                   ? 'Kết quả tìm kiếm'
                   : 'Tất cả nhóm'}

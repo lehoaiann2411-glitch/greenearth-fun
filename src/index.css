@@ -302,6 +302,20 @@
     @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium;
     @apply bg-primary/10 text-primary border border-primary/20;
   }
+
+  /* Solid glass card - no transparency for nature backgrounds */
+  .glass-solid {
+    @apply bg-white dark:bg-gray-900 shadow-lg border-2 border-white/50 dark:border-gray-700;
+  }
+
+  /* High contrast text for nature backgrounds */
+  .text-high-contrast {
+    @apply text-gray-900 dark:text-white font-semibold;
+  }
+
+  .text-high-contrast-muted {
+    @apply text-gray-700 dark:text-gray-300 font-medium;
+  }
 }
 
 @layer components {
