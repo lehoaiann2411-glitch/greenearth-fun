@@ -34,17 +34,17 @@ export function CampaignFilters({ filters, onFiltersChange }: CampaignFiltersPro
   return (
     <div className="flex flex-col sm:flex-row gap-3">
       <div className="relative flex-1">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
         <Input
           placeholder="Tìm kiếm chiến dịch..."
           value={filters.search || ''}
           onChange={(e) => handleSearchChange(e.target.value)}
-          className="pl-10"
+          className="pl-10 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder:text-gray-500"
         />
       </div>
       
       <Select value={filters.category || 'all'} onValueChange={handleCategoryChange}>
-        <SelectTrigger className="w-full sm:w-[180px]">
+        <SelectTrigger className="w-full sm:w-[180px] bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100">
           <SelectValue placeholder="Danh mục" />
         </SelectTrigger>
         <SelectContent>
@@ -61,7 +61,7 @@ export function CampaignFilters({ filters, onFiltersChange }: CampaignFiltersPro
         placeholder="Địa điểm..."
         value={filters.location || ''}
         onChange={(e) => handleLocationChange(e.target.value)}
-        className="w-full sm:w-[180px]"
+        className="w-full sm:w-[180px] bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder:text-gray-500"
       />
       
       {hasFilters && (

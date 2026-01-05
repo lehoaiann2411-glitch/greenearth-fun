@@ -44,11 +44,11 @@ function SuggestedUserCard({ user }: SuggestedUserCardProps) {
       <div className="flex-1 min-w-0">
         <Link 
           to={`/profile?id=${user.id}`}
-          className="font-medium text-sm hover:underline truncate block"
+          className="font-semibold text-sm hover:underline truncate block text-gray-900 dark:text-white"
         >
           {user.full_name || 'Green Warrior'}
         </Link>
-        <p className="text-xs text-muted-foreground flex items-center gap-1">
+        <p className="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-1 font-medium">
           <TreePine className="w-3 h-3" />
           {user.trees_planted} trees planted
         </p>
@@ -82,9 +82,9 @@ export function SuggestedUsers() {
 
   if (isLoading) {
     return (
-      <Card>
+      <Card className="bg-white dark:bg-gray-900 shadow-md border-2 border-white/50 dark:border-gray-700">
         <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-medium">Suggested for you</CardTitle>
+          <CardTitle className="text-sm font-bold text-gray-900 dark:text-white">Suggested for you</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {[1, 2, 3].map((i) => (
@@ -107,9 +107,9 @@ export function SuggestedUsers() {
   }
 
   return (
-    <Card>
+    <Card className="bg-white dark:bg-gray-900 shadow-md border-2 border-white/50 dark:border-gray-700">
       <CardHeader className="pb-3">
-        <CardTitle className="text-sm font-medium flex items-center gap-2">
+        <CardTitle className="text-sm font-bold flex items-center gap-2 text-gray-900 dark:text-white">
           🌱 Suggested for you
         </CardTitle>
       </CardHeader>

@@ -36,7 +36,7 @@ export function CampaignCard({ campaign }: CampaignCardProps) {
 
   return (
     <Link to={`/campaigns/${campaign.id}`}>
-      <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer group h-full">
+      <Card className="overflow-hidden hover:shadow-xl transition-shadow cursor-pointer group h-full bg-white dark:bg-gray-900 border-2 border-white/50 dark:border-gray-700 shadow-lg">
         <div className="relative h-48 overflow-hidden">
           {campaign.image_url ? (
             <img
@@ -68,17 +68,17 @@ export function CampaignCard({ campaign }: CampaignCardProps) {
         </div>
 
         <CardContent className="p-4">
-          <h3 className="font-semibold text-lg line-clamp-2 mb-2 group-hover:text-primary transition-colors">
+          <h3 className="font-bold text-lg line-clamp-2 mb-2 group-hover:text-primary transition-colors text-gray-900 dark:text-white">
             {campaign.title}
           </h3>
           
           {campaign.description && (
-            <p className="text-muted-foreground text-sm line-clamp-2 mb-3">
+            <p className="text-gray-700 dark:text-gray-300 text-sm line-clamp-2 mb-3 font-medium">
               {campaign.description}
             </p>
           )}
           
-          <div className="space-y-2 text-sm text-muted-foreground">
+          <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300 font-medium">
             <div className="flex items-center gap-2">
               <CalendarDays className="h-4 w-4" />
               <span>
@@ -98,7 +98,7 @@ export function CampaignCard({ campaign }: CampaignCardProps) {
         <CardFooter className="p-4 pt-0">
           <div className="w-full space-y-2">
             <div className="flex items-center justify-between text-sm">
-              <div className="flex items-center gap-1 text-muted-foreground">
+              <div className="flex items-center gap-1 text-gray-700 dark:text-gray-300 font-medium">
                 <Users className="h-4 w-4" />
                 <span>
                   {campaign.participants_count || 0}/{campaign.target_participants}
@@ -112,7 +112,7 @@ export function CampaignCard({ campaign }: CampaignCardProps) {
                       {campaign.creator.full_name?.[0] || '?'}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="text-xs text-muted-foreground truncate max-w-[100px]">
+                  <span className="text-xs text-gray-600 dark:text-gray-400 font-medium truncate max-w-[100px]">
                     {campaign.creator.full_name}
                   </span>
                 </div>
