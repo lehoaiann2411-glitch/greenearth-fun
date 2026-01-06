@@ -10,11 +10,18 @@ import {
   Video, 
   VideoOff,
   Volume2,
-  VolumeX 
+  VolumeX,
+  SwitchCamera,
+  Maximize2,
+  Minimize2,
+  Signal,
+  SignalLow,
+  SignalZero
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { toggleAudio, toggleVideo, formatDuration } from '@/lib/webrtc';
+import { toggleAudio, toggleVideo, formatDuration, switchCamera, hasMultipleCameras } from '@/lib/webrtc';
 import type { Call } from '@/hooks/useCalls';
+import { cn } from '@/lib/utils';
 
 interface CallScreenProps {
   call: Call | null;
@@ -24,6 +31,7 @@ interface CallScreenProps {
   onEndCall: () => void;
   remoteName?: string;
   remoteAvatar?: string;
+  peerConnection?: RTCPeerConnection | null;
 }
 
 export function CallScreen({
@@ -34,6 +42,7 @@ export function CallScreen({
   onEndCall,
   remoteName,
   remoteAvatar,
+  peerConnection,
 }: CallScreenProps) {
   const { t } = useTranslation();
   const localVideoRef = useRef<HTMLVideoElement>(null);
@@ -43,8 +52,17 @@ export function CallScreen({
   const [isVideoOff, setIsVideoOff] = useState(false);
   const [isSpeakerOff, setIsSpeakerOff] = useState(false);
   const [duration, setDuration] = useState(0);
+  const [hasMultipleCams, setHasMultipleCams] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const isVideoCall = call?.call_type === 'video';
+
+  // Check for multiple cameras
+  useEffect(() => {
+    if (isVideoCall) {
+      hasMultipleCameras().then(setHasMultipleCams);
+    }
+  }, [isVideoCall]);
 
   // Set up local video
   useEffect(() => {
@@ -92,6 +110,20 @@ export function CallScreen({
     }
   };
 
+  const handleSwitchCamera = async () => {
+    if (localStream && peerConnection) {
+      try {
+        await switchCamera(localStream, peerConnection);
+      } catch (error) {
+        console.error('Failed to switch camera:', error);
+      }
+    }
+  };
+
+  const handleToggleFullscreen = () => {
+    setIsFullscreen(!isFullscreen);
+  };
+
   if (!call) return null;
 
   const getStatusText = () => {
@@ -104,13 +136,33 @@ export function CallScreen({
       case 'failed':
         return t('calls.callEnded');
       default:
+        if (call.status === 'calling') {
+          return t('calls.ringing');
+        }
         return t('calls.calling');
+    }
+  };
+
+  const getConnectionIcon = () => {
+    switch (connectionState) {
+      case 'connected':
+        return <Signal className="h-4 w-4 text-green-400" />;
+      case 'connecting':
+        return <SignalLow className="h-4 w-4 text-yellow-400" />;
+      default:
+        return <SignalZero className="h-4 w-4 text-red-400" />;
     }
   };
 
   return (
     <Dialog open={!!call}>
-      <DialogContent className="sm:max-w-2xl p-0 overflow-hidden" hideClose>
+      <DialogContent 
+        className={cn(
+          "p-0 overflow-hidden",
+          isFullscreen ? "w-screen h-screen max-w-none max-h-none rounded-none" : "sm:max-w-2xl"
+        )} 
+        hideClose
+      >
         <div className="relative bg-gray-900 min-h-[500px] flex flex-col">
           {/* Remote video / avatar */}
           {isVideoCall && remoteStream ? (
@@ -137,27 +189,28 @@ export function CallScreen({
 
           {/* Local video (picture-in-picture) */}
           {isVideoCall && localStream && !isVideoOff && (
-            <div className="absolute top-4 right-4 w-32 h-48 rounded-lg overflow-hidden border-2 border-white/20">
+            <div className="absolute top-4 right-4 w-32 h-48 rounded-lg overflow-hidden border-2 border-white/20 shadow-lg">
               <video
                 ref={localVideoRef}
                 autoPlay
                 playsInline
                 muted
-                className="w-full h-full object-cover mirror"
+                className="w-full h-full object-cover scale-x-[-1]"
               />
             </div>
           )}
 
           {/* Status overlay for video calls */}
           {isVideoCall && remoteStream && (
-            <div className="absolute top-4 left-4 bg-black/50 px-3 py-1 rounded-full">
+            <div className="absolute top-4 left-4 bg-black/50 px-3 py-1 rounded-full flex items-center gap-2">
+              {getConnectionIcon()}
               <span className="text-white text-sm">{getStatusText()}</span>
             </div>
           )}
 
           {/* Controls */}
           <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
-            <div className="flex items-center justify-center gap-4">
+            <div className="flex items-center justify-center gap-3 flex-wrap">
               {/* Mute */}
               <Button
                 size="lg"
@@ -187,6 +240,30 @@ export function CallScreen({
                   onClick={handleToggleVideo}
                 >
                   {isVideoOff ? <VideoOff className="h-6 w-6" /> : <Video className="h-6 w-6" />}
+                </Button>
+              )}
+
+              {/* Switch camera (only for video calls on devices with multiple cameras) */}
+              {isVideoCall && hasMultipleCams && (
+                <Button
+                  size="lg"
+                  variant="secondary"
+                  className="h-14 w-14 rounded-full"
+                  onClick={handleSwitchCamera}
+                >
+                  <SwitchCamera className="h-6 w-6" />
+                </Button>
+              )}
+
+              {/* Fullscreen toggle */}
+              {isVideoCall && (
+                <Button
+                  size="lg"
+                  variant="secondary"
+                  className="h-14 w-14 rounded-full"
+                  onClick={handleToggleFullscreen}
+                >
+                  {isFullscreen ? <Minimize2 className="h-6 w-6" /> : <Maximize2 className="h-6 w-6" />}
                 </Button>
               )}
 

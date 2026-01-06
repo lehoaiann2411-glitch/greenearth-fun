@@ -13,7 +13,8 @@ export const createPeerConnection = (): RTCPeerConnection => {
 };
 
 export const getLocalStream = async (
-  callType: 'voice' | 'video'
+  callType: 'voice' | 'video',
+  facingMode: 'user' | 'environment' = 'user'
 ): Promise<MediaStream> => {
   const constraints: MediaStreamConstraints = {
     audio: {
@@ -22,9 +23,10 @@ export const getLocalStream = async (
       autoGainControl: true,
     },
     video: callType === 'video' ? {
-      width: { ideal: 1280 },
-      height: { ideal: 720 },
-      facingMode: 'user',
+      width: { ideal: 1280, max: 1920 },
+      height: { ideal: 720, max: 1080 },
+      facingMode,
+      frameRate: { ideal: 30, max: 60 },
     } : false,
   };
 
@@ -89,6 +91,79 @@ export const toggleVideo = (stream: MediaStream, enabled: boolean): void => {
   stream.getVideoTracks().forEach((track) => {
     track.enabled = enabled;
   });
+};
+
+// Switch camera (front/back) for mobile devices
+export const switchCamera = async (
+  currentStream: MediaStream,
+  peerConnection: RTCPeerConnection | null
+): Promise<MediaStream> => {
+  const currentVideoTrack = currentStream.getVideoTracks()[0];
+  const currentFacingMode = currentVideoTrack?.getSettings().facingMode || 'user';
+  const newFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
+
+  // Stop current video track
+  currentVideoTrack?.stop();
+
+  // Get new stream with opposite camera
+  const newStream = await navigator.mediaDevices.getUserMedia({
+    video: {
+      facingMode: newFacingMode,
+      width: { ideal: 1280 },
+      height: { ideal: 720 },
+    },
+    audio: false,
+  });
+
+  const newVideoTrack = newStream.getVideoTracks()[0];
+
+  // Replace track in stream
+  currentStream.removeTrack(currentVideoTrack);
+  currentStream.addTrack(newVideoTrack);
+
+  // Replace track in peer connection
+  if (peerConnection) {
+    const sender = peerConnection.getSenders().find(s => s.track?.kind === 'video');
+    if (sender) {
+      await sender.replaceTrack(newVideoTrack);
+    }
+  }
+
+  return currentStream;
+};
+
+// Check if device has multiple cameras
+export const hasMultipleCameras = async (): Promise<boolean> => {
+  try {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const videoDevices = devices.filter(d => d.kind === 'videoinput');
+    return videoDevices.length > 1;
+  } catch {
+    return false;
+  }
+};
+
+// Get connection quality indicator (based on RTCStats)
+export const getConnectionQuality = (stats: RTCStatsReport): 'excellent' | 'good' | 'poor' | 'bad' => {
+  let packetsLost = 0;
+  let packetsReceived = 0;
+  let jitter = 0;
+
+  stats.forEach((stat) => {
+    if (stat.type === 'inbound-rtp' && stat.kind === 'audio') {
+      packetsLost = stat.packetsLost || 0;
+      packetsReceived = stat.packetsReceived || 0;
+      jitter = stat.jitter || 0;
+    }
+  });
+
+  const totalPackets = packetsLost + packetsReceived;
+  const lossRate = totalPackets > 0 ? packetsLost / totalPackets : 0;
+
+  if (lossRate < 0.01 && jitter < 0.03) return 'excellent';
+  if (lossRate < 0.05 && jitter < 0.1) return 'good';
+  if (lossRate < 0.15 && jitter < 0.3) return 'poor';
+  return 'bad';
 };
 
 export const formatDuration = (seconds: number): string => {

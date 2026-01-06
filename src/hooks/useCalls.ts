@@ -364,5 +364,6 @@ export const useCallSignaling = (callId: string | null) => {
     connectionState,
     initializeCall,
     cleanup,
+    peerConnection: peerConnectionRef.current,
   };
 };

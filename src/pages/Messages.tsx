@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Layout } from '@/components/layout/Layout';
@@ -6,15 +6,20 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useConversations, useConversation, useMessages, useSendMessage, useMarkMessagesAsRead } from '@/hooks/useMessages';
 import { useOnlinePresence } from '@/hooks/useOnlineStatus';
 import { useCall } from '@/contexts/CallContext';
+import { useTypingIndicator, useSendTypingStatus } from '@/hooks/useTypingIndicator';
+import { useMarkSeen, useMessageStatusSubscription } from '@/hooks/useMessageStatus';
+import { useIsBlocked } from '@/hooks/useBlocking';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Send, Image, Smile, ArrowLeft, MessageCircle, Gift, Phone, Video } from 'lucide-react';
+import { Send, Image, Smile, ArrowLeft, MessageCircle, Gift, Phone, Video, Ban } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { OnlineIndicator } from '@/components/messages/OnlineIndicator';
+import { TypingIndicator } from '@/components/messages/TypingIndicator';
+import { MessageStatus } from '@/components/messages/MessageStatus';
 import { cn } from '@/lib/utils';
 
 export default function Messages() {
@@ -34,6 +39,17 @@ export default function Messages() {
   const { data: messages, isLoading: messagesLoading } = useMessages(conversationId || '');
   const sendMessage = useSendMessage();
   const markAsRead = useMarkMessagesAsRead();
+  const markAsSeen = useMarkSeen();
+
+  // Real-time features
+  const typingUsers = useTypingIndicator(conversationId || null);
+  const { startTyping, stopTyping } = useSendTypingStatus(conversationId || null);
+  useMessageStatusSubscription(conversationId || null);
+
+  const otherParticipant = activeConversation?.participants?.[0];
+  
+  // Check if blocked
+  const { data: isBlocked } = useIsBlocked(otherParticipant?.id || '');
 
   // Redirect if not logged in
   useEffect(() => {
@@ -42,10 +58,10 @@ export default function Messages() {
     }
   }, [user, authLoading, navigate]);
 
-  // Mark messages as read when viewing conversation
+  // Mark messages as seen when viewing conversation
   useEffect(() => {
     if (conversationId && user) {
-      markAsRead.mutate(conversationId);
+      markAsSeen.mutate(conversationId);
     }
   }, [conversationId, user]);
 
@@ -54,9 +70,16 @@ export default function Messages() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const handleSendMessage = async () => {
-    if (!messageInput.trim() || !conversationId) return;
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setMessageInput(e.target.value);
+    startTyping();
+  }, [startTyping]);
 
+  const handleSendMessage = async () => {
+    if (!messageInput.trim() || !conversationId || isBlocked) return;
+
+    stopTyping();
+    
     try {
       await sendMessage.mutateAsync({
         conversationId,
@@ -87,7 +110,7 @@ export default function Messages() {
 
   if (!user) return null;
 
-  const otherParticipant = activeConversation?.participants?.[0];
+  // otherParticipant is defined at line 49, no need to redefine
 
   return (
     <Layout>
@@ -284,12 +307,24 @@ export default function Messages() {
                               ) : (
                                 <p className="text-sm whitespace-pre-wrap">{message.content}</p>
                               )}
-                              <p className={cn(
-                                'text-xs mt-1',
-                                isOwn ? 'text-primary-foreground/70' : 'text-muted-foreground'
+                              <div className={cn(
+                                'flex items-center gap-1 mt-1',
+                                isOwn ? 'justify-end' : ''
                               )}>
-                                {formatDistanceToNow(new Date(message.created_at), { addSuffix: true })}
-                              </p>
+                                <span className={cn(
+                                  'text-xs',
+                                  isOwn ? 'text-primary-foreground/70' : 'text-muted-foreground'
+                                )}>
+                                  {formatDistanceToNow(new Date(message.created_at), { addSuffix: true })}
+                                </span>
+                                <MessageStatus
+                                  status={(message as any).status || 'sent'}
+                                  sentAt={message.created_at}
+                                  deliveredAt={(message as any).delivered_at}
+                                  seenAt={(message as any).seen_at}
+                                  isOwn={isOwn}
+                                />
+                              </div>
                             </div>
                           </div>
                         );
@@ -307,30 +342,43 @@ export default function Messages() {
                   )}
                 </ScrollArea>
 
+                {/* Typing Indicator */}
+                {typingUsers.length > 0 && (
+                  <TypingIndicator typingUsers={typingUsers} />
+                )}
+
                 {/* Message Input */}
                 <div className="p-4 border-t">
-                  <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="icon">
-                      <Image className="h-5 w-5" />
-                    </Button>
-                    <Button variant="ghost" size="icon">
-                      <Smile className="h-5 w-5" />
-                    </Button>
-                    <Input
-                      value={messageInput}
-                      onChange={(e) => setMessageInput(e.target.value)}
-                      onKeyPress={handleKeyPress}
-                      placeholder={t('messages.typePlaceholder')}
-                      className="flex-1"
-                    />
-                    <Button
-                      onClick={handleSendMessage}
-                      disabled={!messageInput.trim() || sendMessage.isPending}
-                      size="icon"
-                    >
-                      <Send className="h-5 w-5" />
-                    </Button>
-                  </div>
+                  {isBlocked ? (
+                    <div className="flex items-center justify-center gap-2 text-muted-foreground py-2">
+                      <Ban className="h-4 w-4" />
+                      <span>{t('messages.blockedUser')}</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <Button variant="ghost" size="icon">
+                        <Image className="h-5 w-5" />
+                      </Button>
+                      <Button variant="ghost" size="icon">
+                        <Smile className="h-5 w-5" />
+                      </Button>
+                      <Input
+                        value={messageInput}
+                        onChange={handleInputChange}
+                        onKeyPress={handleKeyPress}
+                        onBlur={stopTyping}
+                        placeholder={t('messages.typePlaceholder')}
+                        className="flex-1"
+                      />
+                      <Button
+                        onClick={handleSendMessage}
+                        disabled={!messageInput.trim() || sendMessage.isPending}
+                        size="icon"
+                      >
+                        <Send className="h-5 w-5" />
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </>
             ) : (
