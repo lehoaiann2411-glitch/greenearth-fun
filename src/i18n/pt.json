@@ -17,7 +17,15 @@
     "confirm": "Confirmar",
     "done": "Feito",
     "loginRequired": "Login necessário",
-    "user": "Usuário"
+    "user": "Usuário",
+    "login": "Entrar",
+    "searching": "Buscando...",
+    "noResults": "Nenhum resultado",
+    "add": "Adicionar",
+    "update": "Atualizar",
+    "uploading": "Enviando...",
+    "anonymous": "Anônimo",
+    "share": "Compartilhar"
   },
   "nav": {
     "home": "Início",

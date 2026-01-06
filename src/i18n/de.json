@@ -17,7 +17,15 @@
     "confirm": "Bestätigen",
     "done": "Fertig",
     "loginRequired": "Anmeldung erforderlich",
-    "user": "Benutzer"
+    "user": "Benutzer",
+    "login": "Anmelden",
+    "searching": "Suche...",
+    "noResults": "Keine Ergebnisse",
+    "add": "Hinzufügen",
+    "update": "Aktualisieren",
+    "uploading": "Hochladen...",
+    "anonymous": "Anonym",
+    "share": "Teilen"
   },
   "nav": {
     "home": "Startseite",

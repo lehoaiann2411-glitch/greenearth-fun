@@ -55,23 +55,23 @@ export default function Friends() {
         <div className="max-w-4xl mx-auto">
           <h1 className="text-2xl font-bold mb-6 flex items-center gap-2">
             <Users className="h-6 w-6" />
-            Friends
+            {t('friends.title')}
           </h1>
 
           <Tabs defaultValue="all" className="space-y-6">
             <TabsList>
               <TabsTrigger value="all">
-                All Friends ({friends?.length || 0})
+                {t('friends.allFriends')} ({friends?.length || 0})
               </TabsTrigger>
               <TabsTrigger value="requests" className="relative">
-                Requests
+                {t('friends.requests')}
                 {requests && requests.length > 0 && (
                   <span className="ml-2 bg-primary text-primary-foreground text-xs rounded-full px-2">
                     {requests.length}
                   </span>
                 )}
               </TabsTrigger>
-              <TabsTrigger value="suggestions">Suggestions</TabsTrigger>
+              <TabsTrigger value="suggestions">{t('friends.suggestions')}</TabsTrigger>
             </TabsList>
 
             {/* All Friends */}
@@ -79,7 +79,7 @@ export default function Friends() {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search friends..."
+                  placeholder={t('friends.searchFriends')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10"
@@ -106,14 +106,14 @@ export default function Friends() {
                           </Link>
                           <div className="flex-1 min-w-0">
                             <Link to={`/profile/${friend.id}`} className="font-medium hover:underline">
-                              {friend.full_name || 'User'}
+                              {friend.full_name || t('common.user')}
                             </Link>
                             {friend.bio && (
                               <p className="text-sm text-muted-foreground truncate">{friend.bio}</p>
                             )}
                             <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
                               <TreePine className="h-3 w-3" />
-                              {friend.trees_planted} trees
+                              {friend.trees_planted} {t('friends.trees')}
                             </div>
                           </div>
                           <AddFriendButton targetUserId={friend.id} variant="compact" />
@@ -125,8 +125,8 @@ export default function Friends() {
               ) : (
                 <div className="text-center py-12">
                   <Users className="h-12 w-12 mx-auto text-muted-foreground/50" />
-                  <h3 className="mt-4 text-lg font-medium">No friends yet</h3>
-                  <p className="text-muted-foreground">Add friends to see them here!</p>
+                  <h3 className="mt-4 text-lg font-medium">{t('friends.noFriends')}</h3>
+                  <p className="text-muted-foreground">{t('friends.addToSee')}</p>
                 </div>
               )}
             </TabsContent>
@@ -144,7 +144,7 @@ export default function Friends() {
                   {/* Reward Info */}
                   <div className="flex items-center gap-2 p-3 rounded-lg bg-green-50 dark:bg-green-950 text-green-700 dark:text-green-300">
                     <CamlyCoinInline size={20} />
-                    <span className="text-sm font-medium">Accept a friend request to earn +2,000 Camly each!</span>
+                    <span className="text-sm font-medium">{t('friends.earnOnAccept')}</span>
                   </div>
 
                   {requests.map((request) => (
@@ -159,7 +159,7 @@ export default function Friends() {
                           </Link>
                           <div className="flex-1 min-w-0">
                             <Link to={`/profile/${request.requester?.id}`} className="font-medium hover:underline">
-                              {request.requester?.full_name || 'User'}
+                              {request.requester?.full_name || t('common.user')}
                             </Link>
                             {request.requester?.bio && (
                               <p className="text-sm text-muted-foreground truncate">{request.requester.bio}</p>
@@ -177,7 +177,7 @@ export default function Friends() {
                               ) : (
                                 <Check className="h-4 w-4" />
                               )}
-                              Accept
+                              {t('friends.accept')}
                             </Button>
                             <Button
                               onClick={() => rejectRequest.mutate(request.id)}
@@ -196,15 +196,15 @@ export default function Friends() {
               ) : (
                 <div className="text-center py-12">
                   <UserPlus className="h-12 w-12 mx-auto text-muted-foreground/50" />
-                  <h3 className="mt-4 text-lg font-medium">No pending requests</h3>
-                  <p className="text-muted-foreground">When someone sends you a friend request, it'll appear here.</p>
+                  <h3 className="mt-4 text-lg font-medium">{t('friends.noRequests')}</h3>
+                  <p className="text-muted-foreground">{t('friends.requestsWillAppear')}</p>
                 </div>
               )}
             </TabsContent>
 
             {/* Suggestions */}
             <TabsContent value="suggestions" className="space-y-4">
-              <p className="text-muted-foreground">People you may know</p>
+              <p className="text-muted-foreground">{t('friends.peopleYouMayKnow')}</p>
 
               {suggestionsLoading ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -226,14 +226,14 @@ export default function Friends() {
                           </Link>
                           <div className="flex-1 min-w-0">
                             <Link to={`/profile/${suggestion.id}`} className="font-medium hover:underline">
-                              {suggestion.full_name || 'User'}
+                              {suggestion.full_name || t('common.user')}
                             </Link>
                             {suggestion.bio && (
                               <p className="text-sm text-muted-foreground truncate">{suggestion.bio}</p>
                             )}
                             <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
                               <TreePine className="h-3 w-3" />
-                              {suggestion.trees_planted} trees
+                              {suggestion.trees_planted} {t('friends.trees')}
                             </div>
                           </div>
                           <AddFriendButton targetUserId={suggestion.id} variant="compact" />
@@ -245,8 +245,8 @@ export default function Friends() {
               ) : (
                 <div className="text-center py-12">
                   <Users className="h-12 w-12 mx-auto text-muted-foreground/50" />
-                  <h3 className="mt-4 text-lg font-medium">No suggestions</h3>
-                  <p className="text-muted-foreground">Check back later for more suggestions!</p>
+                  <h3 className="mt-4 text-lg font-medium">{t('friends.noSuggestions')}</h3>
+                  <p className="text-muted-foreground">{t('friends.checkLater')}</p>
                 </div>
               )}
             </TabsContent>

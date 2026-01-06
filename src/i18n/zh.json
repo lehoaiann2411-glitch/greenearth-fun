@@ -17,7 +17,15 @@
     "confirm": "确认",
     "done": "完成",
     "loginRequired": "需要登录",
-    "user": "用户"
+    "user": "用户",
+    "login": "登录",
+    "searching": "搜索中...",
+    "noResults": "没有找到结果",
+    "add": "添加",
+    "update": "更新",
+    "uploading": "上传中...",
+    "anonymous": "匿名",
+    "share": "分享"
   },
   "nav": {
     "home": "首页",

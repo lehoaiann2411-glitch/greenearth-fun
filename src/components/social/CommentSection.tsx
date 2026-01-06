@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { useComments, useCreateComment, useDeleteComment, PostComment } from '@/hooks/usePosts';
 import { Button } from '@/components/ui/button';
@@ -7,16 +8,20 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Loader2, Trash2, Send } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
-import { vi } from 'date-fns/locale';
+import { vi, enUS, zhCN, es, fr, de, pt, ja, ru, ar, hi, Locale } from 'date-fns/locale';
 import { Link } from 'react-router-dom';
+
+const localeMap: Record<string, Locale> = { vi, en: enUS, zh: zhCN, es, fr, de, pt, ja, ru, ar, hi };
 
 interface CommentSectionProps {
   postId: string;
 }
 
 export function CommentSection({ postId }: CommentSectionProps) {
+  const { t, i18n } = useTranslation();
   const { user } = useAuth();
   const [newComment, setNewComment] = useState('');
+  const currentLocale = localeMap[i18n.language] || enUS;
 
   const { data: comments, isLoading } = useComments(postId);
   const createComment = useCreateComment();
@@ -35,7 +40,7 @@ export function CommentSection({ postId }: CommentSectionProps) {
   };
 
   const handleDelete = async (commentId: string) => {
-    if (confirm('Xóa bình luận này?')) {
+    if (confirm(t('comment.deleteComment'))) {
       await deleteComment.mutateAsync({ commentId, postId });
     }
   };
@@ -68,6 +73,7 @@ export function CommentSection({ postId }: CommentSectionProps) {
               isOwner={user?.id === comment.user_id}
               onDelete={() => handleDelete(comment.id)}
               isDeleting={deleteComment.isPending}
+              locale={currentLocale}
             />
           ))}
         </div>
@@ -86,7 +92,7 @@ export function CommentSection({ postId }: CommentSectionProps) {
             <Input
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
-              placeholder="Viết bình luận..."
+              placeholder={t('comment.writeComment')}
               className="h-8 text-sm"
             />
             <Button
@@ -106,9 +112,9 @@ export function CommentSection({ postId }: CommentSectionProps) {
       ) : (
         <p className="text-center text-sm text-muted-foreground">
           <Link to="/auth" className="text-primary hover:underline">
-            Đăng nhập
+            {t('common.login')}
           </Link>{' '}
-          để bình luận
+          {t('comment.loginToComment')}
         </p>
       )}
     </div>
@@ -120,9 +126,12 @@ interface CommentItemProps {
   isOwner: boolean;
   onDelete: () => void;
   isDeleting: boolean;
+  locale: Locale;
 }
 
-function CommentItem({ comment, isOwner, onDelete, isDeleting }: CommentItemProps) {
+function CommentItem({ comment, isOwner, onDelete, isDeleting, locale }: CommentItemProps) {
+  const { t } = useTranslation();
+  
   return (
     <div className="group flex gap-2">
       <Link to={`/profile/${comment.user_id}`} className="shrink-0 hover:opacity-80 transition-opacity">
@@ -141,13 +150,13 @@ function CommentItem({ comment, isOwner, onDelete, isDeleting }: CommentItemProp
               to={`/profile/${comment.user_id}`}
               className="text-sm font-medium hover:underline"
             >
-              {comment.profile?.full_name || 'Người dùng'}
+              {comment.profile?.full_name || t('common.user')}
             </Link>
             <Link
               to={`/profile/${comment.user_id}`}
               className="text-xs text-primary hover:underline opacity-0 group-hover:opacity-100 transition-opacity"
             >
-              Xem hồ sơ
+              {t('post.viewProfile')}
             </Link>
           </div>
           <p className="text-sm">{comment.content}</p>
@@ -156,7 +165,7 @@ function CommentItem({ comment, isOwner, onDelete, isDeleting }: CommentItemProp
           <span>
             {formatDistanceToNow(new Date(comment.created_at), {
               addSuffix: true,
-              locale: vi,
+              locale,
             })}
           </span>
           {isOwner && (

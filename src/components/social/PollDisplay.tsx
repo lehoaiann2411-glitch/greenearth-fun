@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { Check, Clock, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -7,18 +8,22 @@ import { cn } from '@/lib/utils';
 import { usePoll, useVotePoll } from '@/hooks/usePolls';
 import { CAMLY_REWARDS } from '@/lib/camlyCoin';
 import { formatDistanceToNow } from 'date-fns';
-import { vi, enUS } from 'date-fns/locale';
+import { vi, enUS, zhCN, es, fr, de, pt, ja, ru, ar, hi, Locale } from 'date-fns/locale';
 import { CamlyCoinInline } from '@/components/rewards/CamlyCoinIcon';
+
+const localeMap: Record<string, Locale> = { vi, en: enUS, zh: zhCN, es, fr, de, pt, ja, ru, ar, hi };
 
 interface PollDisplayProps {
   pollId: string;
-  language?: 'en' | 'vi';
 }
 
-export function PollDisplay({ pollId, language = 'en' }: PollDisplayProps) {
+export function PollDisplay({ pollId }: PollDisplayProps) {
+  const { t, i18n } = useTranslation();
   const { data: poll, isLoading } = usePoll(pollId);
   const { mutate: vote, isPending: isVoting } = useVotePoll();
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
+
+  const currentLocale = localeMap[i18n.language] || enUS;
 
   if (isLoading || !poll) {
     return (
@@ -41,11 +46,11 @@ export function PollDisplay({ pollId, language = 'en' }: PollDisplayProps) {
   };
 
   const getTimeRemaining = () => {
-    if (!poll.ends_at) return language === 'vi' ? 'Không giới hạn' : 'No time limit';
-    if (poll.isExpired) return language === 'vi' ? 'Đã kết thúc' : 'Ended';
+    if (!poll.ends_at) return t('poll.noTimeLimit');
+    if (poll.isExpired) return t('poll.ended');
     return formatDistanceToNow(new Date(poll.ends_at), {
       addSuffix: true,
-      locale: language === 'vi' ? vi : enUS,
+      locale: currentLocale,
     });
   };
 
@@ -145,10 +150,10 @@ export function PollDisplay({ pollId, language = 'en' }: PollDisplayProps) {
           className="w-full gap-2"
         >
           {isVoting ? (
-            language === 'vi' ? 'Đang bình chọn...' : 'Voting...'
+            t('poll.voting')
           ) : (
             <>
-              {language === 'vi' ? 'Bình chọn' : 'Vote'}
+              {t('poll.vote')}
               <span className="text-xs bg-white/20 px-1.5 py-0.5 rounded inline-flex items-center gap-1">
                 +{CAMLY_REWARDS.VOTE_POLL} <CamlyCoinInline />
               </span>
@@ -162,7 +167,7 @@ export function PollDisplay({ pollId, language = 'en' }: PollDisplayProps) {
         <div className="flex items-center gap-1.5">
           <Users className="w-4 h-4" />
           <span>
-            {poll.total_votes} {language === 'vi' ? 'phiếu' : 'votes'}
+            {poll.total_votes} {t('poll.votes')}
           </span>
         </div>
         <div className="flex items-center gap-1.5">

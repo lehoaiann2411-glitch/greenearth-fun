@@ -17,7 +17,15 @@
     "confirm": "Confirmer",
     "done": "Terminé",
     "loginRequired": "Connexion requise",
-    "user": "Utilisateur"
+    "user": "Utilisateur",
+    "login": "Connexion",
+    "searching": "Recherche...",
+    "noResults": "Aucun résultat",
+    "add": "Ajouter",
+    "update": "Mettre à jour",
+    "uploading": "Envoi...",
+    "anonymous": "Anonyme",
+    "share": "Partager"
   },
   "nav": {
     "home": "Accueil",

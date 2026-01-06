@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { 
   MessageCircle, Share2, MoreHorizontal, MapPin, 
   TreePine, Trash2, Bookmark, Flag
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import { vi, enUS, zhCN, es, fr, de, pt, ja, ru, ar, hi, Locale } from 'date-fns/locale';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -24,6 +26,8 @@ import { ImageCarousel } from './ImageCarousel';
 import { PollDisplay } from './PollDisplay';
 import { REACTION_EMOJIS } from '@/lib/camlyCoin';
 import { toast } from 'sonner';
+
+const localeMap: Record<string, Locale> = { vi, en: enUS, zh: zhCN, es, fr, de, pt, ja, ru, ar, hi };
 
 interface PostCardEnhancedProps {
   post: {
@@ -57,6 +61,7 @@ interface PostCardEnhancedProps {
 }
 
 export function PostCardEnhanced({ post, showComments = false }: PostCardEnhancedProps) {
+  const { t, i18n } = useTranslation();
   const { user } = useAuth();
   const likePost = useLikePost();
   const sharePost = useSharePost();
@@ -72,6 +77,7 @@ export function PostCardEnhanced({ post, showComments = false }: PostCardEnhance
 
   const isOwner = user?.id === post.user_id;
   const currentReaction = userReaction?.reaction_type || (isLiked ? 'leaf' : null);
+  const currentLocale = localeMap[i18n.language] || enUS;
 
   // Get all images (combine image_url and media_urls)
   const allImages = [
@@ -81,7 +87,7 @@ export function PostCardEnhanced({ post, showComments = false }: PostCardEnhance
 
   const handleReaction = async (reactionType: string) => {
     if (!user) {
-      toast.error('Please log in to react to posts');
+      toast.error(t('post.loginToReact'));
       return;
     }
 
@@ -111,7 +117,7 @@ export function PostCardEnhanced({ post, showComments = false }: PostCardEnhance
 
   const handleShare = async () => {
     if (!user) {
-      toast.error('Please log in to share posts');
+      toast.error(t('post.loginToShare'));
       return;
     }
 
@@ -122,22 +128,22 @@ export function PostCardEnhanced({ post, showComments = false }: PostCardEnhance
       // Copy link to clipboard
       await navigator.clipboard.writeText(`${window.location.origin}/post/${post.id}`);
     } catch (error: any) {
-      toast.error(error.message || 'Failed to share');
+      toast.error(error.message || t('post.shareFailed'));
     }
   };
 
   const handleDelete = async () => {
-    if (!confirm('Are you sure you want to delete this post?')) return;
+    if (!confirm(t('post.deleteConfirm'))) return;
     
     try {
       await deletePost.mutateAsync(post.id);
-      toast.success('Post deleted');
+      toast.success(t('post.postDeleted'));
     } catch (error) {
-      toast.error('Failed to delete post');
+      toast.error(t('post.deleteFailed'));
     }
   };
 
-  const timeAgo = formatDistanceToNow(new Date(post.created_at), { addSuffix: true });
+  const timeAgo = formatDistanceToNow(new Date(post.created_at), { addSuffix: true, locale: currentLocale });
 
   // Parse feeling from post
   const getFeelingDisplay = () => {
@@ -169,22 +175,22 @@ export function PostCardEnhanced({ post, showComments = false }: PostCardEnhance
               to={`/profile/${post.user.id}`}
               className="font-semibold text-foreground hover:underline"
             >
-              {post.user.full_name || 'Green Warrior'}
+              {post.user.full_name || t('post.greenWarrior')}
             </Link>
             <Link 
               to={`/profile/${post.user.id}`}
               className="text-xs text-primary hover:underline hidden sm:inline"
             >
-              Xem hồ sơ
+              {t('post.viewProfile')}
             </Link>
             {feeling && (
               <span className="text-muted-foreground text-sm">
-                is feeling {feeling.emoji} {feeling.id}
+                {t('post.isFeeling')} {feeling.emoji} {feeling.id}
               </span>
             )}
             {post.campaign && (
               <span className="text-muted-foreground text-sm">
-                at{' '}
+                {t('post.at')}{' '}
                 <Link 
                   to={`/campaigns/${post.campaign.id}`}
                   className="text-primary hover:underline font-medium"
@@ -218,7 +224,7 @@ export function PostCardEnhanced({ post, showComments = false }: PostCardEnhance
           <DropdownMenuContent align="end">
             <DropdownMenuItem>
               <Bookmark className="w-4 h-4 mr-2" />
-              Save Post
+              {t('post.savePost')}
             </DropdownMenuItem>
             {isOwner ? (
               <>
@@ -228,13 +234,13 @@ export function PostCardEnhanced({ post, showComments = false }: PostCardEnhance
                   onClick={handleDelete}
                 >
                   <Trash2 className="w-4 h-4 mr-2" />
-                  Delete Post
+                  {t('post.deletePost')}
                 </DropdownMenuItem>
               </>
             ) : (
               <DropdownMenuItem>
                 <Flag className="w-4 h-4 mr-2" />
-                Report
+                {t('post.report')}
               </DropdownMenuItem>
             )}
           </DropdownMenuContent>
@@ -290,11 +296,11 @@ export function PostCardEnhanced({ post, showComments = false }: PostCardEnhance
               onClick={() => setShowCommentsSection(true)}
               className="hover:underline"
             >
-              {post.comments_count} comments
+              {post.comments_count} {t('post.comments')}
             </button>
           )}
           {sharesCount > 0 && (
-            <span>{sharesCount} shares</span>
+            <span>{sharesCount} {t('post.shares')}</span>
           )}
         </div>
       </div>
@@ -317,7 +323,7 @@ export function PostCardEnhanced({ post, showComments = false }: PostCardEnhance
           onClick={() => setShowCommentsSection(prev => !prev)}
         >
           <MessageCircle className="w-5 h-5" />
-          Comment
+          {t('post.comment')}
         </Button>
         
         <Button
@@ -327,7 +333,7 @@ export function PostCardEnhanced({ post, showComments = false }: PostCardEnhance
           onClick={handleShare}
         >
           <Share2 className="w-5 h-5" />
-          Share
+          {t('post.share')}
         </Button>
       </div>
 
