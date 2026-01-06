@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { Search, X } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -10,22 +11,24 @@ import { FEELINGS } from '@/lib/camlyCoin';
 interface FeelingPickerProps {
   selectedFeeling?: string | null;
   onSelect: (feeling: { id: string; emoji: string; label: string } | null) => void;
-  language?: 'en' | 'vi';
 }
 
-export function FeelingPicker({ selectedFeeling, onSelect, language = 'en' }: FeelingPickerProps) {
+export function FeelingPicker({ selectedFeeling, onSelect }: FeelingPickerProps) {
+  const { t, i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
 
+  const isVietnamese = i18n.language === 'vi';
+
   const filteredFeelings = FEELINGS.filter(feeling => {
-    const label = language === 'vi' ? feeling.label_vi : feeling.label;
+    const label = isVietnamese ? feeling.label_vi : feeling.label;
     return label.toLowerCase().includes(search.toLowerCase());
   });
 
   const selectedFeelingData = FEELINGS.find(f => f.id === selectedFeeling);
 
   const handleSelect = (feeling: typeof FEELINGS[number]) => {
-    onSelect({ id: feeling.id, emoji: feeling.emoji, label: language === 'vi' ? feeling.label_vi : feeling.label });
+    onSelect({ id: feeling.id, emoji: feeling.emoji, label: isVietnamese ? feeling.label_vi : feeling.label });
     setIsOpen(false);
     setSearch('');
   };
@@ -48,8 +51,8 @@ export function FeelingPicker({ selectedFeeling, onSelect, language = 'en' }: Fe
           <span className="text-lg">😊</span>
           <span className="text-sm">
             {selectedFeelingData 
-              ? `${selectedFeelingData.emoji} ${language === 'vi' ? selectedFeelingData.label_vi : selectedFeelingData.label}`
-              : (language === 'vi' ? 'Cảm xúc' : 'Feeling')
+              ? `${selectedFeelingData.emoji} ${isVietnamese ? selectedFeelingData.label_vi : selectedFeelingData.label}`
+              : t('post.feeling')
             }
           </span>
         </Button>
@@ -59,7 +62,7 @@ export function FeelingPicker({ selectedFeeling, onSelect, language = 'en' }: Fe
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <span className="text-xl">😊</span>
-            {language === 'vi' ? 'Bạn đang cảm thấy thế nào?' : 'How are you feeling?'}
+            {t('post.howFeeling')}
           </DialogTitle>
         </DialogHeader>
 
@@ -67,7 +70,7 @@ export function FeelingPicker({ selectedFeeling, onSelect, language = 'en' }: Fe
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
-            placeholder={language === 'vi' ? 'Tìm kiếm cảm xúc...' : 'Search feelings...'}
+            placeholder={t('post.searchFeelings')}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="pl-10"
@@ -80,7 +83,7 @@ export function FeelingPicker({ selectedFeeling, onSelect, language = 'en' }: Fe
             <div className="flex items-center gap-2">
               <span className="text-2xl">{selectedFeelingData.emoji}</span>
               <span className="font-medium">
-                {language === 'vi' ? selectedFeelingData.label_vi : selectedFeelingData.label}
+                {isVietnamese ? selectedFeelingData.label_vi : selectedFeelingData.label}
               </span>
             </div>
             <Button variant="ghost" size="sm" onClick={handleClear}>
@@ -106,7 +109,7 @@ export function FeelingPicker({ selectedFeeling, onSelect, language = 'en' }: Fe
             >
               <span className="text-2xl">{feeling.emoji}</span>
               <span className="text-sm font-medium">
-                {language === 'vi' ? feeling.label_vi : feeling.label}
+                {isVietnamese ? feeling.label_vi : feeling.label}
               </span>
             </motion.button>
           ))}
@@ -114,7 +117,7 @@ export function FeelingPicker({ selectedFeeling, onSelect, language = 'en' }: Fe
 
         {filteredFeelings.length === 0 && (
           <div className="text-center py-8 text-muted-foreground">
-            {language === 'vi' ? 'Không tìm thấy cảm xúc nào' : 'No feelings found'}
+            {t('post.noFeelingsFound')}
           </div>
         )}
       </DialogContent>

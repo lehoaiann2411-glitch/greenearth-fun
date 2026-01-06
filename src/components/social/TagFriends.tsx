@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X, UserPlus, Check } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -20,10 +21,10 @@ interface TaggedUser {
 interface TagFriendsProps {
   selectedUsers: TaggedUser[];
   onUsersChange: (users: TaggedUser[]) => void;
-  language?: 'en' | 'vi';
 }
 
-export function TagFriends({ selectedUsers, onUsersChange, language = 'en' }: TagFriendsProps) {
+export function TagFriends({ selectedUsers, onUsersChange }: TagFriendsProps) {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
@@ -82,8 +83,8 @@ export function TagFriends({ selectedUsers, onUsersChange, language = 'en' }: Ta
             <UserPlus className="w-4 h-4" />
             <span>
               {selectedUsers.length > 0 
-                ? `${selectedUsers.length} ${language === 'vi' ? 'người' : 'tagged'}`
-                : (language === 'vi' ? 'Gắn thẻ' : 'Tag friends')
+                ? `${selectedUsers.length} ${t('post.tagged')}`
+                : t('post.tagFriends')
               }
             </span>
           </Button>
@@ -93,7 +94,7 @@ export function TagFriends({ selectedUsers, onUsersChange, language = 'en' }: Ta
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <UserPlus className="w-5 h-5" />
-              {language === 'vi' ? 'Gắn thẻ bạn bè' : 'Tag friends'}
+              {t('post.tagFriends')}
             </DialogTitle>
           </DialogHeader>
 
@@ -101,7 +102,7 @@ export function TagFriends({ selectedUsers, onUsersChange, language = 'en' }: Ta
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
-              placeholder={language === 'vi' ? 'Tìm kiếm bạn bè...' : 'Search friends...'}
+              placeholder={t('post.searchFriends')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="pl-10"
@@ -141,7 +142,7 @@ export function TagFriends({ selectedUsers, onUsersChange, language = 'en' }: Ta
           <ScrollArea className="max-h-[300px]">
             {isSearching ? (
               <div className="py-8 text-center text-muted-foreground">
-                {language === 'vi' ? 'Đang tìm...' : 'Searching...'}
+                {t('common.searching')}
               </div>
             ) : searchResults.length > 0 ? (
               <div className="space-y-1">
@@ -175,18 +176,18 @@ export function TagFriends({ selectedUsers, onUsersChange, language = 'en' }: Ta
               </div>
             ) : search ? (
               <div className="py-8 text-center text-muted-foreground">
-                {language === 'vi' ? 'Không tìm thấy kết quả' : 'No results found'}
+                {t('common.noResults')}
               </div>
             ) : (
               <div className="py-8 text-center text-muted-foreground">
-                {language === 'vi' ? 'Nhập tên để tìm kiếm' : 'Type a name to search'}
+                {t('post.typeToSearch')}
               </div>
             )}
           </ScrollArea>
 
           {/* Done Button */}
           <Button onClick={() => setIsOpen(false)} className="w-full">
-            {language === 'vi' ? 'Xong' : 'Done'}
+            {t('common.done')}
           </Button>
         </DialogContent>
       </Dialog>
@@ -209,6 +210,8 @@ export function TaggedUsersList({
   onRemove?: (userId: string) => void;
   maxDisplay?: number;
 }) {
+  const { t } = useTranslation();
+  
   if (users.length === 0) return null;
 
   const displayUsers = users.slice(0, maxDisplay);
@@ -216,7 +219,7 @@ export function TaggedUsersList({
 
   return (
     <div className="flex flex-wrap items-center gap-1 text-sm text-muted-foreground">
-      <span>with</span>
+      <span>{t('post.with')}</span>
       {displayUsers.map((u, index) => (
         <span key={u.id}>
           <span className="text-foreground font-medium hover:underline cursor-pointer">
@@ -235,7 +238,7 @@ export function TaggedUsersList({
       ))}
       {remaining > 0 && (
         <span className="text-foreground font-medium">
-          +{remaining} more
+          {t('post.andMore', { count: remaining })}
         </span>
       )}
     </div>

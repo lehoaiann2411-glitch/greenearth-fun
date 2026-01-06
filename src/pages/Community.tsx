@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Layout } from '@/components/layout/Layout';
 import { usePosts } from '@/hooks/usePosts';
 import { CreatePost } from '@/components/social/CreatePost';
@@ -6,6 +7,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Users, Leaf } from 'lucide-react';
 
 export default function Community() {
+  const { t } = useTranslation();
   const { data: posts, isLoading } = usePosts();
 
   return (
@@ -17,10 +19,10 @@ export default function Community() {
             <Users className="h-8 w-8 text-primary" />
           </div>
           <h1 className="font-display text-3xl font-bold md:text-4xl">
-            Cộng đồng <span className="text-gradient-forest">Xanh</span>
+            {t('community.title')}
           </h1>
           <p className="mx-auto mt-2 max-w-md text-muted-foreground">
-            Chia sẻ hoạt động xanh và kết nối với những người bạn cùng chí hướng
+            {t('community.description')}
           </p>
         </div>
 
@@ -58,9 +60,9 @@ export default function Community() {
           ) : (
             <div className="rounded-lg border-2 border-dashed p-12 text-center">
               <Leaf className="mx-auto h-12 w-12 text-muted-foreground/50" />
-              <h3 className="mt-4 font-medium">Chưa có bài viết nào</h3>
+              <h3 className="mt-4 font-medium">{t('community.noPosts')}</h3>
               <p className="mt-1 text-sm text-muted-foreground">
-                Hãy là người đầu tiên chia sẻ hoạt động xanh!
+                {t('community.beFirst')}
               </p>
             </div>
           )}

@@ -17,7 +17,15 @@
     "confirm": "確認",
     "done": "完了",
     "loginRequired": "ログインが必要です",
-    "user": "ユーザー"
+    "user": "ユーザー",
+    "login": "ログイン",
+    "searching": "検索中...",
+    "noResults": "結果が見つかりません",
+    "add": "追加",
+    "update": "更新",
+    "uploading": "アップロード中...",
+    "anonymous": "匿名",
+    "share": "共有"
   },
   "nav": {
     "home": "ホーム",

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Trash2, BarChart3, Clock } from 'lucide-react';
 import { Input } from '@/components/ui/input';
@@ -17,15 +18,16 @@ interface PollData {
 
 interface PollCreatorProps {
   onPollChange: (poll: PollData | null) => void;
-  language?: 'en' | 'vi';
 }
 
-export function PollCreator({ onPollChange, language = 'en' }: PollCreatorProps) {
+export function PollCreator({ onPollChange }: PollCreatorProps) {
+  const { t, i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [question, setQuestion] = useState('');
   const [options, setOptions] = useState(['', '']);
   const [durationDays, setDurationDays] = useState(1);
 
+  const isVietnamese = i18n.language === 'vi';
   const canAddOption = options.length < 4;
   const canRemoveOption = options.length > 2;
   const isValid = question.trim() && options.filter(o => o.trim()).length >= 2;
@@ -98,7 +100,7 @@ export function PollCreator({ onPollChange, language = 'en' }: PollCreatorProps)
         className="gap-2"
       >
         <BarChart3 className="w-4 h-4" />
-        <span>{language === 'vi' ? 'Khảo sát' : 'Poll'}</span>
+        <span>{t('poll.poll')}</span>
         {isOpen && (
           <span className="text-xs bg-primary/20 text-primary px-1.5 py-0.5 rounded inline-flex items-center gap-1">
             +{CAMLY_REWARDS.CREATE_POLL} <CamlyCoinInline />
@@ -119,7 +121,7 @@ export function PollCreator({ onPollChange, language = 'en' }: PollCreatorProps)
               {/* Question */}
               <div>
                 <Input
-                  placeholder={language === 'vi' ? 'Đặt câu hỏi...' : 'Ask a question...'}
+                  placeholder={t('poll.askQuestion')}
                   value={question}
                   onChange={(e) => handleQuestionChange(e.target.value)}
                   className="font-medium"
@@ -142,7 +144,7 @@ export function PollCreator({ onPollChange, language = 'en' }: PollCreatorProps)
                       {index + 1}
                     </div>
                     <Input
-                      placeholder={`${language === 'vi' ? 'Lựa chọn' : 'Option'} ${index + 1}`}
+                      placeholder={`${t('poll.option')} ${index + 1}`}
                       value={option}
                       onChange={(e) => updateOption(index, e.target.value)}
                       className="flex-1"
@@ -171,7 +173,7 @@ export function PollCreator({ onPollChange, language = 'en' }: PollCreatorProps)
                     className="w-full text-muted-foreground hover:text-foreground"
                   >
                     <Plus className="w-4 h-4 mr-2" />
-                    {language === 'vi' ? 'Thêm lựa chọn' : 'Add option'}
+                    {t('poll.addOption')}
                   </Button>
                 )}
               </div>
@@ -180,7 +182,7 @@ export function PollCreator({ onPollChange, language = 'en' }: PollCreatorProps)
               <div className="flex items-center gap-3">
                 <Clock className="w-4 h-4 text-muted-foreground" />
                 <span className="text-sm text-muted-foreground">
-                  {language === 'vi' ? 'Thời gian:' : 'Poll length:'}
+                  {t('poll.pollLength')}
                 </span>
                 <Select value={durationDays.toString()} onValueChange={handleDurationChange}>
                   <SelectTrigger className="w-32 h-8">
@@ -189,7 +191,7 @@ export function PollCreator({ onPollChange, language = 'en' }: PollCreatorProps)
                   <SelectContent>
                     {POLL_DURATIONS.map((duration) => (
                       <SelectItem key={duration.value} value={duration.value.toString()}>
-                        {language === 'vi' ? duration.label_vi : duration.label}
+                        {isVietnamese ? duration.label_vi : duration.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -199,9 +201,7 @@ export function PollCreator({ onPollChange, language = 'en' }: PollCreatorProps)
               {/* Validation Message */}
               {!isValid && (question || options.some(o => o)) && (
                 <p className="text-xs text-muted-foreground">
-                  {language === 'vi' 
-                    ? 'Cần có câu hỏi và ít nhất 2 lựa chọn' 
-                    : 'Need a question and at least 2 options'}
+                  {t('poll.validation')}
                 </p>
               )}
             </Card>

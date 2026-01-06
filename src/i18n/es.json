@@ -17,7 +17,15 @@
     "confirm": "Confirmar",
     "done": "Hecho",
     "loginRequired": "Inicio de sesión requerido",
-    "user": "Usuario"
+    "user": "Usuario",
+    "login": "Iniciar sesión",
+    "searching": "Buscando...",
+    "noResults": "No se encontraron resultados",
+    "add": "Agregar",
+    "update": "Actualizar",
+    "uploading": "Subiendo...",
+    "anonymous": "Anónimo",
+    "share": "Compartir"
   },
   "nav": {
     "home": "Inicio",

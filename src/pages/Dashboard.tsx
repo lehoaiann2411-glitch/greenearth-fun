@@ -20,15 +20,19 @@ import {
 import { formatCamly } from '@/lib/camlyCoin';
 import { CamlyCoinIcon } from '@/components/rewards/CamlyCoinIcon';
 import { format } from 'date-fns';
-import { vi } from 'date-fns/locale';
+import { vi, enUS, zhCN, es, fr, de, pt, ja, ru, ar, hi, Locale } from 'date-fns/locale';
+
+const localeMap: Record<string, Locale> = { vi, en: enUS, zh: zhCN, es, fr, de, pt, ja, ru, ar, hi };
 
 export default function Dashboard() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { data: profile, isLoading: profileLoading } = useProfile();
   const { data: campaigns } = useCampaigns();
   const { data: myParticipations } = useMyParticipations();
+
+  const currentLocale = localeMap[i18n.language] || enUS;
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -63,6 +67,7 @@ export default function Dashboard() {
   if (!user || !profile) return null;
 
   const camlyBalance = profile.camly_balance || 0;
+  const userName = user.user_metadata?.full_name || t('post.greenWarrior');
 
   const quickStats = [
     { icon: TreePine, label: t('impact.treesPlanted'), value: profile.trees_planted, color: 'text-green-600' },
@@ -84,15 +89,15 @@ export default function Dashboard() {
         <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <h1 className="font-display text-2xl font-bold md:text-3xl">
-              Xin chào, {user.user_metadata?.full_name || 'Người bạn xanh'}! 👋
+              {t('dashboard.hello', { name: userName })}
             </h1>
             <p className="mt-1 text-muted-foreground">
-              Chào mừng bạn quay trở lại Green Earth
+              {t('dashboard.welcome')}
             </p>
           </div>
           <Button asChild className="gradient-forest gap-2">
             <Link to="/campaigns">
-              Tham gia chiến dịch
+              {t('dashboard.joinCampaign')}
               <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
@@ -107,7 +112,7 @@ export default function Dashboard() {
                 <p className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{formatCamly(camlyBalance)}</p>
                 <p className="text-sm text-muted-foreground">Camly Coin</p>
                 <Link to="/rewards" className="text-xs text-yellow-600 hover:underline flex items-center gap-1">
-                  {t('rewards.howToEarn', 'Earn more')} <ArrowRight className="h-3 w-3" />
+                  {t('dashboard.earnMore')} <ArrowRight className="h-3 w-3" />
                 </Link>
               </div>
             </CardContent>
@@ -134,7 +139,7 @@ export default function Dashboard() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Target className="h-5 w-5 text-primary" />
-                Hành động nhanh
+                {t('dashboard.quickActions')}
               </CardTitle>
             </CardHeader>
             <CardContent className="grid gap-3 md:grid-cols-2">
@@ -144,8 +149,8 @@ export default function Dashboard() {
                     <Trophy className="h-5 w-5 text-primary" />
                   </div>
                   <div className="text-left">
-                    <p className="font-medium">Xem hồ sơ</p>
-                    <p className="text-xs text-muted-foreground">Cập nhật thông tin cá nhân</p>
+                    <p className="font-medium">{t('dashboard.viewProfile')}</p>
+                    <p className="text-xs text-muted-foreground">{t('dashboard.updateInfo')}</p>
                   </div>
                 </Link>
               </Button>
@@ -155,8 +160,8 @@ export default function Dashboard() {
                     <CamlyCoinIcon size="sm" />
                   </div>
                   <div className="text-left">
-                    <p className="font-medium">Bảng xếp hạng</p>
-                    <p className="text-xs text-muted-foreground">Top Camly Coin</p>
+                    <p className="font-medium">{t('dashboard.leaderboard')}</p>
+                    <p className="text-xs text-muted-foreground">{t('dashboard.topCamly')}</p>
                   </div>
                 </Link>
               </Button>
@@ -166,8 +171,8 @@ export default function Dashboard() {
                     <CamlyCoinIcon size="sm" />
                   </div>
                   <div className="text-left">
-                    <p className="font-medium">Phần thưởng</p>
-                    <p className="text-xs text-muted-foreground">Kiếm thêm Camly Coin</p>
+                    <p className="font-medium">{t('dashboard.rewards')}</p>
+                    <p className="text-xs text-muted-foreground">{t('dashboard.earnMore')}</p>
                   </div>
                 </Link>
               </Button>
@@ -177,8 +182,8 @@ export default function Dashboard() {
                     <TreePine className="h-5 w-5 text-green-600" />
                   </div>
                   <div className="text-left">
-                    <p className="font-medium">Tạo chiến dịch</p>
-                    <p className="text-xs text-muted-foreground">Khởi động hoạt động xanh</p>
+                    <p className="font-medium">{t('dashboard.createCampaign')}</p>
+                    <p className="text-xs text-muted-foreground">{t('dashboard.startGreen')}</p>
                   </div>
                 </Link>
               </Button>
@@ -190,7 +195,7 @@ export default function Dashboard() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Target className="h-5 w-5 text-primary" />
-                Đang tham gia
+                {t('dashboard.participating')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -206,7 +211,7 @@ export default function Dashboard() {
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-sm truncate">{(participation as { campaign?: { title?: string } }).campaign?.title}</p>
                         <p className="text-xs text-muted-foreground">
-                          {participation.status === 'registered' ? 'Chờ check-in' : 'Đang tham gia'}
+                          {participation.status === 'registered' ? t('dashboard.waitingCheckIn') : t('dashboard.inProgress')}
                         </p>
                       </div>
                     </Link>
@@ -215,9 +220,9 @@ export default function Dashboard() {
               ) : (
                 <div className="text-center py-6 text-muted-foreground">
                   <TreePine className="h-10 w-10 mx-auto mb-2 opacity-50" />
-                  <p className="text-sm">Chưa tham gia chiến dịch nào</p>
+                  <p className="text-sm">{t('dashboard.noParticipation')}</p>
                   <Button asChild size="sm" className="mt-3">
-                    <Link to="/campaigns">Khám phá</Link>
+                    <Link to="/campaigns">{t('dashboard.explore')}</Link>
                   </Button>
                 </div>
               )}
@@ -231,15 +236,15 @@ export default function Dashboard() {
             <div>
               <CardTitle className="flex items-center gap-2">
                 <Calendar className="h-5 w-5 text-primary" />
-                Chiến dịch sắp tới
+                {t('dashboard.upcomingCampaigns')}
               </CardTitle>
               <CardDescription>
-                Các chiến dịch bạn có thể tham gia
+                {t('dashboard.campaignsToJoin')}
               </CardDescription>
             </div>
             <Button variant="ghost" asChild className="gap-1">
               <Link to="/campaigns">
-                Xem tất cả
+                {t('dashboard.viewAll')}
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
@@ -260,7 +265,7 @@ export default function Dashboard() {
                       <div>
                         <p className="font-medium">{campaign.title}</p>
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <span>{format(new Date(campaign.start_date), 'dd/MM/yyyy', { locale: vi })}</span>
+                          <span>{format(new Date(campaign.start_date), 'dd/MM/yyyy', { locale: currentLocale })}</span>
                           {campaign.location && (
                             <>
                               <span>•</span>
@@ -285,9 +290,9 @@ export default function Dashboard() {
               </div>
             ) : (
               <div className="text-center py-8 text-muted-foreground">
-                <p>Chưa có chiến dịch nào</p>
+                <p>{t('dashboard.noCampaigns')}</p>
                 <Button asChild className="mt-4">
-                  <Link to="/campaigns/create">Tạo chiến dịch đầu tiên</Link>
+                  <Link to="/campaigns/create">{t('dashboard.createFirst')}</Link>
                 </Button>
               </div>
             )}

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Globe, Users, Lock, ChevronDown } from 'lucide-react';
 import {
   DropdownMenu,
@@ -14,7 +15,6 @@ export type PrivacyOption = 'public' | 'friends' | 'private';
 interface PrivacySelectorProps {
   value: PrivacyOption;
   onChange: (value: PrivacyOption) => void;
-  language?: 'en' | 'vi';
   size?: 'sm' | 'default';
 }
 
@@ -22,39 +22,30 @@ const PRIVACY_OPTIONS = [
   {
     value: 'public' as const,
     icon: Globe,
-    label: 'Public',
-    label_vi: 'Công khai',
-    description: 'Anyone can see this post',
-    description_vi: 'Bất kỳ ai cũng có thể xem',
   },
   {
     value: 'friends' as const,
     icon: Users,
-    label: 'Friends',
-    label_vi: 'Bạn bè',
-    description: 'Only your followers can see',
-    description_vi: 'Chỉ người theo dõi mới xem được',
   },
   {
     value: 'private' as const,
     icon: Lock,
-    label: 'Only me',
-    label_vi: 'Chỉ mình tôi',
-    description: 'Only you can see this post',
-    description_vi: 'Chỉ bạn mới xem được',
   },
 ];
 
 export function PrivacySelector({ 
   value, 
   onChange, 
-  language = 'en',
   size = 'default' 
 }: PrivacySelectorProps) {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   
   const selectedOption = PRIVACY_OPTIONS.find(opt => opt.value === value) || PRIVACY_OPTIONS[0];
   const Icon = selectedOption.icon;
+
+  const getLabel = (privacyValue: PrivacyOption) => t(`privacy.${privacyValue}`);
+  const getDescription = (privacyValue: PrivacyOption) => t(`privacy.${privacyValue}Desc`);
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
@@ -68,7 +59,7 @@ export function PrivacySelector({
           )}
         >
           <Icon className={cn("w-4 h-4", size === 'sm' && "w-3 h-3")} />
-          <span>{language === 'vi' ? selectedOption.label_vi : selectedOption.label}</span>
+          <span>{getLabel(selectedOption.value)}</span>
           <ChevronDown className={cn("w-4 h-4", size === 'sm' && "w-3 h-3")} />
         </Button>
       </DropdownMenuTrigger>
@@ -96,10 +87,10 @@ export function PrivacySelector({
               </div>
               <div className="flex-1">
                 <div className="font-medium">
-                  {language === 'vi' ? option.label_vi : option.label}
+                  {getLabel(option.value)}
                 </div>
                 <div className="text-xs text-muted-foreground">
-                  {language === 'vi' ? option.description_vi : option.description}
+                  {getDescription(option.value)}
                 </div>
               </div>
             </DropdownMenuItem>
