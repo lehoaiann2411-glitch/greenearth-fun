@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { CAMLY_REWARDS, ACTION_TYPES } from '@/lib/camlyCoin';
+import i18n from '@/i18n';
 
 export interface GroupPost {
   id: string;
@@ -139,10 +140,10 @@ export function useCreateGroupPost() {
     onSuccess: ({ reward }, { group_id }) => {
       queryClient.invalidateQueries({ queryKey: ['group-posts', group_id] });
       queryClient.invalidateQueries({ queryKey: ['group', group_id] });
-      toast.success(`+${reward.toLocaleString()} Camly - Đã đăng bài trong nhóm!`);
+      toast.success(i18n.t('toast.earnedCamly', { amount: reward.toLocaleString() }) + ' - ' + i18n.t('toast.groupPostCreated', 'Posted in group!'));
     },
     onError: (error) => {
-      toast.error('Failed to create post');
+      toast.error(i18n.t('toast.error', 'Failed to create post'));
       console.error(error);
     },
   });
@@ -210,7 +211,7 @@ export function usePinGroupPost() {
     },
     onSuccess: (_, { groupId, isPinned }) => {
       queryClient.invalidateQueries({ queryKey: ['group-posts', groupId] });
-      toast.success(isPinned ? 'Đã ghim bài viết' : 'Đã bỏ ghim bài viết');
+      toast.success(isPinned ? i18n.t('toast.postPinned', 'Post pinned') : i18n.t('toast.postUnpinned', 'Post unpinned'));
     },
   });
 }
@@ -231,7 +232,7 @@ export function useDeleteGroupPost() {
     onSuccess: (_, { groupId }) => {
       queryClient.invalidateQueries({ queryKey: ['group-posts', groupId] });
       queryClient.invalidateQueries({ queryKey: ['group', groupId] });
-      toast.success('Đã xóa bài viết');
+      toast.success(i18n.t('toast.postDeleted', 'Post deleted'));
     },
   });
 }

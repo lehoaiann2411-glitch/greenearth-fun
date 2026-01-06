@@ -71,7 +71,7 @@ export function GroupFilters({
               {GROUP_CATEGORIES.map((cat) => (
                 <SelectItem key={cat.value} value={cat.value}>
                   {'emoji' in cat && <span className="mr-2">{cat.emoji}</span>}
-                  {cat.label}
+                  {t(cat.labelKey)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -115,7 +115,7 @@ export function GroupFilters({
             }`}
           >
             {'emoji' in cat && <span className="mr-1">{cat.emoji}</span>}
-            {cat.label}
+            {t(cat.labelKey)}
           </Button>
         ))}
       </div>

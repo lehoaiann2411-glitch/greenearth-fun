@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { CAMLY_REWARDS, ACTION_TYPES } from '@/lib/camlyCoin';
+import i18n from '@/i18n';
 
 export interface Group {
   id: string;
@@ -265,10 +266,10 @@ export function useCreateGroup() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['groups'] });
       queryClient.invalidateQueries({ queryKey: ['my-groups'] });
-      toast.success(`+${CAMLY_REWARDS.GROUP_CREATE.toLocaleString()} Camly - Đã tạo nhóm mới!`);
+      toast.success(i18n.t('toast.earnedCamly', { amount: CAMLY_REWARDS.GROUP_CREATE.toLocaleString() }) + ' - ' + i18n.t('toast.groupCreated', 'Group created!'));
     },
     onError: (error) => {
-      toast.error('Failed to create group');
+      toast.error(i18n.t('toast.error', 'Failed to create group'));
       console.error(error);
     },
   });
@@ -321,13 +322,13 @@ export function useJoinGroup() {
       queryClient.invalidateQueries({ queryKey: ['group', variables.groupId] });
       
       if (variables.privacy === 'public') {
-        toast.success(`+${CAMLY_REWARDS.GROUP_JOIN.toLocaleString()} Camly - Đã tham gia nhóm!`);
+        toast.success(i18n.t('toast.earnedCamly', { amount: CAMLY_REWARDS.GROUP_JOIN.toLocaleString() }) + ' - ' + i18n.t('toast.groupJoined', 'Joined group!'));
       } else {
-        toast.success('Yêu cầu tham gia đã được gửi!');
+        toast.success(i18n.t('toast.requestSent', 'Join request sent!'));
       }
     },
     onError: (error) => {
-      toast.error('Failed to join group');
+      toast.error(i18n.t('toast.error', 'Failed to join group'));
       console.error(error);
     },
   });
@@ -355,10 +356,10 @@ export function useLeaveGroup() {
       queryClient.invalidateQueries({ queryKey: ['group-members', groupId] });
       queryClient.invalidateQueries({ queryKey: ['my-groups'] });
       queryClient.invalidateQueries({ queryKey: ['group', groupId] });
-      toast.success('Đã rời nhóm');
+      toast.success(i18n.t('toast.groupLeft', 'Left group'));
     },
     onError: (error) => {
-      toast.error('Failed to leave group');
+      toast.error(i18n.t('toast.error', 'Failed to leave group'));
       console.error(error);
     },
   });
@@ -381,7 +382,7 @@ export function useApproveMember() {
       queryClient.invalidateQueries({ queryKey: ['pending-members', groupId] });
       queryClient.invalidateQueries({ queryKey: ['group-members', groupId] });
       queryClient.invalidateQueries({ queryKey: ['group', groupId] });
-      toast.success('Đã chấp nhận thành viên');
+      toast.success(i18n.t('toast.memberAccepted', 'Member accepted'));
     },
   });
 }
@@ -401,7 +402,7 @@ export function useRejectMember() {
     },
     onSuccess: (_, { groupId }) => {
       queryClient.invalidateQueries({ queryKey: ['pending-members', groupId] });
-      toast.success('Đã từ chối yêu cầu');
+      toast.success(i18n.t('toast.memberRejected', 'Request rejected'));
     },
   });
 }
@@ -422,21 +423,21 @@ export function useUpdateGroup() {
     onSuccess: (_, { groupId }) => {
       queryClient.invalidateQueries({ queryKey: ['group', groupId] });
       queryClient.invalidateQueries({ queryKey: ['groups'] });
-      toast.success('Đã cập nhật nhóm');
+      toast.success(i18n.t('toast.updateSuccess', 'Group updated'));
     },
   });
 }
 
 // Group categories for filtering
 export const GROUP_CATEGORIES = [
-  { value: 'all', label: 'Tất cả', label_en: 'All' },
-  { value: 'tree_planting', label: 'Trồng cây', label_en: 'Tree Planting', emoji: '🌳' },
-  { value: 'cleanup', label: 'Dọn dẹp', label_en: 'Cleanup', emoji: '🧹' },
-  { value: 'recycling', label: 'Tái chế', label_en: 'Recycling', emoji: '♻️' },
-  { value: 'esg', label: 'ESG', label_en: 'ESG', emoji: '🏢' },
-  { value: 'education', label: 'Giáo dục', label_en: 'Education', emoji: '📚' },
-  { value: 'general', label: 'Chung', label_en: 'General', emoji: '🌍' },
-  { value: 'other', label: 'Khác', label_en: 'Other', emoji: '💚' },
+  { value: 'all', labelKey: 'categories.all' },
+  { value: 'tree_planting', labelKey: 'categories.tree_planting', emoji: '🌳' },
+  { value: 'cleanup', labelKey: 'categories.cleanup', emoji: '🧹' },
+  { value: 'recycling', labelKey: 'categories.recycling', emoji: '♻️' },
+  { value: 'esg', labelKey: 'categories.esg', emoji: '🏢' },
+  { value: 'education', labelKey: 'categories.education', emoji: '📚' },
+  { value: 'general', labelKey: 'categories.general', emoji: '🌍' },
+  { value: 'other', labelKey: 'categories.other', emoji: '💚' },
 ] as const;
 
 // Vietnam locations for filtering

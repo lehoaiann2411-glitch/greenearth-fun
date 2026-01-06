@@ -1,4 +1,5 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Layout } from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -12,12 +13,11 @@ import {
   useUpdateCampaign,
   useUpdateParticipant,
   CampaignStatus,
-  ParticipantStatus,
-  STATUS_LABELS
+  ParticipantStatus
 } from '@/hooks/useCampaigns';
 import { useAuth } from '@/contexts/AuthContext';
 import { format } from 'date-fns';
-import { vi } from 'date-fns/locale';
+import { getDateLocale } from '@/lib/dateLocale';
 import { 
   ArrowLeft, 
   Users, 
@@ -27,17 +27,20 @@ import {
   Settings
 } from 'lucide-react';
 
-const participantStatusConfig = {
-  registered: { label: 'Đã đăng ký', icon: Clock, className: 'bg-blue-100 text-blue-800' },
-  checked_in: { label: 'Đã check-in', icon: UserCheck, className: 'bg-yellow-100 text-yellow-800' },
-  completed: { label: 'Hoàn thành', icon: CheckCircle, className: 'bg-green-100 text-green-800' },
-  cancelled: { label: 'Đã hủy', icon: Clock, className: 'bg-gray-100 text-gray-800' },
-};
+const STATUS_OPTIONS: { value: CampaignStatus; labelKey: string }[] = [
+  { value: 'draft', labelKey: 'status.draft' },
+  { value: 'pending', labelKey: 'status.pending' },
+  { value: 'active', labelKey: 'status.active' },
+  { value: 'completed', labelKey: 'status.completed' },
+  { value: 'cancelled', labelKey: 'status.cancelled' },
+];
 
 export default function CampaignManage() {
+  const { t, i18n } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const dateLocale = getDateLocale(i18n.language);
   
   const { data: campaign, isLoading } = useCampaign(id || '');
   const { data: participants } = useCampaignParticipants(id || '');
@@ -58,6 +61,16 @@ export default function CampaignManage() {
     });
   };
 
+  const getParticipantStatusConfig = (status: ParticipantStatus) => {
+    const configs: Record<ParticipantStatus, { labelKey: string; icon: typeof Clock; className: string }> = {
+      registered: { labelKey: 'participant.statusRegistered', icon: Clock, className: 'bg-blue-100 text-blue-800' },
+      checked_in: { labelKey: 'participant.statusCheckedIn', icon: UserCheck, className: 'bg-yellow-100 text-yellow-800' },
+      completed: { labelKey: 'participant.statusCompleted', icon: CheckCircle, className: 'bg-green-100 text-green-800' },
+      cancelled: { labelKey: 'participant.statusCancelled', icon: Clock, className: 'bg-gray-100 text-gray-800' },
+    };
+    return configs[status];
+  };
+
   if (isLoading) {
     return (
       <Layout>
@@ -73,9 +86,9 @@ export default function CampaignManage() {
     return (
       <Layout>
         <div className="container py-16 text-center">
-          <h2 className="text-xl font-semibold mb-4">Không tìm thấy chiến dịch</h2>
+          <h2 className="text-xl font-semibold mb-4">{t('campaign.notFound')}</h2>
           <Button asChild>
-            <Link to="/campaigns">Quay lại</Link>
+            <Link to="/campaigns">{t('common.back')}</Link>
           </Button>
         </div>
       </Layout>
@@ -101,7 +114,7 @@ export default function CampaignManage() {
         <Button variant="ghost" asChild className="mb-6">
           <Link to={`/campaigns/${id}`}>
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Quay lại chi tiết
+            {t('campaign.backToDetail')}
           </Link>
         </Button>
 
@@ -109,23 +122,23 @@ export default function CampaignManage() {
           <div>
             <h1 className="text-2xl font-bold flex items-center gap-3">
               <Settings className="h-6 w-6" />
-              Quản lý: {campaign.title}
+              {t('campaign.manageTitle')} {campaign.title}
             </h1>
             <p className="text-muted-foreground mt-1">
-              Quản lý người tham gia và cập nhật trạng thái chiến dịch
+              {t('campaign.manageDesc')}
             </p>
           </div>
           
           <div className="flex items-center gap-3">
-            <span className="text-sm text-muted-foreground">Trạng thái:</span>
+            <span className="text-sm text-muted-foreground">{t('campaign.statusLabel')}</span>
             <Select value={campaign.status} onValueChange={handleStatusChange}>
               <SelectTrigger className="w-[160px]">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {Object.entries(STATUS_LABELS).map(([value, label]) => (
-                  <SelectItem key={value} value={value}>
-                    {label}
+                {STATUS_OPTIONS.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {t(option.labelKey)}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -139,7 +152,7 @@ export default function CampaignManage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Tổng đăng ký</p>
+                  <p className="text-sm text-muted-foreground">{t('campaign.totalRegistered')}</p>
                   <p className="text-2xl font-bold">{stats.total}</p>
                 </div>
                 <Users className="h-8 w-8 text-muted-foreground" />
@@ -151,7 +164,7 @@ export default function CampaignManage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Chờ check-in</p>
+                  <p className="text-sm text-muted-foreground">{t('campaign.waitingCheckIn')}</p>
                   <p className="text-2xl font-bold text-blue-600">{stats.registered}</p>
                 </div>
                 <Clock className="h-8 w-8 text-blue-500" />
@@ -163,7 +176,7 @@ export default function CampaignManage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Đã check-in</p>
+                  <p className="text-sm text-muted-foreground">{t('participant.statusCheckedIn')}</p>
                   <p className="text-2xl font-bold text-yellow-600">{stats.checked_in}</p>
                 </div>
                 <UserCheck className="h-8 w-8 text-yellow-500" />
@@ -175,7 +188,7 @@ export default function CampaignManage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Hoàn thành</p>
+                  <p className="text-sm text-muted-foreground">{t('participant.statusCompleted')}</p>
                   <p className="text-2xl font-bold text-green-600">{stats.completed}</p>
                 </div>
                 <CheckCircle className="h-8 w-8 text-green-500" />
@@ -187,17 +200,17 @@ export default function CampaignManage() {
         {/* Participants Management */}
         <Card>
           <CardHeader>
-            <CardTitle>Danh sách người tham gia</CardTitle>
+            <CardTitle>{t('campaign.participantList')}</CardTitle>
             <CardDescription>
-              Quản lý trạng thái và xác nhận hoàn thành cho người tham gia
+              {t('campaign.participantListDesc')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             {participants && participants.length > 0 ? (
               <div className="space-y-3">
                 {participants.map((participant) => {
-                  const status = participantStatusConfig[participant.status];
-                  const StatusIcon = status.icon;
+                  const statusConfig = getParticipantStatusConfig(participant.status);
+                  const StatusIcon = statusConfig.icon;
                   
                   return (
                     <div
@@ -213,23 +226,23 @@ export default function CampaignManage() {
                         </Avatar>
                         <div>
                           <p className="font-medium">
-                            {participant.user?.full_name || 'Ẩn danh'}
+                            {participant.user?.full_name || t('common.anonymous')}
                           </p>
                           <p className="text-sm text-muted-foreground">
-                            Đăng ký: {format(new Date(participant.registered_at), 'dd/MM/yyyy HH:mm', { locale: vi })}
+                            {t('campaign.registered')} {format(new Date(participant.registered_at), 'dd/MM/yyyy HH:mm', { locale: dateLocale })}
                           </p>
                           {participant.checked_in_at && (
                             <p className="text-sm text-muted-foreground">
-                              Check-in: {format(new Date(participant.checked_in_at), 'dd/MM/yyyy HH:mm', { locale: vi })}
+                              Check-in: {format(new Date(participant.checked_in_at), 'dd/MM/yyyy HH:mm', { locale: dateLocale })}
                             </p>
                           )}
                         </div>
                       </div>
                       
                       <div className="flex items-center gap-3">
-                        <Badge className={status.className}>
+                        <Badge className={statusConfig.className}>
                           <StatusIcon className="h-3 w-3 mr-1" />
-                          {status.label}
+                          {t(statusConfig.labelKey)}
                         </Badge>
                         
                         <Select
@@ -237,13 +250,13 @@ export default function CampaignManage() {
                           onValueChange={(value) => handleParticipantStatusChange(participant.id, value as ParticipantStatus)}
                         >
                           <SelectTrigger className="w-[140px]">
-                            <SelectValue placeholder="Cập nhật" />
+                            <SelectValue placeholder={t('campaign.update')} />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="registered">Đã đăng ký</SelectItem>
-                            <SelectItem value="checked_in">Đã check-in</SelectItem>
-                            <SelectItem value="completed">Hoàn thành</SelectItem>
-                            <SelectItem value="cancelled">Đã hủy</SelectItem>
+                            <SelectItem value="registered">{t('participant.statusRegistered')}</SelectItem>
+                            <SelectItem value="checked_in">{t('participant.statusCheckedIn')}</SelectItem>
+                            <SelectItem value="completed">{t('participant.statusCompleted')}</SelectItem>
+                            <SelectItem value="cancelled">{t('participant.statusCancelled')}</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
@@ -253,7 +266,7 @@ export default function CampaignManage() {
               </div>
             ) : (
               <div className="text-center py-8 text-muted-foreground">
-                Chưa có người tham gia
+                {t('campaign.noParticipants')}
               </div>
             )}
           </CardContent>

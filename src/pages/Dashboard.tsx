@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { useProfile } from '@/hooks/useProfile';
-import { useCampaigns, useMyParticipations, CATEGORY_LABELS } from '@/hooks/useCampaigns';
+import { useCampaigns, useMyParticipations } from '@/hooks/useCampaigns';
 import { Layout } from '@/components/layout/Layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -20,9 +20,7 @@ import {
 import { formatCamly } from '@/lib/camlyCoin';
 import { CamlyCoinIcon } from '@/components/rewards/CamlyCoinIcon';
 import { format } from 'date-fns';
-import { vi, enUS, zhCN, es, fr, de, pt, ja, ru, ar, hi, Locale } from 'date-fns/locale';
-
-const localeMap: Record<string, Locale> = { vi, en: enUS, zh: zhCN, es, fr, de, pt, ja, ru, ar, hi };
+import { getDateLocale } from '@/lib/dateLocale';
 
 export default function Dashboard() {
   const { t, i18n } = useTranslation();
@@ -32,7 +30,7 @@ export default function Dashboard() {
   const { data: campaigns } = useCampaigns();
   const { data: myParticipations } = useMyParticipations();
 
-  const currentLocale = localeMap[i18n.language] || enUS;
+  const currentLocale = getDateLocale(i18n.language);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -279,7 +277,7 @@ export default function Dashboard() {
                       </div>
                     </div>
                     <div className="flex items-center gap-4">
-                      <Badge variant="outline">{CATEGORY_LABELS[campaign.category]}</Badge>
+                      <Badge variant="outline">{t(`categories.${campaign.category}`)}</Badge>
                       <div className="text-right flex items-center gap-1">
                         <CamlyCoinIcon size="sm" />
                         <span className="font-medium text-yellow-600 dark:text-yellow-400">+{formatCamly(campaign.green_points_reward * 100)}</span>

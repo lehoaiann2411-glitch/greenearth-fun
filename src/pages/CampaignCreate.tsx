@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Layout } from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,12 +8,21 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useCreateCampaign, uploadCampaignImage, CATEGORY_LABELS, CampaignCategory } from '@/hooks/useCampaigns';
+import { useCreateCampaign, uploadCampaignImage, CampaignCategory } from '@/hooks/useCampaigns';
 import { useAuth } from '@/contexts/AuthContext';
 import { ArrowLeft, Loader2, Upload, X } from 'lucide-react';
 import { toast } from 'sonner';
 
+const CATEGORIES: { value: CampaignCategory; labelKey: string }[] = [
+  { value: 'tree_planting', labelKey: 'categories.tree_planting' },
+  { value: 'cleanup', labelKey: 'categories.cleanup' },
+  { value: 'recycling', labelKey: 'categories.recycling' },
+  { value: 'awareness', labelKey: 'categories.awareness' },
+  { value: 'other', labelKey: 'categories.other' },
+];
+
 export default function CampaignCreate() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useAuth();
   const createMutation = useCreateCampaign();
@@ -50,12 +60,12 @@ export default function CampaignCreate() {
     e.preventDefault();
     
     if (!formData.title || !formData.start_date || !formData.end_date) {
-      toast.error('Vui lòng điền đầy đủ thông tin bắt buộc');
+      toast.error(t('campaign.validation.fillRequired'));
       return;
     }
 
     if (new Date(formData.end_date) < new Date(formData.start_date)) {
-      toast.error('Ngày kết thúc phải sau ngày bắt đầu');
+      toast.error(t('campaign.validation.endDateAfterStart'));
       return;
     }
 
@@ -84,9 +94,9 @@ export default function CampaignCreate() {
     return (
       <Layout>
         <div className="container py-16 text-center">
-          <h2 className="text-xl font-semibold mb-4">Bạn cần đăng nhập để tạo chiến dịch</h2>
+          <h2 className="text-xl font-semibold mb-4">{t('campaign.loginRequired')}</h2>
           <Button asChild>
-            <Link to="/auth">Đăng nhập</Link>
+            <Link to="/auth">{t('nav.login')}</Link>
           </Button>
         </div>
       </Layout>
@@ -99,22 +109,22 @@ export default function CampaignCreate() {
         <Button variant="ghost" asChild className="mb-6">
           <Link to="/campaigns">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Quay lại
+            {t('common.back')}
           </Link>
         </Button>
 
         <Card>
           <CardHeader>
-            <CardTitle>Tạo Chiến Dịch Mới</CardTitle>
+            <CardTitle>{t('campaign.createTitle')}</CardTitle>
             <CardDescription>
-              Khởi tạo chiến dịch bảo vệ môi trường và kêu gọi mọi người tham gia
+              {t('campaign.createDesc')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Image Upload */}
               <div className="space-y-2">
-                <Label>Hình ảnh chiến dịch</Label>
+                <Label>{t('campaign.image')}</Label>
                 {imagePreview ? (
                   <div className="relative">
                     <img
@@ -136,7 +146,7 @@ export default function CampaignCreate() {
                   <label className="flex flex-col items-center justify-center h-48 border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
                     <Upload className="h-8 w-8 text-muted-foreground mb-2" />
                     <span className="text-sm text-muted-foreground">
-                      Click để tải ảnh lên
+                      {t('campaign.clickToUpload')}
                     </span>
                     <input
                       type="file"
@@ -150,10 +160,10 @@ export default function CampaignCreate() {
 
               {/* Title */}
               <div className="space-y-2">
-                <Label htmlFor="title">Tên chiến dịch *</Label>
+                <Label htmlFor="title">{t('campaign.name')} *</Label>
                 <Input
                   id="title"
-                  placeholder="VD: Trồng 1000 cây xanh tại Hà Nội"
+                  placeholder={t('campaign.namePlaceholder')}
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   required
@@ -162,10 +172,10 @@ export default function CampaignCreate() {
 
               {/* Description */}
               <div className="space-y-2">
-                <Label htmlFor="description">Mô tả</Label>
+                <Label htmlFor="description">{t('campaign.descriptionLabel')}</Label>
                 <Textarea
                   id="description"
-                  placeholder="Mô tả chi tiết về chiến dịch..."
+                  placeholder={t('campaign.descriptionPlaceholder')}
                   rows={4}
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -174,7 +184,7 @@ export default function CampaignCreate() {
 
               {/* Category */}
               <div className="space-y-2">
-                <Label>Danh mục *</Label>
+                <Label>{t('campaign.category')} *</Label>
                 <Select
                   value={formData.category}
                   onValueChange={(value) => setFormData({ ...formData, category: value as CampaignCategory })}
@@ -183,9 +193,9 @@ export default function CampaignCreate() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {Object.entries(CATEGORY_LABELS).map(([value, label]) => (
-                      <SelectItem key={value} value={value}>
-                        {label}
+                    {CATEGORIES.map((cat) => (
+                      <SelectItem key={cat.value} value={cat.value}>
+                        {t(cat.labelKey)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -194,10 +204,10 @@ export default function CampaignCreate() {
 
               {/* Location */}
               <div className="space-y-2">
-                <Label htmlFor="location">Địa điểm</Label>
+                <Label htmlFor="location">{t('campaign.location')}</Label>
                 <Input
                   id="location"
-                  placeholder="VD: Công viên Thống Nhất, Hà Nội"
+                  placeholder={t('campaign.locationPlaceholder')}
                   value={formData.location}
                   onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                 />
@@ -206,7 +216,7 @@ export default function CampaignCreate() {
               {/* Date Range */}
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="start_date">Ngày bắt đầu *</Label>
+                  <Label htmlFor="start_date">{t('campaign.startDate')} *</Label>
                   <Input
                     id="start_date"
                     type="date"
@@ -216,7 +226,7 @@ export default function CampaignCreate() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="end_date">Ngày kết thúc *</Label>
+                  <Label htmlFor="end_date">{t('campaign.endDate')} *</Label>
                   <Input
                     id="end_date"
                     type="date"
@@ -230,7 +240,7 @@ export default function CampaignCreate() {
               {/* Targets */}
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="target_participants">Mục tiêu người tham gia *</Label>
+                  <Label htmlFor="target_participants">{t('campaign.targetParticipants')} *</Label>
                   <Input
                     id="target_participants"
                     type="number"
@@ -241,7 +251,7 @@ export default function CampaignCreate() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="target_trees">Mục tiêu cây trồng</Label>
+                  <Label htmlFor="target_trees">{t('campaign.targetTrees')}</Label>
                   <Input
                     id="target_trees"
                     type="number"
@@ -254,7 +264,7 @@ export default function CampaignCreate() {
 
               {/* Green Points Reward */}
               <div className="space-y-2">
-                <Label htmlFor="green_points_reward">Điểm thưởng (Green Points)</Label>
+                <Label htmlFor="green_points_reward">{t('campaign.rewardPoints')}</Label>
                 <Input
                   id="green_points_reward"
                   type="number"
@@ -264,7 +274,7 @@ export default function CampaignCreate() {
                   onChange={(e) => setFormData({ ...formData, green_points_reward: parseInt(e.target.value) || 10 })}
                 />
                 <p className="text-sm text-muted-foreground">
-                  Số điểm xanh người tham gia nhận được khi hoàn thành
+                  {t('campaign.rewardPointsDesc')}
                 </p>
               </div>
 
@@ -276,7 +286,7 @@ export default function CampaignCreate() {
                   className="flex-1"
                   onClick={() => navigate('/campaigns')}
                 >
-                  Hủy
+                  {t('common.cancel')}
                 </Button>
                 <Button
                   type="submit"
@@ -286,7 +296,7 @@ export default function CampaignCreate() {
                   {(createMutation.isPending || isUploading) && (
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                   )}
-                  Tạo chiến dịch
+                  {t('campaign.create')}
                 </Button>
               </div>
             </form>
