@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect, useRef, ReactNode } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import {
   useIncomingCalls,
@@ -40,6 +40,10 @@ export function CallProvider({ children }: CallProviderProps) {
   const [activeCall, setActiveCall] = useState<Call | null>(null);
   const [remoteUserInfo, setRemoteUserInfo] = useState<{ name?: string; avatar?: string }>({});
   const [isInitiator, setIsInitiator] = useState(false);
+  
+  // Track if WebRTC has been initialized for current call
+  const webrtcStartedRef = useRef(false);
+  const currentCallIdRef = useRef<string | null>(null);
 
   const { data: incomingCall } = useIncomingCalls();
   const startCallMutation = useStartCall();
@@ -56,6 +60,30 @@ export function CallProvider({ children }: CallProviderProps) {
     cleanup,
     peerConnection,
   } = useCallSignaling(activeCall?.id || null);
+
+  // Reset WebRTC tracking when call changes or ends
+  useEffect(() => {
+    if (!activeCall) {
+      webrtcStartedRef.current = false;
+      currentCallIdRef.current = null;
+    } else if (activeCall.id !== currentCallIdRef.current) {
+      webrtcStartedRef.current = false;
+      currentCallIdRef.current = activeCall.id;
+    }
+  }, [activeCall?.id]);
+
+  // Initialize WebRTC when call is accepted
+  useEffect(() => {
+    if (
+      activeCall?.status === 'accepted' &&
+      !webrtcStartedRef.current &&
+      activeCall.id === currentCallIdRef.current
+    ) {
+      console.log('CallContext: Initializing WebRTC', { isInitiator, callType: activeCall.call_type });
+      webrtcStartedRef.current = true;
+      initializeCall(activeCall.call_type, isInitiator);
+    }
+  }, [activeCall?.status, activeCall?.id, activeCall?.call_type, isInitiator, initializeCall]);
 
   // Handle incoming call timeout (30 seconds)
   useEffect(() => {
@@ -84,17 +112,16 @@ export function CallProvider({ children }: CallProviderProps) {
         },
         (payload) => {
           const updatedCall = payload.new as Call;
+          console.log('CallContext: Call status changed', updatedCall.status);
           
           if (updatedCall.status === 'rejected' || updatedCall.status === 'ended' || updatedCall.status === 'missed') {
             cleanup();
             setActiveCall(null);
             setIsInitiator(false);
-          } else if (updatedCall.status === 'accepted' && isInitiator) {
-            // Call was accepted, initialize WebRTC
-            initializeCall(updatedCall.call_type, true);
+          } else {
+            // Update active call state - WebRTC init will be triggered by the effect above
+            setActiveCall(updatedCall);
           }
-          
-          setActiveCall(updatedCall);
         }
       )
       .subscribe();
@@ -102,7 +129,7 @@ export function CallProvider({ children }: CallProviderProps) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [activeCall?.id, isInitiator]);
+  }, [activeCall?.id, cleanup]);
 
   const startCall = useCallback(
     async (userId: string, callType: 'voice' | 'video', userName?: string, userAvatar?: string) => {
@@ -124,17 +151,18 @@ export function CallProvider({ children }: CallProviderProps) {
   const handleAcceptCall = useCallback(async () => {
     if (!incomingCall) return;
 
-    await answerCallMutation.mutateAsync(incomingCall.id);
-    setActiveCall(incomingCall);
+    // Use the returned value from mutation to ensure we have the updated call
+    const updatedCall = await answerCallMutation.mutateAsync(incomingCall.id);
+    
     setRemoteUserInfo({
       name: incomingCall.caller?.full_name || undefined,
       avatar: incomingCall.caller?.avatar_url || undefined,
     });
     setIsInitiator(false);
-
-    // Initialize WebRTC as receiver
-    await initializeCall(incomingCall.call_type, false);
-  }, [incomingCall, answerCallMutation, initializeCall]);
+    
+    // Set active call with the accepted status - this triggers WebRTC init via useEffect
+    setActiveCall(updatedCall);
+  }, [incomingCall, answerCallMutation]);
 
   const handleRejectCall = useCallback(async () => {
     if (!incomingCall) return;
