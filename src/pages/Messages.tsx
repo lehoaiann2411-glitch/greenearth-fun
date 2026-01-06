@@ -5,13 +5,14 @@ import { Layout } from '@/components/layout/Layout';
 import { useAuth } from '@/contexts/AuthContext';
 import { useConversations, useConversation, useMessages, useSendMessage, useMarkMessagesAsRead } from '@/hooks/useMessages';
 import { useOnlinePresence } from '@/hooks/useOnlineStatus';
+import { useCall } from '@/contexts/CallContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Send, Image, Smile, ArrowLeft, MessageCircle, Gift } from 'lucide-react';
+import { Send, Image, Smile, ArrowLeft, MessageCircle, Gift, Phone, Video } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { OnlineIndicator } from '@/components/messages/OnlineIndicator';
 import { cn } from '@/lib/utils';
@@ -19,6 +20,7 @@ import { cn } from '@/lib/utils';
 export default function Messages() {
   const { t } = useTranslation();
   const { conversationId } = useParams();
+  const { startCall } = useCall();
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -203,9 +205,36 @@ export default function Messages() {
                         showOffline
                       />
                     </div>
-                    <div>
+                    <div className="flex-1">
                       <p className="font-medium">{otherParticipant?.full_name || 'User'}</p>
                       <p className="text-xs text-muted-foreground">{t('messages.activeNow')}</p>
+                    </div>
+                    {/* Call buttons */}
+                    <div className="flex gap-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => startCall(
+                          otherParticipant?.id || '',
+                          'voice',
+                          otherParticipant?.full_name || undefined,
+                          otherParticipant?.avatar_url || undefined
+                        )}
+                      >
+                        <Phone className="h-5 w-5" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => startCall(
+                          otherParticipant?.id || '',
+                          'video',
+                          otherParticipant?.full_name || undefined,
+                          otherParticipant?.avatar_url || undefined
+                        )}
+                      >
+                        <Video className="h-5 w-5" />
+                      </Button>
                     </div>
                   </div>
                 </CardHeader>

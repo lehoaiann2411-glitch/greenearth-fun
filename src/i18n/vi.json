@@ -823,5 +823,19 @@
     "statusCheckedIn": "Đã check-in",
     "statusCompleted": "Hoàn thành",
     "statusCancelled": "Đã hủy"
+  },
+  "calls": {
+    "incomingCall": "Cuộc gọi đến",
+    "incomingVideoCall": "Cuộc gọi video đến",
+    "calling": "Đang gọi...",
+    "connecting": "Đang kết nối...",
+    "accept": "Nhận",
+    "decline": "Từ chối",
+    "endCall": "Kết thúc",
+    "mute": "Tắt tiếng",
+    "unmute": "Bật tiếng",
+    "missedCall": "Cuộc gọi nhỡ từ {{name}}",
+    "callEnded": "Cuộc gọi đã kết thúc",
+    "callDuration": "Thời lượng: {{duration}}"
   }
 }

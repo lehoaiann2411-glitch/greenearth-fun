@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { UserPlus, UserMinus, Clock, Check, MessageCircle, Loader2 } from 'lucide-react';
+import { UserPlus, UserMinus, Clock, Check, MessageCircle, Loader2, Phone, Video } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import {
   useFriendshipStatus,
@@ -9,6 +9,7 @@ import {
   useAcceptFriendRequest,
 } from '@/hooks/useFriendships';
 import { useCreateConversation } from '@/hooks/useMessages';
+import { useCall } from '@/contexts/CallContext';
 import { useNavigate } from 'react-router-dom';
 import {
   DropdownMenu,
@@ -19,13 +20,21 @@ import {
 
 interface AddFriendButtonProps {
   targetUserId: string;
+  targetUserName?: string;
+  targetUserAvatar?: string;
   variant?: 'default' | 'compact';
 }
 
-export function AddFriendButton({ targetUserId, variant = 'default' }: AddFriendButtonProps) {
+export function AddFriendButton({ 
+  targetUserId, 
+  targetUserName,
+  targetUserAvatar,
+  variant = 'default' 
+}: AddFriendButtonProps) {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { data: status, isLoading: statusLoading } = useFriendshipStatus(targetUserId);
+  const { startCall } = useCall();
   
   const sendRequest = useSendFriendRequest();
   const cancelRequest = useCancelFriendRequest();
@@ -43,6 +52,14 @@ export function AddFriendButton({ targetUserId, variant = 'default' }: AddFriend
     navigate(`/messages/${conversation.id}`);
   };
 
+  const handleVoiceCall = () => {
+    startCall(targetUserId, 'voice', targetUserName, targetUserAvatar);
+  };
+
+  const handleVideoCall = () => {
+    startCall(targetUserId, 'video', targetUserName, targetUserAvatar);
+  };
+
   if (status === 'accepted') {
     return (
       <div className="flex gap-2">
@@ -55,6 +72,22 @@ export function AddFriendButton({ targetUserId, variant = 'default' }: AddFriend
         >
           <MessageCircle className="h-4 w-4" />
           {variant !== 'compact' && 'Message'}
+        </Button>
+        <Button
+          variant="outline"
+          size={variant === 'compact' ? 'sm' : 'default'}
+          onClick={handleVoiceCall}
+          className="gap-2"
+        >
+          <Phone className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="outline"
+          size={variant === 'compact' ? 'sm' : 'default'}
+          onClick={handleVideoCall}
+          className="gap-2"
+        >
+          <Video className="h-4 w-4" />
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

@@ -823,5 +823,19 @@
     "statusCheckedIn": "Checked In",
     "statusCompleted": "Completed",
     "statusCancelled": "Cancelled"
+  },
+  "calls": {
+    "incomingCall": "Incoming call",
+    "incomingVideoCall": "Incoming video call",
+    "calling": "Calling...",
+    "connecting": "Connecting...",
+    "accept": "Accept",
+    "decline": "Decline",
+    "endCall": "End Call",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "missedCall": "Missed call from {{name}}",
+    "callEnded": "Call ended",
+    "callDuration": "Duration: {{duration}}"
   }
 }
