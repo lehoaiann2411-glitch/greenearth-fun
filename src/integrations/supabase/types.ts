@@ -1032,11 +1032,14 @@ export type Database = {
           content: string | null
           conversation_id: string
           created_at: string | null
+          delivered_at: string | null
           id: string
           is_read: boolean | null
           media_url: string | null
           message_type: string | null
+          seen_at: string | null
           sender_id: string
+          status: string | null
           updated_at: string | null
         }
         Insert: {
@@ -1044,11 +1047,14 @@ export type Database = {
           content?: string | null
           conversation_id: string
           created_at?: string | null
+          delivered_at?: string | null
           id?: string
           is_read?: boolean | null
           media_url?: string | null
           message_type?: string | null
+          seen_at?: string | null
           sender_id: string
+          status?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -1056,11 +1062,14 @@ export type Database = {
           content?: string | null
           conversation_id?: string
           created_at?: string | null
+          delivered_at?: string | null
           id?: string
           is_read?: boolean | null
           media_url?: string | null
           message_type?: string | null
+          seen_at?: string | null
           sender_id?: string
+          status?: string | null
           updated_at?: string | null
         }
         Relationships: [
@@ -1414,6 +1423,7 @@ export type Database = {
           cover_photo_url: string | null
           created_at: string
           current_streak: number | null
+          do_not_disturb: boolean | null
           education: string | null
           followers_count: number | null
           following_count: number | null
@@ -1424,6 +1434,7 @@ export type Database = {
           id: string
           last_check_in: string | null
           location: string | null
+          notification_sounds: boolean | null
           show_online_status: boolean | null
           total_camly_claimed: number | null
           total_likes_given: number | null
@@ -1444,6 +1455,7 @@ export type Database = {
           cover_photo_url?: string | null
           created_at?: string
           current_streak?: number | null
+          do_not_disturb?: boolean | null
           education?: string | null
           followers_count?: number | null
           following_count?: number | null
@@ -1454,6 +1466,7 @@ export type Database = {
           id: string
           last_check_in?: string | null
           location?: string | null
+          notification_sounds?: boolean | null
           show_online_status?: boolean | null
           total_camly_claimed?: number | null
           total_likes_given?: number | null
@@ -1474,6 +1487,7 @@ export type Database = {
           cover_photo_url?: string | null
           created_at?: string
           current_streak?: number | null
+          do_not_disturb?: boolean | null
           education?: string | null
           followers_count?: number | null
           following_count?: number | null
@@ -1484,6 +1498,7 @@ export type Database = {
           id?: string
           last_check_in?: string | null
           location?: string | null
+          notification_sounds?: boolean | null
           show_online_status?: boolean | null
           total_camly_claimed?: number | null
           total_likes_given?: number | null
@@ -1990,6 +2005,45 @@ export type Database = {
           },
         ]
       }
+      typing_indicators: {
+        Row: {
+          conversation_id: string
+          id: string
+          is_typing: boolean | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          conversation_id: string
+          id?: string
+          is_typing?: boolean | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          conversation_id?: string
+          id?: string
+          is_typing?: boolean | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "typing_indicators_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "typing_indicators_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_badges: {
         Row: {
           badge_id: string
@@ -2020,6 +2074,42 @@ export type Database = {
           {
             foreignKeyName: "user_badges_user_id_fkey"
             columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_blocks: {
+        Row: {
+          blocked_id: string
+          blocker_id: string
+          created_at: string | null
+          id: string
+        }
+        Insert: {
+          blocked_id: string
+          blocker_id: string
+          created_at?: string | null
+          id?: string
+        }
+        Update: {
+          blocked_id?: string
+          blocker_id?: string
+          created_at?: string | null
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_blocks_blocked_id_fkey"
+            columns: ["blocked_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_blocks_blocker_id_fkey"
+            columns: ["blocker_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -2153,6 +2243,11 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      are_friends: { Args: { user1: string; user2: string }; Returns: boolean }
+      get_conversation_other_user: {
+        Args: { conv_id: string; current_user_id: string }
+        Returns: string
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -2160,6 +2255,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_blocked: { Args: { user1: string; user2: string }; Returns: boolean }
     }
     Enums: {
       account_type: "individual" | "organization"

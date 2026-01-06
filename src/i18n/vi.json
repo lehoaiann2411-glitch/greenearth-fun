@@ -25,7 +25,9 @@
     "update": "Cập nhật",
     "uploading": "Đang tải lên...",
     "anonymous": "Ẩn danh",
-    "share": "Chia sẻ"
+    "share": "Chia sẻ",
+    "message": "Nhắn tin",
+    "unknown": "Không xác định"
   },
   "toast": {
     "success": "Thành công",
@@ -444,7 +446,13 @@
     "selectConversation": "Chọn cuộc trò chuyện để bắt đầu nhắn tin",
     "noMessages": "Chưa có tin nhắn",
     "sayHello": "Hãy chào hỏi! 👋",
-    "sentCamly": "Đã gửi {{amount}} Camly!"
+    "sentCamly": "Đã gửi {{amount}} Camly!",
+    "typing": "{{name}} đang nhập...",
+    "typingMultiple": "{{name1}}, {{name2}} và {{count}} người khác đang nhập...",
+    "sent": "Đã gửi",
+    "delivered": "Đã nhận",
+    "seen": "Đã xem",
+    "blockedUser": "Bạn không thể nhắn tin cho người dùng này"
   },
 "reels": {
     "forYou": "Dành cho bạn",
@@ -568,7 +576,12 @@
     "requestsWillAppear": "Khi ai đó gửi lời mời kết bạn, nó sẽ xuất hiện ở đây.",
     "peopleYouMayKnow": "Những người bạn có thể biết",
     "noSuggestions": "Không có gợi ý",
-    "checkLater": "Quay lại sau để xem thêm gợi ý!"
+    "checkLater": "Quay lại sau để xem thêm gợi ý!",
+    "friends": "Bạn bè",
+    "addFriend": "Kết bạn",
+    "requestSent": "Đã gửi lời mời",
+    "acceptRequest": "Chấp nhận",
+    "unfriend": "Hủy kết bạn"
   },
   "notFound": {
     "title": "404",
@@ -829,13 +842,28 @@
     "incomingVideoCall": "Cuộc gọi video đến",
     "calling": "Đang gọi...",
     "connecting": "Đang kết nối...",
+    "ringing": "Đang đổ chuông...",
     "accept": "Nhận",
     "decline": "Từ chối",
     "endCall": "Kết thúc",
     "mute": "Tắt tiếng",
     "unmute": "Bật tiếng",
     "missedCall": "Cuộc gọi nhỡ từ {{name}}",
+    "missedVoiceCall": "Cuộc gọi thoại nhỡ",
+    "missedVideoCall": "Cuộc gọi video nhỡ",
     "callEnded": "Cuộc gọi đã kết thúc",
-    "callDuration": "Thời lượng: {{duration}}"
+    "callDuration": "Thời lượng: {{duration}}",
+    "flipCamera": "Đổi camera",
+    "callBack": "Gọi lại"
+  },
+  "blocking": {
+    "block": "Chặn người dùng",
+    "unblock": "Bỏ chặn",
+    "blockedUsers": "Người dùng bị chặn",
+    "confirmBlockTitle": "Chặn người dùng?",
+    "confirmBlock": "Bạn có chắc muốn chặn {{name}}? Họ sẽ không thể nhắn tin hoặc gọi cho bạn.",
+    "userBlocked": "Đã chặn người dùng",
+    "userUnblocked": "Đã bỏ chặn người dùng",
+    "noBlockedUsers": "Không có người dùng bị chặn"
   }
 }

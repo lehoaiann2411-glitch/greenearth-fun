@@ -54,6 +54,7 @@ export function CallProvider({ children }: CallProviderProps) {
     connectionState,
     initializeCall,
     cleanup,
+    peerConnection,
   } = useCallSignaling(activeCall?.id || null);
 
   // Handle incoming call timeout (30 seconds)
@@ -186,6 +187,7 @@ export function CallProvider({ children }: CallProviderProps) {
           onEndCall={endCurrentCall}
           remoteName={remoteUserInfo.name}
           remoteAvatar={remoteUserInfo.avatar}
+          peerConnection={peerConnection}
         />
       )}
     </CallContext.Provider>

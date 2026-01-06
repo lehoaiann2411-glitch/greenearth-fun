@@ -25,7 +25,9 @@
     "update": "Update",
     "uploading": "Uploading...",
     "anonymous": "Anonymous",
-    "share": "Share"
+    "share": "Share",
+    "message": "Message",
+    "unknown": "Unknown"
   },
   "toast": {
     "success": "Success",
@@ -444,7 +446,13 @@
     "selectConversation": "Select a conversation to start chatting",
     "noMessages": "No messages yet",
     "sayHello": "Say hello! 👋",
-    "sentCamly": "Sent {{amount}} Camly!"
+    "sentCamly": "Sent {{amount}} Camly!",
+    "typing": "{{name}} is typing...",
+    "typingMultiple": "{{name1}}, {{name2}} and {{count}} more are typing...",
+    "sent": "Sent",
+    "delivered": "Delivered",
+    "seen": "Seen",
+    "blockedUser": "You cannot message this user"
   },
 "reels": {
     "forYou": "For You",
@@ -568,7 +576,12 @@
     "requestsWillAppear": "When someone sends you a friend request, it'll appear here.",
     "peopleYouMayKnow": "People you may know",
     "noSuggestions": "No suggestions",
-    "checkLater": "Check back later for more suggestions!"
+    "checkLater": "Check back later for more suggestions!",
+    "friends": "Friends",
+    "addFriend": "Add Friend",
+    "requestSent": "Request Sent",
+    "acceptRequest": "Accept Request",
+    "unfriend": "Unfriend"
   },
   "notFound": {
     "title": "404",
@@ -829,13 +842,28 @@
     "incomingVideoCall": "Incoming video call",
     "calling": "Calling...",
     "connecting": "Connecting...",
+    "ringing": "Ringing...",
     "accept": "Accept",
     "decline": "Decline",
     "endCall": "End Call",
     "mute": "Mute",
     "unmute": "Unmute",
     "missedCall": "Missed call from {{name}}",
+    "missedVoiceCall": "Missed voice call",
+    "missedVideoCall": "Missed video call",
     "callEnded": "Call ended",
-    "callDuration": "Duration: {{duration}}"
+    "callDuration": "Duration: {{duration}}",
+    "flipCamera": "Flip Camera",
+    "callBack": "Call Back"
+  },
+  "blocking": {
+    "block": "Block User",
+    "unblock": "Unblock",
+    "blockedUsers": "Blocked Users",
+    "confirmBlockTitle": "Block User?",
+    "confirmBlock": "Are you sure you want to block {{name}}? They won't be able to message or call you.",
+    "userBlocked": "User blocked",
+    "userUnblocked": "User unblocked",
+    "noBlockedUsers": "No blocked users"
   }
 }
