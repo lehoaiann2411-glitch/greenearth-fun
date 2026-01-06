@@ -581,7 +581,8 @@
     "addFriend": "Kết bạn",
     "requestSent": "Đã gửi lời mời",
     "acceptRequest": "Chấp nhận",
-    "unfriend": "Hủy kết bạn"
+    "unfriend": "Hủy kết bạn",
+    "requestAccepted": "Đã chấp nhận lời mời kết bạn!"
   },
   "notFound": {
     "title": "404",

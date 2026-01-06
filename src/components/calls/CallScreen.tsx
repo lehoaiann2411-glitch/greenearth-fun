@@ -47,6 +47,7 @@ export function CallScreen({
   const { t } = useTranslation();
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
+  const remoteAudioRef = useRef<HTMLAudioElement>(null);
 
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoOff, setIsVideoOff] = useState(false);
@@ -71,10 +72,16 @@ export function CallScreen({
     }
   }, [localStream]);
 
-  // Set up remote video
+  // Set up remote video and audio
   useEffect(() => {
-    if (remoteVideoRef.current && remoteStream) {
-      remoteVideoRef.current.srcObject = remoteStream;
+    if (remoteStream) {
+      if (remoteVideoRef.current) {
+        remoteVideoRef.current.srcObject = remoteStream;
+      }
+      // Always attach to audio element for reliable audio playback (especially voice calls)
+      if (remoteAudioRef.current) {
+        remoteAudioRef.current.srcObject = remoteStream;
+      }
     }
   }, [remoteStream]);
 
@@ -104,10 +111,15 @@ export function CallScreen({
   };
 
   const handleToggleSpeaker = () => {
+    const newMuted = !isSpeakerOff;
+    // Mute/unmute both video and audio elements
     if (remoteVideoRef.current) {
-      remoteVideoRef.current.muted = !isSpeakerOff;
-      setIsSpeakerOff(!isSpeakerOff);
+      remoteVideoRef.current.muted = newMuted;
     }
+    if (remoteAudioRef.current) {
+      remoteAudioRef.current.muted = newMuted;
+    }
+    setIsSpeakerOff(newMuted);
   };
 
   const handleSwitchCamera = async () => {
@@ -164,6 +176,14 @@ export function CallScreen({
         hideClose
       >
         <div className="relative bg-gray-900 min-h-[500px] flex flex-col">
+          {/* Hidden audio element for reliable audio playback (especially voice calls) */}
+          <audio
+            ref={remoteAudioRef}
+            autoPlay
+            playsInline
+            className="hidden"
+          />
+
           {/* Remote video / avatar */}
           {isVideoCall && remoteStream ? (
             <video

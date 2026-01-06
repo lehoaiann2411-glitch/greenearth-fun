@@ -1,8 +1,9 @@
 import { Button } from '@/components/ui/button';
-import { UserPlus, UserMinus, Clock, Check, MessageCircle, Loader2, Phone, Video, Ban, MoreHorizontal } from 'lucide-react';
+import { UserPlus, UserMinus, Clock, Check, MessageCircle, Loader2, Phone, Video, Ban } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import {
   useFriendshipStatus,
+  useFriendshipId,
   useSendFriendRequest,
   useCancelFriendRequest,
   useUnfriend,
@@ -13,6 +14,7 @@ import { useCall } from '@/contexts/CallContext';
 import { useBlockUser, useHasBlocked, useUnblockUser } from '@/hooks/useBlocking';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -50,9 +52,11 @@ export function AddFriendButton({
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { data: status, isLoading: statusLoading } = useFriendshipStatus(targetUserId);
+  const { data: friendshipId } = useFriendshipId(targetUserId);
   const { data: hasBlocked } = useHasBlocked(targetUserId);
   const { startCall } = useCall();
   const [showBlockDialog, setShowBlockDialog] = useState(false);
+  const [isAccepting, setIsAccepting] = useState(false);
   
   const sendRequest = useSendFriendRequest();
   const cancelRequest = useCancelFriendRequest();
@@ -65,7 +69,23 @@ export function AddFriendButton({
   if (!user || user.id === targetUserId) return null;
 
   const isLoading = statusLoading || sendRequest.isPending || cancelRequest.isPending || 
-                    unfriend.isPending || acceptRequest.isPending || blockUser.isPending || unblockUser.isPending;
+                    unfriend.isPending || acceptRequest.isPending || blockUser.isPending || unblockUser.isPending || isAccepting;
+
+  const handleAcceptRequest = async () => {
+    if (!friendshipId) {
+      toast.error(t('toast.error'));
+      return;
+    }
+    setIsAccepting(true);
+    try {
+      await acceptRequest.mutateAsync(friendshipId);
+      toast.success(t('friends.requestAccepted'));
+    } catch (error) {
+      toast.error(t('toast.error'));
+    } finally {
+      setIsAccepting(false);
+    }
+  };
 
   const handleSendMessage = async () => {
     const conversation = await createConversation.mutateAsync(targetUserId);
@@ -214,9 +234,14 @@ export function AddFriendButton({
         variant="default"
         size={variant === 'compact' ? 'sm' : 'default'}
         className="gap-2 bg-primary"
-        disabled={isLoading}
+        disabled={isLoading || !friendshipId}
+        onClick={handleAcceptRequest}
       >
-        <Check className="h-4 w-4" />
+        {isAccepting ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : (
+          <Check className="h-4 w-4" />
+        )}
         {variant !== 'compact' && t('friends.acceptRequest')}
       </Button>
     );
