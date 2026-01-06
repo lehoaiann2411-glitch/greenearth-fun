@@ -372,7 +372,7 @@
     "sayHello": "打个招呼吧！👋",
     "sentCamly": "已发送 {{amount}} Camly！"
   },
-  "reels": {
+"reels": {
     "forYou": "为你推荐",
     "following": "关注",
     "loading": "加载中...",
@@ -380,6 +380,65 @@
     "beFirstShare": "成为第一个与社区分享你的绿色之旅的人！",
     "forPosting": "发布可获得",
     "swipeUp": "向上滑动"
+  },
+  "story": {
+    "yourStory": "你的故事",
+    "addStory": "添加故事",
+    "user": "用户"
+  },
+  "post": {
+    "placeholder": "今天有什么绿色故事？🌱",
+    "loginToPost": "登录以分享您的活动",
+    "sharePlaceholder": "分享你的绿色活动...",
+    "photo": "照片",
+    "location": "位置",
+    "poll": "投票",
+    "createPost": "创建帖子",
+    "post": "发布",
+    "noCampaign": "无活动",
+    "linkCampaign": "关联活动",
+    "deletePost": "删除帖子",
+    "deleteConfirm": "删除此帖子？",
+    "copyLink": "复制链接",
+    "shareOnX": "分享到X",
+    "user": "用户",
+    "viewProfile": "查看资料"
+  },
+  "categories": {
+    "all": "全部",
+    "tree_planting": "植树",
+    "cleanup": "清洁",
+    "recycling": "回收",
+    "awareness": "意识提升",
+    "education": "教育",
+    "esg": "ESG",
+    "general": "通用",
+    "other": "其他"
+  },
+  "status": {
+    "draft": "草稿",
+    "pending": "待审核",
+    "active": "进行中",
+    "completed": "已完成",
+    "cancelled": "已取消",
+    "upcoming": "即将开始"
+  },
+  "actions": {
+    "create_post": "发帖",
+    "create_post_with_image": "发带图帖子",
+    "create_post_with_poll": "创建投票",
+    "share_post": "分享",
+    "like_post": "点赞",
+    "react_post": "反应",
+    "create_story": "创建故事",
+    "daily_check_in": "签到",
+    "streak_bonus": "7天连续",
+    "signup_bonus": "注册",
+    "plant_tree": "种树",
+    "invite_friend": "邀请好友",
+    "follow_user": "关注",
+    "join_campaign": "参加活动",
+    "complete_campaign": "完成活动"
   },
   "platform": {
     "name": "Green Earth",

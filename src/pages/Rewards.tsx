@@ -208,7 +208,7 @@ export default function Rewards() {
                           </div>
                           <div>
                             <p className="font-medium">
-                              {getActionLabel(item.action_type, language)}
+                              {t(`actions.${item.action_type}`, getActionLabel(item.action_type, language))}
                             </p>
                             <p className="text-xs text-muted-foreground">
                               {format(new Date(item.created_at), 'MMM d, yyyy HH:mm')}
@@ -337,7 +337,7 @@ export default function Rewards() {
                         </div>
                         <div>
                           <span className="font-medium block">
-                            {getActionLabel(key.toLowerCase(), language)}
+                            {t(`actions.${key.toLowerCase()}`, getActionLabel(key.toLowerCase(), language))}
                           </span>
                           <span className="text-xs text-muted-foreground">
                             {language === 'vi' ? limitVi : limit}

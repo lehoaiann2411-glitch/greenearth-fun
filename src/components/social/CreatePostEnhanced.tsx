@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { 
   ImagePlus, MapPin, Users, TreePine, X, Loader2, 
   Bold, Italic, List, Camera, Globe, BarChart3
@@ -39,6 +40,7 @@ interface PollData {
 }
 
 export function CreatePostEnhanced() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { data: profile } = useProfile(user?.id || '');
   const createPost = useCreatePost();
@@ -202,7 +204,7 @@ export function CreatePostEnhanced() {
             </Avatar>
             <div className="flex-1 bg-muted/50 hover:bg-muted rounded-full px-4 py-2.5 transition-colors">
               <span className="text-muted-foreground">
-                What's your green story today? 🌱
+                {t('post.placeholder')}
               </span>
             </div>
           </div>
@@ -217,7 +219,7 @@ export function CreatePostEnhanced() {
             onClick={() => { setIsOpen(true); fileInputRef.current?.click(); }}
           >
             <ImagePlus className="w-4 h-4 mr-2 text-green-500" />
-            Photo
+            {t('post.photo')}
           </Button>
           <Button 
             variant="ghost" 
@@ -226,7 +228,7 @@ export function CreatePostEnhanced() {
             onClick={() => { setIsOpen(true); handleGetLocation(); }}
           >
             <MapPin className="w-4 h-4 mr-2 text-red-500" />
-            Location
+            {t('post.location')}
           </Button>
           <Button 
             variant="ghost" 
@@ -235,14 +237,14 @@ export function CreatePostEnhanced() {
             onClick={() => setIsOpen(true)}
           >
             <BarChart3 className="w-4 h-4 mr-2 text-blue-500" />
-            Poll
+            {t('post.poll')}
           </Button>
         </div>
 
         <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center justify-between">
-              <span>Create Post</span>
+              <span>{t('post.createPost')}</span>
               <span className="text-sm text-camly-gold flex items-center gap-1 font-normal">
                 +{reward.toLocaleString()} <CamlyCoinIcon size="sm" />
               </span>
@@ -369,10 +371,10 @@ export function CreatePostEnhanced() {
             {activeCampaigns.length > 0 && (
               <Select value={selectedCampaign} onValueChange={setSelectedCampaign}>
                 <SelectTrigger>
-                  <SelectValue placeholder="🌳 Link to a campaign (optional)" />
+                  <SelectValue placeholder={`🌳 ${t('post.linkCampaign')}`} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="none">No campaign</SelectItem>
+                  <SelectItem value="none">{t('post.noCampaign')}</SelectItem>
                   {activeCampaigns.map(campaign => (
                     <SelectItem key={campaign.id} value={campaign.id}>
                       {campaign.title}
@@ -399,7 +401,7 @@ export function CreatePostEnhanced() {
                 className="text-green-600"
               >
                 <Camera className="w-4 h-4 mr-1" />
-                Photo
+                {t('post.photo')}
               </Button>
               <Button
                 variant="ghost"
@@ -408,7 +410,7 @@ export function CreatePostEnhanced() {
                 className="text-red-500"
               >
                 <MapPin className="w-4 h-4 mr-1" />
-                Location
+                {t('post.location')}
               </Button>
               <FeelingPicker 
                 selectedFeeling={feeling?.id} 
@@ -432,7 +434,7 @@ export function CreatePostEnhanced() {
                 ) : (
                   '🌱'
                 )}
-                Post
+                {t('post.post')}
               </Button>
             </div>
           </div>

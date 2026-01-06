@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Plus } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { useStories, GroupedStories } from '@/hooks/useStories';
 import { useAuth } from '@/contexts/AuthContext';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
@@ -9,6 +10,7 @@ import { CreateStoryFullscreen } from '@/components/stories/CreateStoryFullscree
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 
 export function StoriesBar() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { data: groupedStories, isLoading } = useStories();
   const [viewingStories, setViewingStories] = useState<GroupedStories | null>(null);
@@ -87,7 +89,7 @@ export function StoriesBar() {
                 )}
               </div>
               <span className="text-xs font-medium text-center truncate w-16">
-                {myStories ? 'Your Story' : 'Add Story'}
+                {myStories ? t('story.yourStory') : t('story.addStory')}
               </span>
             </motion.button>
           )}
@@ -125,7 +127,7 @@ export function StoriesBar() {
                 )}
               </div>
               <span className="text-xs font-medium text-center truncate w-16">
-                {group.user.full_name || 'User'}
+                {group.user.full_name || t('story.user')}
               </span>
             </motion.button>
           ))}

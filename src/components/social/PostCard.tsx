@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { Post, useLikePost, useDeletePost, useSharePost } from '@/hooks/usePosts';
 import { Card, CardContent } from '@/components/ui/card';
@@ -25,6 +26,7 @@ interface PostCardProps {
 }
 
 export function PostCard({ post }: PostCardProps) {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [showComments, setShowComments] = useState(false);
   const [isLiking, setIsLiking] = useState(false);
@@ -46,7 +48,7 @@ export function PostCard({ post }: PostCardProps) {
   };
 
   const handleDelete = async () => {
-    if (confirm('Xóa bài viết này?')) {
+    if (confirm(t('post.deleteConfirm'))) {
       await deletePost.mutateAsync(post.id);
     }
   };
@@ -100,7 +102,7 @@ export function PostCard({ post }: PostCardProps) {
                 to={`/profile?id=${post.user_id}`}
                 className="font-medium hover:underline"
               >
-                {post.profile?.full_name || 'Người dùng'}
+                {post.profile?.full_name || t('post.user')}
               </Link>
               <p className="text-xs text-muted-foreground">
                 {formatDistanceToNow(new Date(post.created_at), {
@@ -124,7 +126,7 @@ export function PostCard({ post }: PostCardProps) {
                   className="text-destructive focus:text-destructive"
                 >
                   <Trash2 className="mr-2 h-4 w-4" />
-                  Xóa bài viết
+                  {t('post.deletePost')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -197,11 +199,11 @@ export function PostCard({ post }: PostCardProps) {
               <DropdownMenuContent align="start">
                 <DropdownMenuItem onClick={() => handleShare('copy')}>
                   <Copy className="mr-2 h-4 w-4" />
-                  Copy link (+2,000 <CamlyCoinInline />)
+                  {t('post.copyLink')} (+2,000 <CamlyCoinInline />)
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleShare('twitter')}>
                   <Twitter className="mr-2 h-4 w-4" />
-                  Share on X (+2,000 <CamlyCoinInline />)
+                  {t('post.shareOnX')} (+2,000 <CamlyCoinInline />)
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
