@@ -248,15 +248,20 @@ export const useCallSignaling = (callId: string | null) => {
   const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
   const iceCandidateBuffer = useRef<{ candidate: RTCIceCandidateInit; senderId: string }[]>([]);
   const isChannelReady = useRef(false);
-  const pendingOffer = useRef<{ sdp: RTCSessionDescriptionInit; senderId: string } | null>(null);
+  const remoteMediaStreamRef = useRef<MediaStream>(new MediaStream());
+  const peerReadyRef = useRef(false);
+  const isInitiatorRef = useRef(false);
+  const offerSentRef = useRef(false);
 
   // Process buffered ICE candidates after remote description is set
   const processBufferedCandidates = useCallback(async (pc: RTCPeerConnection, currentUserId: string) => {
+    console.log('Processing buffered ICE candidates:', iceCandidateBuffer.current.length);
     while (iceCandidateBuffer.current.length > 0) {
       const item = iceCandidateBuffer.current.shift();
       if (item && item.senderId !== currentUserId) {
         try {
           await addIceCandidate(pc, item.candidate);
+          console.log('Added buffered ICE candidate');
         } catch (err) {
           console.warn('Failed to add buffered ICE candidate:', err);
         }
@@ -264,30 +269,52 @@ export const useCallSignaling = (callId: string | null) => {
     }
   }, []);
 
-  const initializeCall = async (callType: 'voice' | 'video', isInitiator: boolean) => {
-    if (!callId || !user) return;
+  const initializeCall = useCallback(async (callType: 'voice' | 'video', isInitiator: boolean) => {
+    if (!callId || !user) {
+      console.log('initializeCall: Missing callId or user', { callId, userId: user?.id });
+      return;
+    }
+
+    console.log('initializeCall: Starting', { callId, callType, isInitiator });
 
     try {
-      // Reset buffers
+      // Reset buffers and state
       iceCandidateBuffer.current = [];
       isChannelReady.current = false;
-      pendingOffer.current = null;
+      peerReadyRef.current = false;
+      isInitiatorRef.current = isInitiator;
+      offerSentRef.current = false;
+      remoteMediaStreamRef.current = new MediaStream();
 
       // Get local stream
+      console.log('initializeCall: Getting local stream');
       const stream = await getLocalStream(callType);
       setLocalStream(stream);
+      console.log('initializeCall: Got local stream with tracks:', stream.getTracks().map(t => t.kind));
 
       // Create peer connection
       const pc = createPeerConnection();
       peerConnectionRef.current = pc;
+      console.log('initializeCall: Created peer connection');
 
       // Add local stream to peer connection
       addStreamToPeerConnection(pc, stream);
 
-      // Handle remote stream
+      // Handle remote stream - Safari/iOS compatible
       pc.ontrack = (event) => {
-        console.log('Received remote track:', event.track.kind);
-        setRemoteStream(event.streams[0]);
+        console.log('ontrack: Received remote track:', event.track.kind, 'id:', event.track.id);
+        console.log('ontrack: event.streams length:', event.streams?.length);
+        
+        // Use event.streams[0] if available, otherwise build from tracks
+        if (event.streams && event.streams[0]) {
+          console.log('ontrack: Using event.streams[0]');
+          setRemoteStream(event.streams[0]);
+        } else {
+          // Safari/iOS fallback - add track to our manual stream
+          console.log('ontrack: Fallback - adding track to manual stream');
+          remoteMediaStreamRef.current.addTrack(event.track);
+          setRemoteStream(remoteMediaStreamRef.current);
+        }
       };
 
       // Handle connection state changes
@@ -300,6 +327,10 @@ export const useCallSignaling = (callId: string | null) => {
         console.log('ICE connection state:', pc.iceConnectionState);
       };
 
+      pc.onicegatheringstatechange = () => {
+        console.log('ICE gathering state:', pc.iceGatheringState);
+      };
+
       // Set up signaling channel
       const channel = supabase.channel(`call:${callId}`);
       channelRef.current = channel;
@@ -307,6 +338,7 @@ export const useCallSignaling = (callId: string | null) => {
       // Handle ICE candidates - only send when channel is ready
       pc.onicecandidate = (event) => {
         if (event.candidate && isChannelReady.current) {
+          console.log('Sending ICE candidate');
           channel.send({
             type: 'broadcast',
             event: 'ice-candidate',
@@ -315,20 +347,55 @@ export const useCallSignaling = (callId: string | null) => {
         }
       };
 
+      // Function to send offer
+      const sendOffer = async () => {
+        if (offerSentRef.current || !peerConnectionRef.current) return;
+        
+        console.log('Sending offer');
+        offerSentRef.current = true;
+        
+        try {
+          const offer = await createOffer(peerConnectionRef.current);
+          channel.send({
+            type: 'broadcast',
+            event: 'offer',
+            payload: { sdp: offer, senderId: user.id },
+          });
+        } catch (err) {
+          console.error('Failed to create/send offer:', err);
+          offerSentRef.current = false;
+        }
+      };
+
       // Listen for signaling events
       channel
+        .on('broadcast', { event: 'peer-ready' }, async ({ payload }) => {
+          if (payload.senderId !== user.id) {
+            console.log('Received peer-ready from other peer');
+            peerReadyRef.current = true;
+            
+            // If we're the initiator and haven't sent offer yet, send it now
+            if (isInitiatorRef.current && !offerSentRef.current && isChannelReady.current) {
+              await sendOffer();
+            }
+          }
+        })
         .on('broadcast', { event: 'offer' }, async ({ payload }) => {
           if (payload.senderId !== user.id && peerConnectionRef.current) {
+            console.log('Received offer');
             try {
               await setRemoteDescription(peerConnectionRef.current, payload.sdp);
+              console.log('Set remote description (offer)');
               await processBufferedCandidates(peerConnectionRef.current, user.id);
               const answer = await createAnswer(peerConnectionRef.current);
+              console.log('Created answer');
               if (isChannelReady.current) {
                 channel.send({
                   type: 'broadcast',
                   event: 'answer',
                   payload: { sdp: answer, senderId: user.id },
                 });
+                console.log('Sent answer');
               }
             } catch (err) {
               console.error('Error handling offer:', err);
@@ -337,8 +404,10 @@ export const useCallSignaling = (callId: string | null) => {
         })
         .on('broadcast', { event: 'answer' }, async ({ payload }) => {
           if (payload.senderId !== user.id && peerConnectionRef.current) {
+            console.log('Received answer');
             try {
               await setRemoteDescription(peerConnectionRef.current, payload.sdp);
+              console.log('Set remote description (answer)');
               await processBufferedCandidates(peerConnectionRef.current, user.id);
             } catch (err) {
               console.error('Error handling answer:', err);
@@ -349,10 +418,12 @@ export const useCallSignaling = (callId: string | null) => {
           if (payload.senderId !== user.id && peerConnectionRef.current) {
             // Buffer ICE candidates if remote description not set yet
             if (!peerConnectionRef.current.remoteDescription) {
+              console.log('Buffering ICE candidate (no remote desc yet)');
               iceCandidateBuffer.current.push(payload);
             } else {
               try {
                 await addIceCandidate(peerConnectionRef.current, payload.candidate);
+                console.log('Added ICE candidate');
               } catch (err) {
                 console.warn('Failed to add ICE candidate:', err);
               }
@@ -360,22 +431,35 @@ export const useCallSignaling = (callId: string | null) => {
           }
         })
         .on('broadcast', { event: 'end-call' }, () => {
+          console.log('Received end-call signal');
           cleanup();
         })
         .subscribe((status) => {
+          console.log('Signaling channel status:', status);
           if (status === 'SUBSCRIBED') {
             console.log('Signaling channel ready');
             isChannelReady.current = true;
             
-            // If initiator, create and send offer now that channel is ready
-            if (isInitiator && peerConnectionRef.current) {
-              createOffer(peerConnectionRef.current).then((offer) => {
-                channel.send({
-                  type: 'broadcast',
-                  event: 'offer',
-                  payload: { sdp: offer, senderId: user.id },
-                });
-              });
+            // Send peer-ready signal
+            channel.send({
+              type: 'broadcast',
+              event: 'peer-ready',
+              payload: { senderId: user.id },
+            });
+            
+            // If initiator and peer is already ready, send offer
+            if (isInitiatorRef.current && peerReadyRef.current && !offerSentRef.current) {
+              sendOffer();
+            }
+            
+            // For initiator, also set a delayed offer send in case peer-ready was missed
+            if (isInitiatorRef.current) {
+              setTimeout(() => {
+                if (!offerSentRef.current && isChannelReady.current && peerConnectionRef.current) {
+                  console.log('Sending offer after timeout (peer-ready may have been missed)');
+                  sendOffer();
+                }
+              }, 1500);
             }
           }
         });
@@ -383,9 +467,10 @@ export const useCallSignaling = (callId: string | null) => {
       console.error('Error initializing call:', error);
       toast.error(i18n.t('toast.error'));
     }
-  };
+  }, [callId, user, processBufferedCandidates]);
 
   const cleanup = useCallback(() => {
+    console.log('cleanup: Starting cleanup');
     if (localStream) {
       stopStream(localStream);
     }
@@ -396,6 +481,8 @@ export const useCallSignaling = (callId: string | null) => {
     setRemoteStream(null);
     iceCandidateBuffer.current = [];
     isChannelReady.current = false;
+    peerReadyRef.current = false;
+    offerSentRef.current = false;
 
     if (peerConnectionRef.current) {
       peerConnectionRef.current.close();
@@ -406,6 +493,7 @@ export const useCallSignaling = (callId: string | null) => {
       supabase.removeChannel(channelRef.current);
       channelRef.current = null;
     }
+    console.log('cleanup: Done');
   }, [localStream, remoteStream]);
 
   // Cleanup on unmount - use refs to avoid stale closure

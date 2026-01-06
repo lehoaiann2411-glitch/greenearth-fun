@@ -55,6 +55,7 @@ export function CallScreen({
   const [duration, setDuration] = useState(0);
   const [hasMultipleCams, setHasMultipleCams] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [audioPlaybackBlocked, setAudioPlaybackBlocked] = useState(false);
 
   const isVideoCall = call?.call_type === 'video';
 
@@ -69,18 +70,42 @@ export function CallScreen({
   useEffect(() => {
     if (localVideoRef.current && localStream) {
       localVideoRef.current.srcObject = localStream;
+      console.log('CallScreen: Set local video srcObject');
     }
   }, [localStream]);
 
   // Set up remote video and audio
   useEffect(() => {
     if (remoteStream) {
+      console.log('CallScreen: Setting up remote stream', {
+        audioTracks: remoteStream.getAudioTracks().length,
+        videoTracks: remoteStream.getVideoTracks().length,
+      });
+
+      // Set up video element (muted for autoplay compatibility)
       if (remoteVideoRef.current) {
         remoteVideoRef.current.srcObject = remoteStream;
+        remoteVideoRef.current.muted = true; // Always muted for autoplay
+        console.log('CallScreen: Set remote video srcObject (muted for autoplay)');
       }
-      // Always attach to audio element for reliable audio playback (especially voice calls)
+
+      // Set up audio element for reliable audio playback
       if (remoteAudioRef.current) {
         remoteAudioRef.current.srcObject = remoteStream;
+        
+        // Try to play audio
+        const playAudio = async () => {
+          try {
+            await remoteAudioRef.current?.play();
+            console.log('CallScreen: Remote audio playing');
+            setAudioPlaybackBlocked(false);
+          } catch (err) {
+            console.warn('CallScreen: Audio autoplay blocked', err);
+            setAudioPlaybackBlocked(true);
+          }
+        };
+        
+        playAudio();
       }
     }
   }, [remoteStream]);
@@ -112,14 +137,22 @@ export function CallScreen({
 
   const handleToggleSpeaker = () => {
     const newMuted = !isSpeakerOff;
-    // Mute/unmute both video and audio elements
-    if (remoteVideoRef.current) {
-      remoteVideoRef.current.muted = newMuted;
-    }
+    // Mute/unmute audio element
     if (remoteAudioRef.current) {
       remoteAudioRef.current.muted = newMuted;
     }
     setIsSpeakerOff(newMuted);
+  };
+
+  const handleUnblockAudio = async () => {
+    if (remoteAudioRef.current) {
+      try {
+        await remoteAudioRef.current.play();
+        setAudioPlaybackBlocked(false);
+      } catch (err) {
+        console.error('Failed to play audio:', err);
+      }
+    }
   };
 
   const handleSwitchCamera = async () => {
@@ -176,7 +209,7 @@ export function CallScreen({
         hideClose
       >
         <div className="relative bg-gray-900 min-h-[500px] flex flex-col">
-          {/* Hidden audio element for reliable audio playback (especially voice calls) */}
+          {/* Hidden audio element for reliable audio playback */}
           <audio
             ref={remoteAudioRef}
             autoPlay
@@ -184,12 +217,28 @@ export function CallScreen({
             className="hidden"
           />
 
+          {/* Audio blocked warning */}
+          {audioPlaybackBlocked && (
+            <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10">
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={handleUnblockAudio}
+                className="bg-yellow-500/90 hover:bg-yellow-500 text-black"
+              >
+                <Volume2 className="h-4 w-4 mr-2" />
+                Chạm để bật âm thanh
+              </Button>
+            </div>
+          )}
+
           {/* Remote video / avatar */}
           {isVideoCall && remoteStream ? (
             <video
               ref={remoteVideoRef}
               autoPlay
               playsInline
+              muted // Video always muted, audio comes from audio element
               className="absolute inset-0 w-full h-full object-cover"
             />
           ) : (
@@ -225,6 +274,15 @@ export function CallScreen({
             <div className="absolute top-4 left-4 bg-black/50 px-3 py-1 rounded-full flex items-center gap-2">
               {getConnectionIcon()}
               <span className="text-white text-sm">{getStatusText()}</span>
+            </div>
+          )}
+
+          {/* Debug info (hidden in production) */}
+          {process.env.NODE_ENV === 'development' && (
+            <div className="absolute bottom-24 left-4 bg-black/70 px-2 py-1 rounded text-xs text-white/70">
+              <div>Connection: {connectionState}</div>
+              <div>Local tracks: {localStream?.getTracks().length || 0}</div>
+              <div>Remote tracks: {remoteStream?.getTracks().length || 0}</div>
             </div>
           )}
 
