@@ -26,7 +26,13 @@ const CallContext = createContext<CallContextType | null>(null);
 export function useCall() {
   const context = useContext(CallContext);
   if (!context) {
-    throw new Error('useCall must be used within a CallProvider');
+    // Return a safe default instead of throwing - allows usage outside provider during initial render
+    return {
+      activeCall: null,
+      startCall: async () => {},
+      endCurrentCall: () => {},
+      isInCall: false,
+    };
   }
   return context;
 }
