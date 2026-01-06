@@ -3,12 +3,20 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Search, X } from 'lucide-react';
-import { CampaignCategory, CampaignFilters as FiltersType, CATEGORY_LABELS } from '@/hooks/useCampaigns';
+import { CampaignCategory, CampaignFilters as FiltersType } from '@/hooks/useCampaigns';
 
 interface CampaignFiltersProps {
   filters: FiltersType;
   onFiltersChange: (filters: FiltersType) => void;
 }
+
+const CATEGORIES: { value: CampaignCategory; labelKey: string }[] = [
+  { value: 'tree_planting', labelKey: 'categories.tree_planting' },
+  { value: 'cleanup', labelKey: 'categories.cleanup' },
+  { value: 'recycling', labelKey: 'categories.recycling' },
+  { value: 'awareness', labelKey: 'categories.awareness' },
+  { value: 'other', labelKey: 'categories.other' },
+];
 
 export function CampaignFilters({ filters, onFiltersChange }: CampaignFiltersProps) {
   const { t } = useTranslation();
@@ -52,9 +60,9 @@ export function CampaignFilters({ filters, onFiltersChange }: CampaignFiltersPro
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">{t('campaigns.allCategories')}</SelectItem>
-          {Object.entries(CATEGORY_LABELS).map(([value, label]) => (
-            <SelectItem key={value} value={value}>
-              {label}
+          {CATEGORIES.map((cat) => (
+            <SelectItem key={cat.value} value={cat.value}>
+              {t(cat.labelKey)}
             </SelectItem>
           ))}
         </SelectContent>

@@ -1,4 +1,5 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Layout } from '@/components/layout/Layout';
 import { ParticipantList } from '@/components/campaigns/ParticipantList';
 import { Button } from '@/components/ui/button';
@@ -14,13 +15,11 @@ import {
   useUserParticipation,
   useJoinCampaign,
   useLeaveCampaign,
-  useCheckIn,
-  CATEGORY_LABELS,
-  STATUS_LABELS
+  useCheckIn
 } from '@/hooks/useCampaigns';
 import { useAuth } from '@/contexts/AuthContext';
 import { format } from 'date-fns';
-import { vi } from 'date-fns/locale';
+import { getDateLocale } from '@/lib/dateLocale';
 import { 
   CalendarDays, 
   MapPin, 
@@ -37,9 +36,11 @@ import {
 import { toast } from 'sonner';
 
 export default function CampaignDetail() {
+  const { t, i18n } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const dateLocale = getDateLocale(i18n.language);
   
   const { data: campaign, isLoading } = useCampaign(id || '');
   const { data: participants } = useCampaignParticipants(id || '');
@@ -74,9 +75,9 @@ export default function CampaignDetail() {
   const handleShare = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
-      toast.success('Đã sao chép link!');
+      toast.success(t('campaign.linkCopied'));
     } catch {
-      toast.error('Không thể sao chép link');
+      toast.error(t('campaign.copyFailed'));
     }
   };
 
@@ -97,11 +98,11 @@ export default function CampaignDetail() {
       <Layout>
         <div className="container py-16 text-center">
           <Leaf className="h-16 w-16 mx-auto text-muted-foreground/50 mb-4" />
-          <h2 className="text-xl font-semibold mb-2">Không tìm thấy chiến dịch</h2>
+          <h2 className="text-xl font-semibold mb-2">{t('campaign.notFound')}</h2>
           <Button asChild variant="outline">
             <Link to="/campaigns">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Quay lại
+              {t('common.back')}
             </Link>
           </Button>
         </div>
@@ -126,7 +127,7 @@ export default function CampaignDetail() {
         <Button variant="ghost" asChild className="mb-6">
           <Link to="/campaigns">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Tất cả chiến dịch
+            {t('campaign.allCampaigns')}
           </Link>
         </Button>
 
@@ -148,9 +149,9 @@ export default function CampaignDetail() {
               )}
               
               <div className="absolute top-4 left-4 flex gap-2">
-                <Badge>{CATEGORY_LABELS[campaign.category]}</Badge>
+                <Badge>{t(`categories.${campaign.category}`)}</Badge>
                 <Badge variant="outline" className="bg-background/80">
-                  {STATUS_LABELS[campaign.status]}
+                  {t(`status.${campaign.status}`)}
                 </Badge>
               </div>
             </div>
@@ -174,11 +175,11 @@ export default function CampaignDetail() {
                 <CardContent className="p-4 flex items-center gap-3">
                   <CalendarDays className="h-5 w-5 text-primary" />
                   <div>
-                    <p className="text-sm text-muted-foreground">Thời gian</p>
+                    <p className="text-sm text-muted-foreground">{t('campaign.time')}</p>
                     <p className="font-medium">
-                      {format(new Date(campaign.start_date), 'dd/MM/yyyy', { locale: vi })}
+                      {format(new Date(campaign.start_date), 'dd/MM/yyyy', { locale: dateLocale })}
                       {' - '}
-                      {format(new Date(campaign.end_date), 'dd/MM/yyyy', { locale: vi })}
+                      {format(new Date(campaign.end_date), 'dd/MM/yyyy', { locale: dateLocale })}
                     </p>
                   </div>
                 </CardContent>
@@ -188,8 +189,8 @@ export default function CampaignDetail() {
                 <CardContent className="p-4 flex items-center gap-3">
                   <MapPin className="h-5 w-5 text-primary" />
                   <div>
-                    <p className="text-sm text-muted-foreground">Địa điểm</p>
-                    <p className="font-medium">{campaign.location || 'Chưa xác định'}</p>
+                    <p className="text-sm text-muted-foreground">{t('campaign.locationLabel')}</p>
+                    <p className="font-medium">{campaign.location || t('campaign.notDetermined')}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -198,8 +199,8 @@ export default function CampaignDetail() {
                 <CardContent className="p-4 flex items-center gap-3">
                   <Award className="h-5 w-5 text-primary" />
                   <div>
-                    <p className="text-sm text-muted-foreground">Điểm thưởng</p>
-                    <p className="font-medium text-primary">+{campaign.green_points_reward} điểm xanh</p>
+                    <p className="text-sm text-muted-foreground">{t('campaign.rewardLabel')}</p>
+                    <p className="font-medium text-primary">+{campaign.green_points_reward} {t('campaign.greenPoints')}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -209,8 +210,8 @@ export default function CampaignDetail() {
                   <CardContent className="p-4 flex items-center gap-3">
                     <Leaf className="h-5 w-5 text-primary" />
                     <div>
-                      <p className="text-sm text-muted-foreground">Mục tiêu cây trồng</p>
-                      <p className="font-medium">{campaign.target_trees} cây</p>
+                      <p className="text-sm text-muted-foreground">{t('campaign.treeTarget')}</p>
+                      <p className="font-medium">{campaign.target_trees} {t('campaign.trees')}</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -222,7 +223,7 @@ export default function CampaignDetail() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Users className="h-5 w-5" />
-                  Người tham gia ({participants?.length || 0})
+                  {t('campaign.participants')} ({participants?.length || 0})
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -236,7 +237,7 @@ export default function CampaignDetail() {
             {/* Creator Card */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-base">Người tổ chức</CardTitle>
+                <CardTitle className="text-base">{t('campaign.organizer')}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center gap-3">
@@ -247,8 +248,8 @@ export default function CampaignDetail() {
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="font-medium">{campaign.creator?.full_name || 'Ẩn danh'}</p>
-                    <p className="text-sm text-muted-foreground">Người tạo</p>
+                    <p className="font-medium">{campaign.creator?.full_name || t('campaign.anonymous')}</p>
+                    <p className="text-sm text-muted-foreground">{t('campaign.creator')}</p>
                   </div>
                 </div>
               </CardContent>
@@ -257,18 +258,18 @@ export default function CampaignDetail() {
             {/* Progress Card */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-base">Tiến độ</CardTitle>
+                <CardTitle className="text-base">{t('campaign.progress')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Người tham gia</span>
+                  <span className="text-muted-foreground">{t('campaign.participants')}</span>
                   <span className="font-medium">
                     {campaign.participants_count || 0}/{campaign.target_participants}
                   </span>
                 </div>
                 <Progress value={progress} className="h-3" />
                 <p className="text-sm text-muted-foreground text-center">
-                  {Math.round(progress)}% hoàn thành
+                  {Math.round(progress)}% {t('campaign.completed')}
                 </p>
               </CardContent>
             </Card>
@@ -285,7 +286,7 @@ export default function CampaignDetail() {
                       disabled={joinMutation.isPending}
                     >
                       <LogIn className="h-4 w-4 mr-2" />
-                      {joinMutation.isPending ? 'Đang xử lý...' : 'Tham gia ngay'}
+                      {joinMutation.isPending ? t('campaign.processing') : t('campaign.joinNow')}
                     </Button>
                   ) : (
                     <>
@@ -297,14 +298,14 @@ export default function CampaignDetail() {
                           disabled={checkInMutation.isPending}
                         >
                           <CheckCircle className="h-4 w-4 mr-2" />
-                          {checkInMutation.isPending ? 'Đang xử lý...' : 'Check-in'}
+                          {checkInMutation.isPending ? t('campaign.processing') : t('campaign.checkIn')}
                         </Button>
                       )}
                       
                       {isCheckedIn && (
                         <Button className="w-full" size="lg" variant="secondary" disabled>
                           <CheckCircle className="h-4 w-4 mr-2" />
-                          Đã check-in
+                          {t('campaign.checkedIn')}
                         </Button>
                       )}
                       
@@ -315,7 +316,7 @@ export default function CampaignDetail() {
                         disabled={leaveMutation.isPending}
                       >
                         <LogOut className="h-4 w-4 mr-2" />
-                        {leaveMutation.isPending ? 'Đang xử lý...' : 'Hủy đăng ký'}
+                        {leaveMutation.isPending ? t('campaign.processing') : t('campaign.cancelRegistration')}
                       </Button>
                     </>
                   )}
@@ -326,14 +327,14 @@ export default function CampaignDetail() {
                 <Button variant="secondary" className="w-full" asChild>
                   <Link to={`/campaigns/${campaign.id}/manage`}>
                     <Settings className="h-4 w-4 mr-2" />
-                    Quản lý chiến dịch
+                    {t('campaign.manageCampaign')}
                   </Link>
                 </Button>
               )}
               
               <Button variant="outline" className="w-full" onClick={handleShare}>
                 <Share2 className="h-4 w-4 mr-2" />
-                Chia sẻ
+                {t('campaign.share')}
               </Button>
             </div>
           </div>

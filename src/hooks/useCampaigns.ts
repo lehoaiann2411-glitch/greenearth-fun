@@ -2,11 +2,28 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
+import i18n from '@/i18n';
 
 export type CampaignCategory = 'tree_planting' | 'cleanup' | 'recycling' | 'awareness' | 'other';
 export type CampaignStatus = 'draft' | 'pending' | 'active' | 'completed' | 'cancelled';
 export type ParticipantStatus = 'registered' | 'checked_in' | 'completed' | 'cancelled';
 
+// Legacy labels for backward compatibility - components should use t('categories.xxx') instead
+export const CATEGORY_LABELS: Record<CampaignCategory, string> = {
+  tree_planting: 'Tree Planting',
+  cleanup: 'Cleanup',
+  recycling: 'Recycling',
+  awareness: 'Awareness',
+  other: 'Other',
+};
+
+export const STATUS_LABELS: Record<CampaignStatus, string> = {
+  draft: 'Draft',
+  pending: 'Pending',
+  active: 'Active',
+  completed: 'Completed',
+  cancelled: 'Cancelled',
+};
 export interface Campaign {
   id: string;
   creator_id: string;
@@ -56,22 +73,6 @@ export interface CampaignFilters {
   search?: string;
   location?: string;
 }
-
-export const CATEGORY_LABELS: Record<CampaignCategory, string> = {
-  tree_planting: 'Trồng cây',
-  cleanup: 'Dọn dẹp',
-  recycling: 'Tái chế',
-  awareness: 'Nâng cao nhận thức',
-  other: 'Khác',
-};
-
-export const STATUS_LABELS: Record<CampaignStatus, string> = {
-  draft: 'Nháp',
-  pending: 'Chờ duyệt',
-  active: 'Đang diễn ra',
-  completed: 'Hoàn thành',
-  cancelled: 'Đã hủy',
-};
 
 export function useCampaigns(filters?: CampaignFilters) {
   return useQuery({
@@ -264,7 +265,7 @@ export function useCreateCampaign() {
       image_url?: string;
       green_points_reward: number;
     }) => {
-      if (!user) throw new Error('Bạn cần đăng nhập');
+      if (!user) throw new Error(i18n.t('common.loginRequired'));
 
       const { data, error } = await supabase
         .from('campaigns')
@@ -282,10 +283,10 @@ export function useCreateCampaign() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['campaigns'] });
       queryClient.invalidateQueries({ queryKey: ['my-campaigns'] });
-      toast.success('Tạo chiến dịch thành công!');
+      toast.success(i18n.t('toast.campaignCreated', 'Campaign created successfully!'));
     },
     onError: (error) => {
-      toast.error('Lỗi khi tạo chiến dịch: ' + error.message);
+      toast.error(i18n.t('toast.error', 'Error') + ': ' + error.message);
     },
   });
 }
@@ -296,7 +297,7 @@ export function useJoinCampaign() {
 
   return useMutation({
     mutationFn: async (campaignId: string) => {
-      if (!user) throw new Error('Bạn cần đăng nhập');
+      if (!user) throw new Error(i18n.t('common.loginRequired'));
 
       const { data, error } = await supabase
         .from('campaign_participants')
@@ -317,10 +318,10 @@ export function useJoinCampaign() {
       queryClient.invalidateQueries({ queryKey: ['campaign-participants', campaignId] });
       queryClient.invalidateQueries({ queryKey: ['user-participation', campaignId] });
       queryClient.invalidateQueries({ queryKey: ['my-participations'] });
-      toast.success('Đăng ký tham gia thành công!');
+      toast.success(i18n.t('toast.campaignJoined', 'Successfully registered to join!'));
     },
     onError: (error) => {
-      toast.error('Lỗi: ' + error.message);
+      toast.error(i18n.t('toast.error', 'Error') + ': ' + error.message);
     },
   });
 }
@@ -331,7 +332,7 @@ export function useLeaveCampaign() {
 
   return useMutation({
     mutationFn: async (campaignId: string) => {
-      if (!user) throw new Error('Bạn cần đăng nhập');
+      if (!user) throw new Error(i18n.t('common.loginRequired'));
 
       const { error } = await supabase
         .from('campaign_participants')
@@ -347,10 +348,10 @@ export function useLeaveCampaign() {
       queryClient.invalidateQueries({ queryKey: ['campaign-participants', campaignId] });
       queryClient.invalidateQueries({ queryKey: ['user-participation', campaignId] });
       queryClient.invalidateQueries({ queryKey: ['my-participations'] });
-      toast.success('Đã hủy đăng ký!');
+      toast.success(i18n.t('toast.campaignLeft', 'Registration cancelled!'));
     },
     onError: (error) => {
-      toast.error('Lỗi: ' + error.message);
+      toast.error(i18n.t('toast.error', 'Error') + ': ' + error.message);
     },
   });
 }
@@ -361,7 +362,7 @@ export function useCheckIn() {
 
   return useMutation({
     mutationFn: async (campaignId: string) => {
-      if (!user) throw new Error('Bạn cần đăng nhập');
+      if (!user) throw new Error(i18n.t('common.loginRequired'));
 
       const { data, error } = await supabase
         .from('campaign_participants')
@@ -380,10 +381,10 @@ export function useCheckIn() {
     onSuccess: (_, campaignId) => {
       queryClient.invalidateQueries({ queryKey: ['campaign-participants', campaignId] });
       queryClient.invalidateQueries({ queryKey: ['user-participation', campaignId] });
-      toast.success('Check-in thành công!');
+      toast.success(i18n.t('toast.checkInSuccess', 'Check-in successful!'));
     },
     onError: (error) => {
-      toast.error('Lỗi: ' + error.message);
+      toast.error(i18n.t('toast.error', 'Error') + ': ' + error.message);
     },
   });
 }
@@ -413,10 +414,10 @@ export function useUpdateParticipant() {
       queryClient.invalidateQueries({ queryKey: ['campaign-participants', data.campaign_id] });
       queryClient.invalidateQueries({ queryKey: ['user-participation', data.campaign_id] });
       queryClient.invalidateQueries({ queryKey: ['my-participations'] });
-      toast.success('Cập nhật thành công!');
+      toast.success(i18n.t('toast.updateSuccess', 'Updated successfully!'));
     },
     onError: (error) => {
-      toast.error('Lỗi: ' + error.message);
+      toast.error(i18n.t('toast.error', 'Error') + ': ' + error.message);
     },
   });
 }
@@ -446,10 +447,10 @@ export function useUpdateCampaign() {
       queryClient.invalidateQueries({ queryKey: ['campaigns'] });
       queryClient.invalidateQueries({ queryKey: ['campaign', data.id] });
       queryClient.invalidateQueries({ queryKey: ['my-campaigns'] });
-      toast.success('Cập nhật chiến dịch thành công!');
+      toast.success(i18n.t('toast.campaignUpdated', 'Campaign updated successfully!'));
     },
     onError: (error) => {
-      toast.error('Lỗi: ' + error.message);
+      toast.error(i18n.t('toast.error', 'Error') + ': ' + error.message);
     },
   });
 }

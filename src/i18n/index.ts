@@ -13,8 +13,8 @@ import ja from './ja.json';
 import de from './de.json';
 
 const savedLanguage = typeof window !== 'undefined' 
-  ? localStorage.getItem('language') || 'vi' 
-  : 'vi';
+  ? localStorage.getItem('language') || 'en' 
+  : 'en';
 
 i18n
   .use(initReactI18next)
@@ -33,7 +33,7 @@ i18n
       de: { translation: de },
     },
     lng: savedLanguage,
-    fallbackLng: 'vi',
+    fallbackLng: 'en',
     interpolation: {
       escapeValue: false,
     },

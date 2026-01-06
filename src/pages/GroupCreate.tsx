@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Layout } from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,6 +18,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { CamlyCoinInline } from '@/components/rewards/CamlyCoinIcon';
 
 export default function GroupCreate() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useAuth();
   const createGroup = useCreateGroup();
@@ -82,16 +84,16 @@ export default function GroupCreate() {
         {/* Back Button */}
         <Button variant="ghost" onClick={() => navigate(-1)} className="mb-6">
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Quay lại
+          {t('common.back')}
         </Button>
 
         <Card className="border-white/20 bg-white/80 backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="text-2xl flex items-center gap-2">
-              🌳 Tạo nhóm mới
+              🌳 {t('group.createTitle')}
             </CardTitle>
             <p className="text-muted-foreground flex items-center gap-1">
-              Tạo cộng đồng và nhận +{CAMLY_REWARDS.GROUP_CREATE.toLocaleString()} <CamlyCoinInline />
+              {t('group.createReward')} +{CAMLY_REWARDS.GROUP_CREATE.toLocaleString()} <CamlyCoinInline />
             </p>
           </CardHeader>
 
@@ -99,7 +101,7 @@ export default function GroupCreate() {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Cover Image */}
               <div className="space-y-2">
-                <Label>Ảnh bìa</Label>
+                <Label>{t('group.coverImage')}</Label>
                 <div 
                   onClick={() => fileInputRef.current?.click()}
                   className="relative h-40 bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg border-2 border-dashed border-border cursor-pointer hover:border-primary transition-colors overflow-hidden"
@@ -113,7 +115,7 @@ export default function GroupCreate() {
                       ) : (
                         <>
                           <Image className="h-8 w-8 mb-2" />
-                          <span>Nhấn để tải ảnh bìa</span>
+                          <span>{t('group.clickToUpload')}</span>
                         </>
                       )}
                     </div>
@@ -131,7 +133,7 @@ export default function GroupCreate() {
               {/* Icon & Name */}
               <div className="flex gap-4">
                 <div className="space-y-2">
-                  <Label>Icon</Label>
+                  <Label>{t('group.icon')}</Label>
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button variant="outline" className="w-16 h-16 text-3xl">
@@ -156,10 +158,10 @@ export default function GroupCreate() {
                 </div>
 
                 <div className="flex-1 space-y-2">
-                  <Label htmlFor="name">Tên nhóm *</Label>
+                  <Label htmlFor="name">{t('group.groupName')} *</Label>
                   <Input
                     id="name"
-                    placeholder="VD: Trồng cây Hà Nội"
+                    placeholder={t('group.groupNamePlaceholder')}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
@@ -169,10 +171,10 @@ export default function GroupCreate() {
 
               {/* Description */}
               <div className="space-y-2">
-                <Label htmlFor="description">Mô tả</Label>
+                <Label htmlFor="description">{t('group.description')}</Label>
                 <Textarea
                   id="description"
-                  placeholder="Mô tả về nhóm của bạn..."
+                  placeholder={t('group.descriptionPlaceholder')}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={3}
@@ -181,17 +183,17 @@ export default function GroupCreate() {
 
               {/* Privacy */}
               <div className="space-y-3">
-                <Label>Quyền riêng tư</Label>
+                <Label>{t('group.privacy')}</Label>
                 <RadioGroup value={privacy} onValueChange={(v) => setPrivacy(v as 'public' | 'private')}>
                   <div className="flex items-start gap-3 p-3 rounded-lg border border-border hover:bg-muted/50 cursor-pointer">
                     <RadioGroupItem value="public" id="public" className="mt-1" />
                     <Label htmlFor="public" className="flex-1 cursor-pointer">
                       <div className="flex items-center gap-2 font-medium">
                         <Globe className="h-4 w-4 text-primary" />
-                        Công khai
+                        {t('group.public')}
                       </div>
                       <p className="text-sm text-muted-foreground font-normal">
-                        Ai cũng có thể xem và tham gia nhóm
+                        {t('group.publicDesc')}
                       </p>
                     </Label>
                   </div>
@@ -200,10 +202,10 @@ export default function GroupCreate() {
                     <Label htmlFor="private" className="flex-1 cursor-pointer">
                       <div className="flex items-center gap-2 font-medium">
                         <Lock className="h-4 w-4 text-amber-500" />
-                        Riêng tư
+                        {t('group.private')}
                       </div>
                       <p className="text-sm text-muted-foreground font-normal">
-                        Cần được duyệt để tham gia nhóm
+                        {t('group.privateDesc')}
                       </p>
                     </Label>
                   </div>
@@ -212,7 +214,7 @@ export default function GroupCreate() {
 
               {/* Category */}
               <div className="space-y-2">
-                <Label>Danh mục</Label>
+                <Label>{t('group.category')}</Label>
                 <Select value={category} onValueChange={setCategory}>
                   <SelectTrigger>
                     <SelectValue />
@@ -221,7 +223,7 @@ export default function GroupCreate() {
                     {GROUP_CATEGORIES.filter(c => c.value !== 'all').map((cat) => (
                       <SelectItem key={cat.value} value={cat.value}>
                         {'emoji' in cat && <span className="mr-2">{cat.emoji}</span>}
-                        {cat.label}
+                        {t(cat.labelKey)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -230,10 +232,10 @@ export default function GroupCreate() {
 
               {/* Location */}
               <div className="space-y-2">
-                <Label>Địa điểm</Label>
+                <Label>{t('group.location')}</Label>
                 <Select value={location} onValueChange={setLocation}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Chọn địa điểm" />
+                    <SelectValue placeholder={t('group.selectLocation')} />
                   </SelectTrigger>
                   <SelectContent>
                     {VIETNAM_LOCATIONS.map((loc) => (
@@ -257,7 +259,7 @@ export default function GroupCreate() {
                 ) : (
                   <Coins className="h-4 w-4 mr-2" />
                 )}
-                Tạo nhóm (+{CAMLY_REWARDS.GROUP_CREATE.toLocaleString()} <CamlyCoinInline />)
+                {t('group.createGroup')} (+{CAMLY_REWARDS.GROUP_CREATE.toLocaleString()} <CamlyCoinInline />)
               </Button>
             </form>
           </CardContent>
