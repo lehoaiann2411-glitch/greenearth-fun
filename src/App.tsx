@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { Web3Provider } from "@/contexts/Web3Context";
+import { CallProvider } from "@/contexts/CallContext";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
@@ -39,40 +40,42 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <Web3Provider>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/feed" element={<Feed />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/profile/:userId" element={<Profile />} />
-              <Route path="/profile/edit" element={<ProfileEdit />} />
-              <Route path="/leaderboard" element={<Leaderboard />} />
-              
-              <Route path="/campaigns" element={<Campaigns />} />
-              <Route path="/campaigns/create" element={<CampaignCreate />} />
-              <Route path="/campaigns/:id" element={<CampaignDetail />} />
-              <Route path="/campaigns/:id/manage" element={<CampaignManage />} />
-              <Route path="/community" element={<Community />} />
-              <Route path="/groups" element={<Groups />} />
-              <Route path="/groups/create" element={<GroupCreate />} />
-              <Route path="/groups/:id" element={<GroupDetail />} />
-              <Route path="/impact" element={<ImpactDashboard />} />
-              <Route path="/rewards" element={<Rewards />} />
-              
-              {/* Social Network Routes */}
-              <Route path="/messages" element={<Messages />} />
-              <Route path="/messages/:conversationId" element={<Messages />} />
-              <Route path="/friends" element={<Friends />} />
-              
-              {/* Reels Routes */}
-              <Route path="/reels" element={<Reels />} />
-              <Route path="/reels/create" element={<ReelCreate />} />
-              <Route path="/reels/:reelId" element={<Reels />} />
-              
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            <CallProvider>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/feed" element={<Feed />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/profile/:userId" element={<Profile />} />
+                <Route path="/profile/edit" element={<ProfileEdit />} />
+                <Route path="/leaderboard" element={<Leaderboard />} />
+                
+                <Route path="/campaigns" element={<Campaigns />} />
+                <Route path="/campaigns/create" element={<CampaignCreate />} />
+                <Route path="/campaigns/:id" element={<CampaignDetail />} />
+                <Route path="/campaigns/:id/manage" element={<CampaignManage />} />
+                <Route path="/community" element={<Community />} />
+                <Route path="/groups" element={<Groups />} />
+                <Route path="/groups/create" element={<GroupCreate />} />
+                <Route path="/groups/:id" element={<GroupDetail />} />
+                <Route path="/impact" element={<ImpactDashboard />} />
+                <Route path="/rewards" element={<Rewards />} />
+                
+                {/* Social Network Routes */}
+                <Route path="/messages" element={<Messages />} />
+                <Route path="/messages/:conversationId" element={<Messages />} />
+                <Route path="/friends" element={<Friends />} />
+                
+                {/* Reels Routes */}
+                <Route path="/reels" element={<Reels />} />
+                <Route path="/reels/create" element={<ReelCreate />} />
+                <Route path="/reels/:reelId" element={<Reels />} />
+                
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </CallProvider>
           </Web3Provider>
         </AuthProvider>
       </BrowserRouter>

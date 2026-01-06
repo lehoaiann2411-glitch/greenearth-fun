@@ -50,6 +50,57 @@ export type Database = {
         }
         Relationships: []
       }
+      calls: {
+        Row: {
+          call_type: string
+          callee_id: string
+          caller_id: string
+          created_at: string | null
+          duration_seconds: number | null
+          ended_at: string | null
+          id: string
+          started_at: string | null
+          status: string
+        }
+        Insert: {
+          call_type?: string
+          callee_id: string
+          caller_id: string
+          created_at?: string | null
+          duration_seconds?: number | null
+          ended_at?: string | null
+          id?: string
+          started_at?: string | null
+          status?: string
+        }
+        Update: {
+          call_type?: string
+          callee_id?: string
+          caller_id?: string
+          created_at?: string | null
+          duration_seconds?: number | null
+          ended_at?: string | null
+          id?: string
+          started_at?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "calls_callee_id_fkey"
+            columns: ["callee_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "calls_caller_id_fkey"
+            columns: ["caller_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       campaign_participants: {
         Row: {
           campaign_id: string
