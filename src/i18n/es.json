@@ -410,7 +410,7 @@
     "sayHello": "¡Di hola! 👋",
     "sentCamly": "¡Enviado {{amount}} Camly!"
   },
-  "reels": {
+"reels": {
     "forYou": "Para ti",
     "following": "Siguiendo",
     "loading": "Cargando reels...",
@@ -418,6 +418,65 @@
     "beFirstShare": "¡Sé el primero en compartir tu viaje verde con la comunidad!",
     "forPosting": "por publicar",
     "swipeUp": "Desliza hacia arriba"
+  },
+  "story": {
+    "yourStory": "Tu Historia",
+    "addStory": "Añadir Historia",
+    "user": "Usuario"
+  },
+  "post": {
+    "placeholder": "¿Cuál es tu historia verde hoy? 🌱",
+    "loginToPost": "Inicia sesión para compartir tus actividades",
+    "sharePlaceholder": "Comparte tus actividades verdes...",
+    "photo": "Foto",
+    "location": "Ubicación",
+    "poll": "Encuesta",
+    "createPost": "Crear Publicación",
+    "post": "Publicar",
+    "noCampaign": "Sin campaña",
+    "linkCampaign": "Vincular campaña",
+    "deletePost": "Eliminar publicación",
+    "deleteConfirm": "¿Eliminar esta publicación?",
+    "copyLink": "Copiar enlace",
+    "shareOnX": "Compartir en X",
+    "user": "Usuario",
+    "viewProfile": "Ver perfil"
+  },
+  "categories": {
+    "all": "Todos",
+    "tree_planting": "Plantación",
+    "cleanup": "Limpieza",
+    "recycling": "Reciclaje",
+    "awareness": "Concienciación",
+    "education": "Educación",
+    "esg": "ESG",
+    "general": "General",
+    "other": "Otro"
+  },
+  "status": {
+    "draft": "Borrador",
+    "pending": "Pendiente",
+    "active": "Activo",
+    "completed": "Completado",
+    "cancelled": "Cancelado",
+    "upcoming": "Próximo"
+  },
+  "actions": {
+    "create_post": "publicar",
+    "create_post_with_image": "publicar con imagen",
+    "create_post_with_poll": "crear encuesta",
+    "share_post": "compartir",
+    "like_post": "dar me gusta",
+    "react_post": "reaccionar",
+    "create_story": "crear historia",
+    "daily_check_in": "check-in",
+    "streak_bonus": "racha de 7 días",
+    "signup_bonus": "registrarse",
+    "plant_tree": "plantar árbol",
+    "invite_friend": "invitar amigo",
+    "follow_user": "seguir",
+    "join_campaign": "unirse a campaña",
+    "complete_campaign": "completar campaña"
   },
   "platform": {
     "name": "Green Earth",

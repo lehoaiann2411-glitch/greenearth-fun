@@ -410,7 +410,7 @@
     "sayHello": "挨拶しましょう！👋",
     "sentCamly": "{{amount}} Camlyを送信しました！"
   },
-  "reels": {
+"reels": {
     "forYou": "おすすめ",
     "following": "フォロー中",
     "loading": "リールを読み込み中...",
@@ -418,6 +418,65 @@
     "beFirstShare": "最初にコミュニティとグリーンジャーニーを共有しましょう！",
     "forPosting": "投稿で",
     "swipeUp": "上にスワイプ"
+  },
+  "story": {
+    "yourStory": "あなたのストーリー",
+    "addStory": "ストーリーを追加",
+    "user": "ユーザー"
+  },
+  "post": {
+    "placeholder": "今日のグリーンストーリーは？🌱",
+    "loginToPost": "ログインして活動を共有",
+    "sharePlaceholder": "グリーン活動を共有...",
+    "photo": "写真",
+    "location": "場所",
+    "poll": "投票",
+    "createPost": "投稿を作成",
+    "post": "投稿",
+    "noCampaign": "キャンペーンなし",
+    "linkCampaign": "キャンペーンをリンク",
+    "deletePost": "投稿を削除",
+    "deleteConfirm": "この投稿を削除しますか？",
+    "copyLink": "リンクをコピー",
+    "shareOnX": "Xで共有",
+    "user": "ユーザー",
+    "viewProfile": "プロフィールを見る"
+  },
+  "categories": {
+    "all": "すべて",
+    "tree_planting": "植樹",
+    "cleanup": "清掃",
+    "recycling": "リサイクル",
+    "awareness": "啓発",
+    "education": "教育",
+    "esg": "ESG",
+    "general": "一般",
+    "other": "その他"
+  },
+  "status": {
+    "draft": "下書き",
+    "pending": "保留中",
+    "active": "進行中",
+    "completed": "完了",
+    "cancelled": "キャンセル",
+    "upcoming": "近日開催"
+  },
+  "actions": {
+    "create_post": "投稿",
+    "create_post_with_image": "画像付き投稿",
+    "create_post_with_poll": "投票作成",
+    "share_post": "シェア",
+    "like_post": "いいね",
+    "react_post": "リアクション",
+    "create_story": "ストーリー作成",
+    "daily_check_in": "チェックイン",
+    "streak_bonus": "7日連続",
+    "signup_bonus": "新規登録",
+    "plant_tree": "植樹",
+    "invite_friend": "友達招待",
+    "follow_user": "フォロー",
+    "join_campaign": "キャンペーン参加",
+    "complete_campaign": "キャンペーン完了"
   },
   "platform": {
     "name": "Green Earth",

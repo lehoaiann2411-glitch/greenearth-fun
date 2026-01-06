@@ -410,7 +410,7 @@
     "sayHello": "Hãy chào hỏi! 👋",
     "sentCamly": "Đã gửi {{amount}} Camly!"
   },
-  "reels": {
+"reels": {
     "forYou": "Dành cho bạn",
     "following": "Đang theo dõi",
     "loading": "Đang tải reels...",
@@ -418,5 +418,64 @@
     "beFirstShare": "Hãy là người đầu tiên chia sẻ hành trình xanh với cộng đồng!",
     "forPosting": "khi đăng bài",
     "swipeUp": "Vuốt lên"
+  },
+  "story": {
+    "yourStory": "Tin của bạn",
+    "addStory": "Thêm tin",
+    "user": "Người dùng"
+  },
+  "post": {
+    "placeholder": "Hôm nay bạn có câu chuyện xanh gì? 🌱",
+    "loginToPost": "Đăng nhập để chia sẻ hoạt động của bạn",
+    "sharePlaceholder": "Chia sẻ hoạt động xanh của bạn...",
+    "photo": "Ảnh",
+    "location": "Vị trí",
+    "poll": "Khảo sát",
+    "createPost": "Tạo bài viết",
+    "post": "Đăng",
+    "noCampaign": "Không gắn",
+    "linkCampaign": "Gắn chiến dịch",
+    "deletePost": "Xóa bài viết",
+    "deleteConfirm": "Xóa bài viết này?",
+    "copyLink": "Sao chép liên kết",
+    "shareOnX": "Chia sẻ lên X",
+    "user": "Người dùng",
+    "viewProfile": "Xem hồ sơ"
+  },
+  "categories": {
+    "all": "Tất cả",
+    "tree_planting": "Trồng cây",
+    "cleanup": "Dọn dẹp",
+    "recycling": "Tái chế",
+    "awareness": "Nâng cao nhận thức",
+    "education": "Giáo dục",
+    "esg": "ESG",
+    "general": "Chung",
+    "other": "Khác"
+  },
+  "status": {
+    "draft": "Nháp",
+    "pending": "Chờ duyệt",
+    "active": "Đang diễn ra",
+    "completed": "Hoàn thành",
+    "cancelled": "Đã hủy",
+    "upcoming": "Sắp diễn ra"
+  },
+  "actions": {
+    "create_post": "đăng bài",
+    "create_post_with_image": "đăng bài có ảnh",
+    "create_post_with_poll": "tạo khảo sát",
+    "share_post": "chia sẻ",
+    "like_post": "thích bài viết",
+    "react_post": "thả cảm xúc",
+    "create_story": "đăng story",
+    "daily_check_in": "điểm danh",
+    "streak_bonus": "streak 7 ngày",
+    "signup_bonus": "đăng ký",
+    "plant_tree": "trồng cây",
+    "invite_friend": "mời bạn",
+    "follow_user": "theo dõi",
+    "join_campaign": "tham gia chiến dịch",
+    "complete_campaign": "hoàn thành chiến dịch"
   }
 }

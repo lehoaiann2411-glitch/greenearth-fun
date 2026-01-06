@@ -410,7 +410,7 @@
     "sayHello": "Say hello! 👋",
     "sentCamly": "Sent {{amount}} Camly!"
   },
-  "reels": {
+"reels": {
     "forYou": "For You",
     "following": "Following",
     "loading": "Loading reels...",
@@ -418,5 +418,64 @@
     "beFirstShare": "Be the first to share your green journey with the community!",
     "forPosting": "for posting",
     "swipeUp": "Swipe up"
+  },
+  "story": {
+    "yourStory": "Your Story",
+    "addStory": "Add Story",
+    "user": "User"
+  },
+  "post": {
+    "placeholder": "What's your green story today? 🌱",
+    "loginToPost": "Login to share your activities",
+    "sharePlaceholder": "Share your green activities...",
+    "photo": "Photo",
+    "location": "Location",
+    "poll": "Poll",
+    "createPost": "Create Post",
+    "post": "Post",
+    "noCampaign": "No campaign",
+    "linkCampaign": "Link to campaign",
+    "deletePost": "Delete post",
+    "deleteConfirm": "Delete this post?",
+    "copyLink": "Copy link",
+    "shareOnX": "Share on X",
+    "user": "User",
+    "viewProfile": "View profile"
+  },
+  "categories": {
+    "all": "All",
+    "tree_planting": "Tree Planting",
+    "cleanup": "Cleanup",
+    "recycling": "Recycling",
+    "awareness": "Awareness",
+    "education": "Education",
+    "esg": "ESG",
+    "general": "General",
+    "other": "Other"
+  },
+  "status": {
+    "draft": "Draft",
+    "pending": "Pending",
+    "active": "Active",
+    "completed": "Completed",
+    "cancelled": "Cancelled",
+    "upcoming": "Upcoming"
+  },
+  "actions": {
+    "create_post": "posting",
+    "create_post_with_image": "posting with image",
+    "create_post_with_poll": "creating poll",
+    "share_post": "sharing",
+    "like_post": "liking",
+    "react_post": "reacting",
+    "create_story": "creating story",
+    "daily_check_in": "check-in",
+    "streak_bonus": "7-day streak",
+    "signup_bonus": "signing up",
+    "plant_tree": "planting tree",
+    "invite_friend": "inviting friend",
+    "follow_user": "following",
+    "join_campaign": "joining campaign",
+    "complete_campaign": "completing campaign"
   }
 }

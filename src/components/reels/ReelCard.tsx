@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { Heart, MessageCircle, Bookmark, Music, UserPlus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -17,6 +18,7 @@ interface ReelCardProps {
 }
 
 export function ReelCard({ reel, isActive }: ReelCardProps) {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [showComments, setShowComments] = useState(false);
   const [showGiftModal, setShowGiftModal] = useState(false);
@@ -234,7 +236,7 @@ export function ReelCard({ reel, isActive }: ReelCardProps) {
               @{reel.profiles?.full_name || 'User'}
             </p>
             <p className="text-white/60 text-xs group-hover:text-white/80 transition-colors">
-              Xem hồ sơ
+              {t('post.viewProfile')}
             </p>
           </motion.div>
         </Link>

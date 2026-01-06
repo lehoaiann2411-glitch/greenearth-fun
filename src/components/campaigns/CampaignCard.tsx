@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { CalendarDays, MapPin, Users, Leaf } from 'lucide-react';
 import { format } from 'date-fns';
-import { vi } from 'date-fns/locale';
-import { Campaign, CATEGORY_LABELS } from '@/hooks/useCampaigns';
+import { vi, enUS } from 'date-fns/locale';
+import { Campaign } from '@/hooks/useCampaigns';
 import { CamlyCoinIcon } from '@/components/rewards/CamlyCoinIcon';
 import { formatCamly } from '@/lib/camlyCoin';
 
@@ -23,6 +24,8 @@ const categoryColors: Record<string, string> = {
 };
 
 export function CampaignCard({ campaign }: CampaignCardProps) {
+  const { t, i18n } = useTranslation();
+  const dateLocale = i18n.language === 'vi' ? vi : enUS;
   const progress = Math.min(
     ((campaign.participants_count || 0) / campaign.target_participants) * 100,
     100
@@ -52,10 +55,10 @@ export function CampaignCard({ campaign }: CampaignCardProps) {
           
           <div className="absolute top-3 left-3 flex gap-2">
             <Badge className={categoryColors[campaign.category]}>
-              {CATEGORY_LABELS[campaign.category]}
+              {t(`categories.${campaign.category}`)}
             </Badge>
             {isUpcoming && (
-              <Badge variant="secondary">Sắp diễn ra</Badge>
+              <Badge variant="secondary">{t('status.upcoming')}</Badge>
             )}
           </div>
           
@@ -82,7 +85,7 @@ export function CampaignCard({ campaign }: CampaignCardProps) {
             <div className="flex items-center gap-2">
               <CalendarDays className="h-4 w-4" />
               <span>
-                {format(startDate, 'dd MMM yyyy', { locale: vi })}
+                {format(startDate, 'dd MMM yyyy', { locale: dateLocale })}
               </span>
             </div>
             

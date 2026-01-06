@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCreatePost } from '@/hooks/usePosts';
 import { useCampaigns } from '@/hooks/useCampaigns';
@@ -16,6 +17,7 @@ import {
 import { Image, X, Loader2, Send } from 'lucide-react';
 
 export function CreatePost() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [content, setContent] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -69,7 +71,7 @@ export function CreatePost() {
     return (
       <Card>
         <CardContent className="p-6 text-center text-muted-foreground">
-          <p>Đăng nhập để chia sẻ hoạt động của bạn</p>
+          <p>{t('post.loginToPost')}</p>
         </CardContent>
       </Card>
     );
@@ -88,7 +90,7 @@ export function CreatePost() {
 
           <div className="flex-1 space-y-3">
             <Textarea
-              placeholder="Chia sẻ hoạt động xanh của bạn..."
+              placeholder={t('post.sharePlaceholder')}
               value={content}
               onChange={(e) => setContent(e.target.value)}
               className="min-h-[80px] resize-none border-0 p-0 focus-visible:ring-0"
@@ -129,15 +131,15 @@ export function CreatePost() {
                   onClick={() => fileInputRef.current?.click()}
                 >
                   <Image className="mr-1 h-4 w-4" />
-                  Ảnh
+                  {t('post.photo')}
                 </Button>
 
                 <Select value={campaignId} onValueChange={setCampaignId}>
                   <SelectTrigger className="h-8 w-[180px]">
-                    <SelectValue placeholder="Gắn chiến dịch" />
+                    <SelectValue placeholder={t('post.linkCampaign')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="none">Không gắn</SelectItem>
+                    <SelectItem value="none">{t('post.noCampaign')}</SelectItem>
                     {campaigns?.map((campaign) => (
                       <SelectItem key={campaign.id} value={campaign.id}>
                         {campaign.title}
@@ -157,7 +159,7 @@ export function CreatePost() {
                 ) : (
                   <>
                     <Send className="mr-1 h-4 w-4" />
-                    Đăng
+                    {t('post.post')}
                   </>
                 )}
               </Button>
