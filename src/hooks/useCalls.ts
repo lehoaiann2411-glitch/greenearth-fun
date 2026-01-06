@@ -386,8 +386,12 @@ export const useCallSignaling = (callId: string | null) => {
   };
 
   const cleanup = useCallback(() => {
-    stopStream(localStream);
-    stopStream(remoteStream);
+    if (localStream) {
+      stopStream(localStream);
+    }
+    if (remoteStream) {
+      stopStream(remoteStream);
+    }
     setLocalStream(null);
     setRemoteStream(null);
     iceCandidateBuffer.current = [];
@@ -399,21 +403,22 @@ export const useCallSignaling = (callId: string | null) => {
     }
 
     if (channelRef.current) {
-      if (isChannelReady.current) {
-        channelRef.current.send({
-          type: 'broadcast',
-          event: 'end-call',
-          payload: {},
-        });
-      }
       supabase.removeChannel(channelRef.current);
       channelRef.current = null;
     }
   }, [localStream, remoteStream]);
 
+  // Cleanup on unmount - use refs to avoid stale closure
   useEffect(() => {
     return () => {
-      cleanup();
+      if (peerConnectionRef.current) {
+        peerConnectionRef.current.close();
+        peerConnectionRef.current = null;
+      }
+      if (channelRef.current) {
+        supabase.removeChannel(channelRef.current);
+        channelRef.current = null;
+      }
     };
   }, []);
 
