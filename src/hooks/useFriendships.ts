@@ -51,6 +51,28 @@ export function useFriendshipStatus(targetUserId: string) {
   });
 }
 
+// Get friendship ID for accepting requests
+export function useFriendshipId(targetUserId: string) {
+  const { user } = useAuth();
+
+  return useQuery({
+    queryKey: ['friendship-id', user?.id, targetUserId],
+    queryFn: async (): Promise<string | null> => {
+      if (!user || user.id === targetUserId) return null;
+
+      const { data, error } = await supabase
+        .from('friendships')
+        .select('id')
+        .or(`and(requester_id.eq.${user.id},addressee_id.eq.${targetUserId}),and(requester_id.eq.${targetUserId},addressee_id.eq.${user.id})`)
+        .maybeSingle();
+
+      if (error) throw error;
+      return data?.id || null;
+    },
+    enabled: !!user && !!targetUserId && user.id !== targetUserId,
+  });
+}
+
 export function useFriends(userId: string) {
   return useQuery({
     queryKey: ['friends', userId],

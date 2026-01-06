@@ -581,7 +581,8 @@
     "addFriend": "Add Friend",
     "requestSent": "Request Sent",
     "acceptRequest": "Accept Request",
-    "unfriend": "Unfriend"
+    "unfriend": "Unfriend",
+    "requestAccepted": "Friend request accepted!"
   },
   "notFound": {
     "title": "404",

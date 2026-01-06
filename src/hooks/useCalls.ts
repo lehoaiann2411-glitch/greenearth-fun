@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import {
   createPeerConnection,
   getLocalStream,
@@ -246,11 +246,33 @@ export const useCallSignaling = (callId: string | null) => {
   
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
   const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
+  const iceCandidateBuffer = useRef<{ candidate: RTCIceCandidateInit; senderId: string }[]>([]);
+  const isChannelReady = useRef(false);
+  const pendingOffer = useRef<{ sdp: RTCSessionDescriptionInit; senderId: string } | null>(null);
+
+  // Process buffered ICE candidates after remote description is set
+  const processBufferedCandidates = useCallback(async (pc: RTCPeerConnection, currentUserId: string) => {
+    while (iceCandidateBuffer.current.length > 0) {
+      const item = iceCandidateBuffer.current.shift();
+      if (item && item.senderId !== currentUserId) {
+        try {
+          await addIceCandidate(pc, item.candidate);
+        } catch (err) {
+          console.warn('Failed to add buffered ICE candidate:', err);
+        }
+      }
+    }
+  }, []);
 
   const initializeCall = async (callType: 'voice' | 'video', isInitiator: boolean) => {
     if (!callId || !user) return;
 
     try {
+      // Reset buffers
+      iceCandidateBuffer.current = [];
+      isChannelReady.current = false;
+      pendingOffer.current = null;
+
       // Get local stream
       const stream = await getLocalStream(callType);
       setLocalStream(stream);
@@ -264,21 +286,27 @@ export const useCallSignaling = (callId: string | null) => {
 
       // Handle remote stream
       pc.ontrack = (event) => {
+        console.log('Received remote track:', event.track.kind);
         setRemoteStream(event.streams[0]);
       };
 
       // Handle connection state changes
       pc.onconnectionstatechange = () => {
+        console.log('Connection state:', pc.connectionState);
         setConnectionState(pc.connectionState);
+      };
+
+      pc.oniceconnectionstatechange = () => {
+        console.log('ICE connection state:', pc.iceConnectionState);
       };
 
       // Set up signaling channel
       const channel = supabase.channel(`call:${callId}`);
       channelRef.current = channel;
 
-      // Handle ICE candidates
+      // Handle ICE candidates - only send when channel is ready
       pc.onicecandidate = (event) => {
-        if (event.candidate) {
+        if (event.candidate && isChannelReady.current) {
           channel.send({
             type: 'broadcast',
             event: 'ice-candidate',
@@ -290,51 +318,80 @@ export const useCallSignaling = (callId: string | null) => {
       // Listen for signaling events
       channel
         .on('broadcast', { event: 'offer' }, async ({ payload }) => {
-          if (payload.senderId !== user.id) {
-            await setRemoteDescription(pc, payload.sdp);
-            const answer = await createAnswer(pc);
-            channel.send({
-              type: 'broadcast',
-              event: 'answer',
-              payload: { sdp: answer, senderId: user.id },
-            });
+          if (payload.senderId !== user.id && peerConnectionRef.current) {
+            try {
+              await setRemoteDescription(peerConnectionRef.current, payload.sdp);
+              await processBufferedCandidates(peerConnectionRef.current, user.id);
+              const answer = await createAnswer(peerConnectionRef.current);
+              if (isChannelReady.current) {
+                channel.send({
+                  type: 'broadcast',
+                  event: 'answer',
+                  payload: { sdp: answer, senderId: user.id },
+                });
+              }
+            } catch (err) {
+              console.error('Error handling offer:', err);
+            }
           }
         })
         .on('broadcast', { event: 'answer' }, async ({ payload }) => {
-          if (payload.senderId !== user.id) {
-            await setRemoteDescription(pc, payload.sdp);
+          if (payload.senderId !== user.id && peerConnectionRef.current) {
+            try {
+              await setRemoteDescription(peerConnectionRef.current, payload.sdp);
+              await processBufferedCandidates(peerConnectionRef.current, user.id);
+            } catch (err) {
+              console.error('Error handling answer:', err);
+            }
           }
         })
         .on('broadcast', { event: 'ice-candidate' }, async ({ payload }) => {
-          if (payload.senderId !== user.id && payload.candidate) {
-            await addIceCandidate(pc, payload.candidate);
+          if (payload.senderId !== user.id && peerConnectionRef.current) {
+            // Buffer ICE candidates if remote description not set yet
+            if (!peerConnectionRef.current.remoteDescription) {
+              iceCandidateBuffer.current.push(payload);
+            } else {
+              try {
+                await addIceCandidate(peerConnectionRef.current, payload.candidate);
+              } catch (err) {
+                console.warn('Failed to add ICE candidate:', err);
+              }
+            }
           }
         })
         .on('broadcast', { event: 'end-call' }, () => {
           cleanup();
         })
-        .subscribe();
-
-      // If initiator, create and send offer
-      if (isInitiator) {
-        const offer = await createOffer(pc);
-        channel.send({
-          type: 'broadcast',
-          event: 'offer',
-          payload: { sdp: offer, senderId: user.id },
+        .subscribe((status) => {
+          if (status === 'SUBSCRIBED') {
+            console.log('Signaling channel ready');
+            isChannelReady.current = true;
+            
+            // If initiator, create and send offer now that channel is ready
+            if (isInitiator && peerConnectionRef.current) {
+              createOffer(peerConnectionRef.current).then((offer) => {
+                channel.send({
+                  type: 'broadcast',
+                  event: 'offer',
+                  payload: { sdp: offer, senderId: user.id },
+                });
+              });
+            }
+          }
         });
-      }
     } catch (error) {
       console.error('Error initializing call:', error);
       toast.error(i18n.t('toast.error'));
     }
   };
 
-  const cleanup = () => {
+  const cleanup = useCallback(() => {
     stopStream(localStream);
     stopStream(remoteStream);
     setLocalStream(null);
     setRemoteStream(null);
+    iceCandidateBuffer.current = [];
+    isChannelReady.current = false;
 
     if (peerConnectionRef.current) {
       peerConnectionRef.current.close();
@@ -342,15 +399,17 @@ export const useCallSignaling = (callId: string | null) => {
     }
 
     if (channelRef.current) {
-      channelRef.current.send({
-        type: 'broadcast',
-        event: 'end-call',
-        payload: {},
-      });
+      if (isChannelReady.current) {
+        channelRef.current.send({
+          type: 'broadcast',
+          event: 'end-call',
+          payload: {},
+        });
+      }
       supabase.removeChannel(channelRef.current);
       channelRef.current = null;
     }
-  };
+  }, [localStream, remoteStream]);
 
   useEffect(() => {
     return () => {
