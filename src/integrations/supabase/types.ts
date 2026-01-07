@@ -2260,6 +2260,10 @@ export type Database = {
         Returns: boolean
       }
       is_blocked: { Args: { user1: string; user2: string }; Returns: boolean }
+      is_conversation_participant: {
+        Args: { conv_id: string; u_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       account_type: "individual" | "organization"
