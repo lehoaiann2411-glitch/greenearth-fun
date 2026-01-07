@@ -96,7 +96,12 @@ export function CallProvider({ children }: CallProviderProps) {
     if (!incomingCall) return;
 
     const timeout = setTimeout(() => {
-      missCallMutation.mutate(incomingCall.id);
+      missCallMutation.mutate({
+        callId: incomingCall.id,
+        callerId: incomingCall.caller_id,
+        calleeId: incomingCall.callee_id,
+        callType: incomingCall.call_type,
+      });
     }, 30000);
 
     return () => clearTimeout(timeout);
@@ -172,7 +177,12 @@ export function CallProvider({ children }: CallProviderProps) {
 
   const handleRejectCall = useCallback(async () => {
     if (!incomingCall) return;
-    await rejectCallMutation.mutateAsync(incomingCall.id);
+    await rejectCallMutation.mutateAsync({
+      callId: incomingCall.id,
+      callerId: incomingCall.caller_id,
+      calleeId: incomingCall.callee_id,
+      callType: incomingCall.call_type,
+    });
   }, [incomingCall, rejectCallMutation]);
 
   const endCurrentCall = useCallback(async () => {
@@ -184,6 +194,9 @@ export function CallProvider({ children }: CallProviderProps) {
     await endCallMutation.mutateAsync({
       callId: activeCall.id,
       duration,
+      callerId: activeCall.caller_id,
+      calleeId: activeCall.callee_id,
+      callType: activeCall.call_type,
     });
 
     cleanup();

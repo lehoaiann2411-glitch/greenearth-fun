@@ -1037,6 +1037,7 @@ export type Database = {
           is_read: boolean | null
           media_url: string | null
           message_type: string | null
+          payload: Json | null
           seen_at: string | null
           sender_id: string
           status: string | null
@@ -1052,6 +1053,7 @@ export type Database = {
           is_read?: boolean | null
           media_url?: string | null
           message_type?: string | null
+          payload?: Json | null
           seen_at?: string | null
           sender_id: string
           status?: string | null
@@ -1067,6 +1069,7 @@ export type Database = {
           is_read?: boolean | null
           media_url?: string | null
           message_type?: string | null
+          payload?: Json | null
           seen_at?: string | null
           sender_id?: string
           status?: string | null
@@ -2258,6 +2261,17 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      insert_call_log_message: {
+        Args: {
+          p_call_id: string
+          p_call_status: string
+          p_call_type: string
+          p_callee_id: string
+          p_caller_id: string
+          p_duration_seconds: number
+        }
+        Returns: undefined
       }
       is_blocked: { Args: { user1: string; user2: string }; Returns: boolean }
       is_conversation_participant: {

@@ -13,6 +13,14 @@ export interface Message {
   camly_amount: number | null;
   is_read: boolean;
   created_at: string;
+  payload?: {
+    call_id?: string;
+    call_type?: 'voice' | 'video';
+    call_status?: 'ended' | 'missed' | 'rejected';
+    duration_seconds?: number;
+    caller_id?: string;
+    callee_id?: string;
+  } | null;
   sender?: {
     id: string;
     full_name: string | null;
