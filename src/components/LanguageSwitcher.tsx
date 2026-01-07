@@ -1,6 +1,4 @@
-import { Globe } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -9,6 +7,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { useLanguageSync } from '@/hooks/useLanguageSync';
+import { Check } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const languages = [
   { code: 'vi', name: 'Tiếng Việt', flag: '🇻🇳' },
@@ -26,40 +27,43 @@ const languages = [
 
 export function LanguageSwitcher() {
   const { i18n } = useTranslation();
+  const { changeLanguage, currentLanguage } = useLanguageSync();
 
-  const changeLanguage = (lng: string) => {
-    i18n.changeLanguage(lng);
-    localStorage.setItem('language', lng);
+  const handleChangeLanguage = async (lng: string) => {
+    await changeLanguage(lng);
   };
 
-  // Handle RTL for Arabic
-  useEffect(() => {
-    if (i18n.language === 'ar') {
-      document.documentElement.dir = 'rtl';
-    } else {
-      document.documentElement.dir = 'ltr';
-    }
-  }, [i18n.language]);
-
-  const currentLang = languages.find(l => l.code === i18n.language) || languages[0];
+  const currentLang = languages.find(l => l.code === currentLanguage) || languages.find(l => l.code === 'en')!;
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="h-9 w-9">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="h-9 w-9 hover:bg-primary/10 transition-colors"
+        >
           <span className="text-lg">{currentLang.flag}</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-48">
+      <DropdownMenuContent align="end" className="w-52">
         <ScrollArea className="h-80">
           {languages.map((lang) => (
             <DropdownMenuItem
               key={lang.code}
-              onClick={() => changeLanguage(lang.code)}
-              className={`cursor-pointer ${i18n.language === lang.code ? 'bg-primary/10 font-medium' : ''}`}
+              onClick={() => handleChangeLanguage(lang.code)}
+              className={cn(
+                'cursor-pointer flex items-center justify-between transition-colors',
+                currentLanguage === lang.code && 'bg-primary/10 font-medium'
+              )}
             >
-              <span className="mr-3 text-lg">{lang.flag}</span>
-              <span>{lang.name}</span>
+              <div className="flex items-center gap-3">
+                <span className="text-lg">{lang.flag}</span>
+                <span>{lang.name}</span>
+              </div>
+              {currentLanguage === lang.code && (
+                <Check className="h-4 w-4 text-primary" />
+              )}
             </DropdownMenuItem>
           ))}
         </ScrollArea>
