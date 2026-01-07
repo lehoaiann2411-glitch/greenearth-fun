@@ -45,7 +45,10 @@ export default function Messages() {
   const { user, loading: authLoading } = useAuth();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const prevMessagesLengthRef = useRef<number>(0);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const isAtBottomRef = useRef<boolean>(true);
+  const hasInitialScrolledRef = useRef<boolean>(false);
+  const prevLastMessageIdRef = useRef<string | null>(null);
   const [messageInput, setMessageInput] = useState('');
   const [showStickers, setShowStickers] = useState(false);
   const [showEmojis, setShowEmojis] = useState(false);
@@ -111,23 +114,56 @@ export default function Messages() {
     }
   }, [conversationId, user, messages?.length]);
 
-  // Reset messages length ref when conversation changes
+  // Reset scroll state when conversation changes
   useEffect(() => {
-    prevMessagesLengthRef.current = 0;
+    hasInitialScrolledRef.current = false;
+    prevLastMessageIdRef.current = null;
+    isAtBottomRef.current = true;
   }, [conversationId]);
 
-  // Scroll to bottom only when new messages are added
+  // Track scroll position to determine if user is at bottom
   useEffect(() => {
-    const currentLength = messages?.length || 0;
-    const prevLength = prevMessagesLengthRef.current;
+    const scrollArea = scrollAreaRef.current;
+    if (!scrollArea) return;
 
-    // Only scroll when: first load OR new message added
-    if (currentLength > 0 && (prevLength === 0 || currentLength > prevLength)) {
+    const viewport = scrollArea.querySelector('[data-radix-scroll-area-viewport]') as HTMLElement;
+    if (!viewport) return;
+
+    const handleScroll = () => {
+      const { scrollHeight, scrollTop, clientHeight } = viewport;
+      const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
+      // Consider "at bottom" if within 100px of the bottom
+      isAtBottomRef.current = distanceFromBottom <= 100;
+    };
+
+    viewport.addEventListener('scroll', handleScroll);
+    return () => viewport.removeEventListener('scroll', handleScroll);
+  }, [conversationId]);
+
+  // Smart scroll: only scroll when appropriate
+  useEffect(() => {
+    if (!messages || messages.length === 0) return;
+
+    const lastMessage = messages[messages.length - 1];
+    const lastMessageId = lastMessage?.id;
+    const isNewMessage = lastMessageId !== prevLastMessageIdRef.current;
+    const isOwnMessage = lastMessage?.sender_id === user?.id;
+
+    // Initial scroll when first loading conversation
+    if (!hasInitialScrolledRef.current) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'auto' });
+      hasInitialScrolledRef.current = true;
+      prevLastMessageIdRef.current = lastMessageId;
+      return;
+    }
+
+    // Only scroll for new messages if user is at bottom OR it's their own message
+    if (isNewMessage && (isAtBottomRef.current || isOwnMessage)) {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
 
-    prevMessagesLengthRef.current = currentLength;
-  }, [messages?.length]);
+    prevLastMessageIdRef.current = lastMessageId;
+  }, [messages, user?.id]);
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setMessageInput(e.target.value);
@@ -315,7 +351,7 @@ export default function Messages() {
                 </CardHeader>
 
                 {/* Messages */}
-                <ScrollArea className="flex-1 p-4">
+                <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
                   {messagesLoading ? (
                     <div className="space-y-4">
                       {[...Array(5)].map((_, i) => (
