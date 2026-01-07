@@ -1,8 +1,9 @@
 import { useState, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Camera, Edit, MapPin, Briefcase, GraduationCap, Link as LinkIcon, Calendar } from 'lucide-react';
+import { Camera, Edit, MapPin, Briefcase, GraduationCap, Link as LinkIcon, Calendar, MessageCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { AddFriendButton } from './AddFriendButton';
 import { OnlineIndicator } from '@/components/messages/OnlineIndicator';
@@ -35,11 +36,17 @@ interface ProfileHeaderProps {
 export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { t } = useTranslation();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const coverInputRef = useRef<HTMLInputElement>(null);
   const [isUploadingCover, setIsUploadingCover] = useState(false);
 
   const camlyBalance = profile.camly_balance ?? 0;
+
+  const handleMessageClick = () => {
+    navigate(`/messages?userId=${profile.id}`);
+  };
 
   const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -145,11 +152,20 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
             <Button asChild variant="outline" className="gap-2">
               <Link to="/profile/edit">
                 <Edit className="h-4 w-4" />
-                Edit Profile
+                {t('profile.editProfile')}
               </Link>
             </Button>
           ) : (
-            <AddFriendButton targetUserId={profile.id} />
+            <>
+              <Button 
+                onClick={handleMessageClick}
+                className="gap-2 bg-gradient-to-r from-primary to-green-500 hover:from-green-600 hover:to-primary text-white shadow-lg"
+              >
+                <MessageCircle className="h-4 w-4" />
+                {t('common.message')}
+              </Button>
+              <AddFriendButton targetUserId={profile.id} />
+            </>
           )}
         </div>
 
