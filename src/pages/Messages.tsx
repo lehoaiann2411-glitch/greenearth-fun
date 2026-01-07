@@ -45,6 +45,7 @@ export default function Messages() {
   const { user, loading: authLoading } = useAuth();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const prevMessagesLengthRef = useRef<number>(0);
   const [messageInput, setMessageInput] = useState('');
   const [showStickers, setShowStickers] = useState(false);
   const [showEmojis, setShowEmojis] = useState(false);
@@ -110,10 +111,23 @@ export default function Messages() {
     }
   }, [conversationId, user, messages?.length]);
 
-  // Scroll to bottom on new messages
+  // Reset messages length ref when conversation changes
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+    prevMessagesLengthRef.current = 0;
+  }, [conversationId]);
+
+  // Scroll to bottom only when new messages are added
+  useEffect(() => {
+    const currentLength = messages?.length || 0;
+    const prevLength = prevMessagesLengthRef.current;
+
+    // Only scroll when: first load OR new message added
+    if (currentLength > 0 && (prevLength === 0 || currentLength > prevLength)) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    prevMessagesLengthRef.current = currentLength;
+  }, [messages?.length]);
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setMessageInput(e.target.value);
