@@ -2244,6 +2244,10 @@ export type Database = {
     }
     Functions: {
       are_friends: { Args: { user1: string; user2: string }; Returns: boolean }
+      create_direct_conversation: {
+        Args: { target_user_id: string }
+        Returns: string
+      }
       get_conversation_other_user: {
         Args: { conv_id: string; current_user_id: string }
         Returns: string
