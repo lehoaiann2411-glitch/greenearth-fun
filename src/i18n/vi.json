@@ -82,8 +82,10 @@
     "title": "Tin nhắn",
     "noConversations": "Chưa có cuộc trò chuyện",
     "startConversation": "Bắt đầu trò chuyện với bạn bè",
+    "startChatting": "Bắt đầu nhắn tin với bạn bè!",
     "newMessage": "Tin nhắn mới",
     "searchConversations": "Tìm kiếm cuộc trò chuyện...",
+    "searchFriends": "Tìm bạn bè...",
     "typeMessage": "Nhập tin nhắn...",
     "send": "Gửi",
     "online": "Trực tuyến",
@@ -134,6 +136,10 @@
     "leafEmoji": "🌿",
     "treeEmoji": "🌳",
     "earthEmoji": "🌍",
+    "voice": {
+      "ready": "Sẵn sàng gửi",
+      "tapToRecord": "Nhấn để ghi âm"
+    },
     "categories": {
       "nature": "Thiên nhiên",
       "trees": "Cây cối",
