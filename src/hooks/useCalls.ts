@@ -163,7 +163,17 @@ export const useRejectCall = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (callId: string) => {
+    mutationFn: async ({
+      callId,
+      callerId,
+      calleeId,
+      callType,
+    }: {
+      callId: string;
+      callerId: string;
+      calleeId: string;
+      callType: 'voice' | 'video';
+    }) => {
       const { data, error } = await supabase
         .from('calls')
         .update({ status: 'rejected' })
@@ -172,11 +182,23 @@ export const useRejectCall = () => {
         .single();
 
       if (error) throw error;
+
+      // Insert call log message into conversation
+      await supabase.rpc('insert_call_log_message', {
+        p_caller_id: callerId,
+        p_callee_id: calleeId,
+        p_call_type: callType,
+        p_call_status: 'rejected',
+        p_duration_seconds: 0,
+        p_call_id: callId,
+      });
+
       return data as Call;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['incoming-calls'] });
       queryClient.invalidateQueries({ queryKey: ['calls'] });
+      queryClient.invalidateQueries({ queryKey: ['messages'] });
     },
   });
 };
@@ -189,9 +211,15 @@ export const useEndCall = () => {
     mutationFn: async ({
       callId,
       duration,
+      callerId,
+      calleeId,
+      callType,
     }: {
       callId: string;
       duration: number;
+      callerId: string;
+      calleeId: string;
+      callType: 'voice' | 'video';
     }) => {
       const { data, error } = await supabase
         .from('calls')
@@ -205,11 +233,23 @@ export const useEndCall = () => {
         .single();
 
       if (error) throw error;
+
+      // Insert call log message into conversation
+      await supabase.rpc('insert_call_log_message', {
+        p_caller_id: callerId,
+        p_callee_id: calleeId,
+        p_call_type: callType,
+        p_call_status: 'ended',
+        p_duration_seconds: duration,
+        p_call_id: callId,
+      });
+
       return data as Call;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['incoming-calls'] });
       queryClient.invalidateQueries({ queryKey: ['calls'] });
+      queryClient.invalidateQueries({ queryKey: ['messages'] });
     },
   });
 };
@@ -219,7 +259,17 @@ export const useMissCall = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (callId: string) => {
+    mutationFn: async ({
+      callId,
+      callerId,
+      calleeId,
+      callType,
+    }: {
+      callId: string;
+      callerId: string;
+      calleeId: string;
+      callType: 'voice' | 'video';
+    }) => {
       const { data, error } = await supabase
         .from('calls')
         .update({ status: 'missed' })
@@ -228,11 +278,23 @@ export const useMissCall = () => {
         .single();
 
       if (error) throw error;
+
+      // Insert call log message into conversation
+      await supabase.rpc('insert_call_log_message', {
+        p_caller_id: callerId,
+        p_callee_id: calleeId,
+        p_call_type: callType,
+        p_call_status: 'missed',
+        p_duration_seconds: 0,
+        p_call_id: callId,
+      });
+
       return data as Call;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['incoming-calls'] });
       queryClient.invalidateQueries({ queryKey: ['calls'] });
+      queryClient.invalidateQueries({ queryKey: ['messages'] });
     },
   });
 };

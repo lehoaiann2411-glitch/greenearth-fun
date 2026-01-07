@@ -30,6 +30,7 @@ import { MediaPicker } from '@/components/messages/MediaPicker';
 import { CamlyGiftModal } from '@/components/messages/CamlyGiftModal';
 import { VoiceRecorder } from '@/components/messages/VoiceRecorder';
 import { NewMessageModal } from '@/components/messages/NewMessageModal';
+import { CallLogMessage } from '@/components/messages/CallLogMessage';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
@@ -319,6 +320,19 @@ export default function Messages() {
                             index === 0 || 
                             messages[index - 1]?.sender_id !== message.sender_id
                           );
+
+                          // Render call log message
+                          if (message.message_type === 'call_log' && (message as any).payload) {
+                            const payload = (message as any).payload;
+                            return (
+                              <CallLogMessage
+                                key={message.id}
+                                payload={payload}
+                                timestamp={message.created_at}
+                                isCurrentUserCaller={payload.caller_id === user.id}
+                              />
+                            );
+                          }
 
                           return (
                             <motion.div
