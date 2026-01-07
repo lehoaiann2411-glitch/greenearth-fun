@@ -452,7 +452,43 @@
     "sent": "Sent",
     "delivered": "Delivered",
     "seen": "Seen",
-    "blockedUser": "You cannot message this user"
+    "blockedUser": "You cannot message this user",
+    "newMessage": "New Message",
+    "searchFriends": "Search friends...",
+    "sendMessage": "Send message",
+    "sendPhoto": "Send photo",
+    "sendVoice": "Send voice message",
+    "sendSticker": "Send sticker",
+    "giftCamly": {
+      "title": "Gift Camly to {{name}}",
+      "description": "Send Camly Coins to show appreciation",
+      "yourBalance": "Your balance",
+      "selectAmount": "Select amount",
+      "customAmount": "Custom amount",
+      "enterAmount": "Enter amount",
+      "toRecipient": "to {{name}}",
+      "send": "Send Gift"
+    },
+    "voice": {
+      "tapToRecord": "Tap to record",
+      "ready": "Voice message ready",
+      "recording": "Recording..."
+    },
+    "reactions": {
+      "react": "React",
+      "reacted": "Reacted with {{emoji}}"
+    },
+    "media": {
+      "photo": "Photo",
+      "video": "Video",
+      "voice": "Voice message",
+      "sticker": "Sticker"
+    },
+    "online": "Online",
+    "offline": "Offline",
+    "lastSeen": "Last seen {{time}}",
+    "call": "Call",
+    "videoCall": "Video call"
   },
 "reels": {
     "forYou": "For You",
