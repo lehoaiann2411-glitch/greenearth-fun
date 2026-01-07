@@ -244,51 +244,24 @@ export function useCreateConversation() {
     mutationFn: async (targetUserId: string) => {
       if (!user) throw new Error('Must be logged in');
 
-      // Check if conversation already exists
-      const { data: existingParticipations } = await supabase
-        .from('conversation_participants')
-        .select('conversation_id')
-        .eq('user_id', user.id);
+      // Use RPC function to create conversation securely
+      // This handles: friend check, block check, existing conversation check
+      const { data: conversationId, error } = await supabase
+        .rpc('create_direct_conversation', { target_user_id: targetUserId });
 
-      const myConvIds = existingParticipations?.map(p => p.conversation_id) || [];
-
-      if (myConvIds.length > 0) {
-        const { data: targetParticipations } = await supabase
-          .from('conversation_participants')
-          .select('conversation_id')
-          .eq('user_id', targetUserId)
-          .in('conversation_id', myConvIds);
-
-        // Check if it's a direct conversation
-        if (targetParticipations && targetParticipations.length > 0) {
-          for (const tp of targetParticipations) {
-            const { data: conv } = await supabase
-              .from('conversations')
-              .select('*')
-              .eq('id', tp.conversation_id)
-              .eq('type', 'direct')
-              .single();
-
-            if (conv) return conv;
-          }
-        }
+      if (error) {
+        console.error('Create conversation error:', error);
+        throw new Error(error.message || 'Failed to create conversation');
       }
 
-      // Create new conversation
-      const { data: conversation, error: convError } = await supabase
+      // Fetch the conversation details
+      const { data: conversation, error: fetchError } = await supabase
         .from('conversations')
-        .insert({ type: 'direct' })
-        .select()
+        .select('*')
+        .eq('id', conversationId)
         .single();
 
-      if (convError) throw convError;
-
-      // Add participants
-      await supabase.from('conversation_participants').insert([
-        { conversation_id: conversation.id, user_id: user.id },
-        { conversation_id: conversation.id, user_id: targetUserId },
-      ]);
-
+      if (fetchError) throw fetchError;
       return conversation;
     },
     onSuccess: () => {

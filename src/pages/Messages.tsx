@@ -101,12 +101,13 @@ export default function Messages() {
     }
   }, [targetUserId, user, conversationId, isCreatingConversation, createConversation, navigate, t]);
 
-  // Mark messages as seen when viewing conversation
+  // Mark messages as read when viewing conversation
   useEffect(() => {
-    if (conversationId && user) {
+    if (conversationId && user && messages && messages.length > 0) {
+      markAsRead.mutate(conversationId);
       markAsSeen.mutate(conversationId);
     }
-  }, [conversationId, user]);
+  }, [conversationId, user, messages?.length]);
 
   // Scroll to bottom on new messages
   useEffect(() => {

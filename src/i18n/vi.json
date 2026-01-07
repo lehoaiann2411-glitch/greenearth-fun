@@ -512,25 +512,6 @@
     "noInvites": "Không có lời mời nào",
     "inviteDescription": "Khi có người mời bạn tham gia nhóm, lời mời sẽ xuất hiện ở đây"
   },
-  "messages": {
-    "title": "Tin nhắn",
-    "noConversations": "Chưa có cuộc trò chuyện",
-    "startChatting": "Bắt đầu trò chuyện với bạn bè!",
-    "activeNow": "Đang hoạt động",
-    "typePlaceholder": "Nhập tin nhắn...",
-    "startConversation": "Bắt đầu cuộc trò chuyện",
-    "yourMessages": "Tin nhắn của bạn",
-    "selectConversation": "Chọn cuộc trò chuyện để bắt đầu nhắn tin",
-    "noMessages": "Chưa có tin nhắn",
-    "sayHello": "Hãy chào hỏi! 👋",
-    "sentCamly": "Đã gửi {{amount}} Camly!",
-    "typing": "{{name}} đang nhập...",
-    "typingMultiple": "{{name1}}, {{name2}} và {{count}} người khác đang nhập...",
-    "sent": "Đã gửi",
-    "delivered": "Đã nhận",
-    "seen": "Đã xem",
-    "blockedUser": "Bạn không thể nhắn tin cho người dùng này"
-  },
 "reels": {
     "forYou": "Dành cho bạn",
     "following": "Đang theo dõi",

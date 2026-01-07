@@ -134,7 +134,13 @@ export function ConversationList({
               <MessageCircle className="h-8 w-8 text-primary/50" />
             </div>
             <p className="font-medium">{t('messages.noConversations')}</p>
-            <p className="text-sm mt-1">{t('messages.startChatting')}</p>
+            <p className="text-sm mt-1 mb-4">{t('messages.startChatting')}</p>
+            {onNewMessage && (
+              <Button onClick={onNewMessage} className="gap-2">
+                <Plus className="h-4 w-4" />
+                {t('messages.newMessage')}
+              </Button>
+            )}
           </div>
         )}
       </ScrollArea>
