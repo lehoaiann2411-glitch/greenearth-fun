@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Layout } from '@/components/layout/Layout';
 import { useAuth } from '@/contexts/AuthContext';
-import { useConversations, useConversation, useMessages, useSendMessage, useMarkMessagesAsRead } from '@/hooks/useMessages';
+import { useConversations, useConversation, useMessages, useSendMessage, useMarkMessagesAsRead, useCreateConversation } from '@/hooks/useMessages';
 import { useOnlinePresence } from '@/hooks/useOnlineStatus';
 import { useCall } from '@/contexts/CallContext';
 import { useTypingIndicator, useSendTypingStatus } from '@/hooks/useTypingIndicator';
@@ -32,6 +32,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 export default function Messages() {
   const { t } = useTranslation();
   const { conversationId } = useParams();
+  const [searchParams] = useSearchParams();
+  const targetUserId = searchParams.get('userId');
   const { startCall } = useCall();
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
@@ -40,9 +42,13 @@ export default function Messages() {
   const [showStickers, setShowStickers] = useState(false);
   const [showGiftModal, setShowGiftModal] = useState(false);
   const [showVoiceRecorder, setShowVoiceRecorder] = useState(false);
+  const [isCreatingConversation, setIsCreatingConversation] = useState(false);
 
   // Enable online presence tracking
   useOnlinePresence();
+
+  // Create conversation hook
+  const createConversation = useCreateConversation();
 
   // Get user's profile for Camly balance
   const { data: userProfile } = useProfile(user?.id || '');
@@ -70,6 +76,24 @@ export default function Messages() {
       navigate('/auth');
     }
   }, [user, authLoading, navigate]);
+
+  // Auto-create conversation when userId query param is present
+  useEffect(() => {
+    if (targetUserId && user && !conversationId && !isCreatingConversation) {
+      setIsCreatingConversation(true);
+      createConversation.mutateAsync(targetUserId)
+        .then((conversation) => {
+          navigate(`/messages/${conversation.id}`, { replace: true });
+        })
+        .catch((error) => {
+          console.error('Failed to create conversation:', error);
+          navigate('/messages', { replace: true });
+        })
+        .finally(() => {
+          setIsCreatingConversation(false);
+        });
+    }
+  }, [targetUserId, user, conversationId, isCreatingConversation, createConversation, navigate]);
 
   // Mark messages as seen when viewing conversation
   useEffect(() => {
