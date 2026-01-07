@@ -2,13 +2,15 @@ import { Check, CheckCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
 
-interface MessageStatusProps {
+export interface MessageStatusProps {
   status: 'sent' | 'delivered' | 'seen';
   sentAt?: string;
   deliveredAt?: string | null;
   seenAt?: string | null;
   isOwn: boolean;
+  className?: string;
 }
 
 export function MessageStatus({ 
@@ -16,7 +18,8 @@ export function MessageStatus({
   sentAt, 
   deliveredAt, 
   seenAt, 
-  isOwn 
+  isOwn,
+  className 
 }: MessageStatusProps) {
   const { t } = useTranslation();
 
@@ -41,12 +44,12 @@ export function MessageStatus({
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <span className="inline-flex items-center ml-1">
+          <span className={cn("inline-flex items-center ml-1", className)}>
             {status === 'sent' && (
-              <Check className="h-3 w-3 text-primary-foreground/60" />
+              <Check className={cn("h-3 w-3", className ? "" : "text-primary-foreground/60")} />
             )}
             {status === 'delivered' && (
-              <CheckCheck className="h-3 w-3 text-primary-foreground/60" />
+              <CheckCheck className={cn("h-3 w-3", className ? "" : "text-primary-foreground/60")} />
             )}
             {status === 'seen' && (
               <CheckCheck className="h-3 w-3 text-blue-400" />

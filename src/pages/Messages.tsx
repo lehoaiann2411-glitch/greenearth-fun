@@ -10,6 +10,7 @@ import { useTypingIndicator, useSendTypingStatus } from '@/hooks/useTypingIndica
 import { useMarkSeen, useMessageStatusSubscription } from '@/hooks/useMessageStatus';
 import { useIsBlocked } from '@/hooks/useBlocking';
 import { useProfile } from '@/hooks/useProfile';
+import { useUploadMessageMedia } from '@/hooks/useMediaUpload';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,17 +18,20 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Send, Image, Smile, ArrowLeft, MessageCircle, Gift, Phone, Video, Ban, Mic, Leaf } from 'lucide-react';
+import { Send, Image, Smile, ArrowLeft, MessageCircle, Gift, Phone, Video, Ban, Mic, Leaf, Loader2 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { OnlineIndicator } from '@/components/messages/OnlineIndicator';
 import { TypingIndicator } from '@/components/messages/TypingIndicator';
 import { MessageStatus } from '@/components/messages/MessageStatus';
 import { ConversationList } from '@/components/messages/ConversationList';
 import { EcoStickers } from '@/components/messages/EcoStickers';
+import { EmojiPickerFull } from '@/components/messages/EmojiPickerFull';
+import { MediaPicker } from '@/components/messages/MediaPicker';
 import { CamlyGiftModal } from '@/components/messages/CamlyGiftModal';
 import { VoiceRecorder } from '@/components/messages/VoiceRecorder';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
 
 export default function Messages() {
   const { t } = useTranslation();
@@ -38,21 +42,22 @@ export default function Messages() {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [messageInput, setMessageInput] = useState('');
   const [showStickers, setShowStickers] = useState(false);
+  const [showEmojis, setShowEmojis] = useState(false);
   const [showGiftModal, setShowGiftModal] = useState(false);
+  const [showMediaPicker, setShowMediaPicker] = useState(false);
   const [showVoiceRecorder, setShowVoiceRecorder] = useState(false);
   const [isCreatingConversation, setIsCreatingConversation] = useState(false);
 
   // Enable online presence tracking
   useOnlinePresence();
 
-  // Create conversation hook
+  // Hooks
   const createConversation = useCreateConversation();
-
-  // Get user's profile for Camly balance
+  const uploadMedia = useUploadMessageMedia();
   const { data: userProfile } = useProfile(user?.id || '');
-  
   const { data: conversations, isLoading: conversationsLoading } = useConversations();
   const { data: activeConversation } = useConversation(conversationId || '');
   const { data: messages, isLoading: messagesLoading } = useMessages(conversationId || '');
@@ -66,8 +71,6 @@ export default function Messages() {
   useMessageStatusSubscription(conversationId || null);
 
   const otherParticipant = activeConversation?.participants?.[0];
-  
-  // Check if blocked
   const { data: isBlocked } = useIsBlocked(otherParticipant?.id || '');
 
   // Redirect if not logged in
@@ -87,13 +90,14 @@ export default function Messages() {
         })
         .catch((error) => {
           console.error('Failed to create conversation:', error);
+          toast.error(t('messages.createFailed'));
           navigate('/messages', { replace: true });
         })
         .finally(() => {
           setIsCreatingConversation(false);
         });
     }
-  }, [targetUserId, user, conversationId, isCreatingConversation, createConversation, navigate]);
+  }, [targetUserId, user, conversationId, isCreatingConversation, createConversation, navigate, t]);
 
   // Mark messages as seen when viewing conversation
   useEffect(() => {
@@ -112,20 +116,23 @@ export default function Messages() {
     startTyping();
   }, [startTyping]);
 
-  const handleSendMessage = async (content?: string) => {
+  const handleSendMessage = async (content?: string, messageType = 'text', mediaUrl?: string) => {
     const messageContent = content || messageInput.trim();
-    if (!messageContent || !conversationId || isBlocked) return;
+    if ((!messageContent && !mediaUrl) || !conversationId || isBlocked) return;
 
     stopTyping();
     
     try {
       await sendMessage.mutateAsync({
         conversationId,
-        content: messageContent,
+        content: messageContent || undefined,
+        messageType,
+        mediaUrl,
       });
-      if (!content) setMessageInput('');
+      if (!content && !mediaUrl) setMessageInput('');
     } catch (error) {
       console.error('Failed to send message:', error);
+      toast.error(t('messages.sendFailed'));
     }
   };
 
@@ -134,13 +141,35 @@ export default function Messages() {
     setShowStickers(false);
   };
 
+  const handleSelectEmoji = (emoji: string) => {
+    setMessageInput(prev => prev + emoji);
+  };
+
+  const handleSendMedia = async (file: File) => {
+    if (!conversationId) return;
+
+    try {
+      const mediaUrl = await uploadMedia.mutateAsync(file);
+      const isVideo = file.type.startsWith('video/');
+      await handleSendMessage(
+        isVideo ? t('messages.sentVideo') : t('messages.sentPhoto'),
+        isVideo ? 'video' : 'image',
+        mediaUrl
+      );
+      setShowMediaPicker(false);
+    } catch (error) {
+      console.error('Failed to upload media:', error);
+      toast.error(t('messages.uploadFailed'));
+    }
+  };
+
   const handleSendGift = async (amount: number) => {
     if (!conversationId) return;
     
     try {
       await sendMessage.mutateAsync({
         conversationId,
-        content: `🎁 Sent ${amount} Camly Coins`,
+        content: `🎁 ${t('messages.sentCamly', { amount })}`,
         messageType: 'camly_gift',
         camlyAmount: amount,
       });
@@ -157,11 +186,14 @@ export default function Messages() {
     }
   };
 
-  if (authLoading) {
+  if (authLoading || isCreatingConversation) {
     return (
       <Layout>
         <div className="container py-8">
-          <Skeleton className="h-[600px] w-full rounded-xl" />
+          <div className="flex flex-col items-center justify-center h-[600px] gap-4">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <p className="text-muted-foreground">{t('common.loading')}</p>
+          </div>
         </div>
       </Layout>
     );
@@ -173,7 +205,7 @@ export default function Messages() {
     <Layout>
       <div className="container py-4 md:py-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-[calc(100vh-10rem)]">
-          {/* Conversations List - Use new component */}
+          {/* Conversations List */}
           <Card className={cn(
             'md:col-span-1 overflow-hidden border-primary/10',
             conversationId && 'hidden md:block'
@@ -220,13 +252,14 @@ export default function Messages() {
                       <p className="font-medium">{otherParticipant?.full_name || t('common.user')}</p>
                       <p className="text-xs text-muted-foreground">{t('messages.activeNow')}</p>
                     </div>
-                    {/* Action buttons */}
+                    {/* Action buttons - Gift, Call, Video */}
                     <div className="flex gap-1">
                       <Button
                         variant="ghost"
                         size="icon"
                         className="hover:bg-primary/10 hover:text-primary"
                         onClick={() => setShowGiftModal(true)}
+                        title={t('messages.giftCamly')}
                       >
                         <Gift className="h-5 w-5" />
                       </Button>
@@ -240,6 +273,7 @@ export default function Messages() {
                           otherParticipant?.full_name || undefined,
                           otherParticipant?.avatar_url || undefined
                         )}
+                        title={t('calls.voiceCall')}
                       >
                         <Phone className="h-5 w-5" />
                       </Button>
@@ -253,6 +287,7 @@ export default function Messages() {
                           otherParticipant?.full_name || undefined,
                           otherParticipant?.avatar_url || undefined
                         )}
+                        title={t('calls.videoCall')}
                       >
                         <Video className="h-5 w-5" />
                       </Button>
@@ -305,40 +340,120 @@ export default function Messages() {
                               )}
                               <div
                                 className={cn(
-                                  'max-w-[70%] rounded-2xl px-4 py-2.5 shadow-sm transition-all',
+                                  'max-w-[70%] rounded-2xl shadow-sm transition-all overflow-hidden',
                                   isOwn
                                     ? 'bg-gradient-to-br from-primary to-primary/90 text-primary-foreground rounded-br-md'
-                                    : 'bg-muted/80 rounded-bl-md'
+                                    : 'bg-muted/80 rounded-bl-md',
+                                  // Remove padding for media messages
+                                  (message.message_type === 'image' || message.message_type === 'video') 
+                                    ? '' 
+                                    : 'px-4 py-2.5'
                                 )}
                               >
-                                {message.message_type === 'camly_gift' ? (
-                                  <div className="flex items-center gap-2">
-                                    <span className="text-xl">🎁</span>
-                                    <span className="font-medium">{t('messages.sentCamly', { amount: message.camly_amount })}</span>
-                                  </div>
-                                ) : (
-                                  <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
-                                )}
-                                <div className={cn(
-                                  'flex items-center gap-1 mt-1',
-                                  isOwn ? 'justify-end' : ''
-                                )}>
-                                  <span className={cn(
-                                    'text-[10px]',
-                                    isOwn ? 'text-primary-foreground/60' : 'text-muted-foreground'
-                                  )}>
-                                    {formatDistanceToNow(new Date(message.created_at), { addSuffix: false })}
-                                  </span>
-                                  {isOwn && (
-                                    <MessageStatus
-                                      status={(message as any).status || 'sent'}
-                                      sentAt={message.created_at}
-                                      deliveredAt={(message as any).delivered_at}
-                                      seenAt={(message as any).seen_at}
-                                      isOwn={isOwn}
+                                {/* Image message */}
+                                {message.message_type === 'image' && message.media_url && (
+                                  <div className="relative">
+                                    <img 
+                                      src={message.media_url} 
+                                      alt="Shared image"
+                                      className="max-w-full max-h-60 object-cover cursor-pointer rounded-2xl"
+                                      onClick={() => window.open(message.media_url!, '_blank')}
                                     />
-                                  )}
-                                </div>
+                                    <div className={cn(
+                                      'absolute bottom-2 right-2 flex items-center gap-1 bg-black/50 backdrop-blur-sm rounded-full px-2 py-0.5'
+                                    )}>
+                                      <span className="text-[10px] text-white">
+                                        {formatDistanceToNow(new Date(message.created_at), { addSuffix: false })}
+                                      </span>
+                                      {isOwn && (
+                                        <MessageStatus
+                                          status={(message as any).status || 'sent'}
+                                          sentAt={message.created_at}
+                                          deliveredAt={(message as any).delivered_at}
+                                          seenAt={(message as any).seen_at}
+                                          isOwn={isOwn}
+                                          className="text-white"
+                                        />
+                                      )}
+                                    </div>
+                                  </div>
+                                )}
+
+                                {/* Video message */}
+                                {message.message_type === 'video' && message.media_url && (
+                                  <div className="relative">
+                                    <video 
+                                      src={message.media_url}
+                                      controls
+                                      className="max-w-full max-h-60 rounded-2xl"
+                                    />
+                                    <div className={cn(
+                                      'absolute bottom-2 right-2 flex items-center gap-1 bg-black/50 backdrop-blur-sm rounded-full px-2 py-0.5'
+                                    )}>
+                                      <span className="text-[10px] text-white">
+                                        {formatDistanceToNow(new Date(message.created_at), { addSuffix: false })}
+                                      </span>
+                                    </div>
+                                  </div>
+                                )}
+
+                                {/* Camly gift message */}
+                                {message.message_type === 'camly_gift' && (
+                                  <>
+                                    <div className="flex items-center gap-2 px-4 py-2.5">
+                                      <span className="text-xl">🎁</span>
+                                      <span className="font-medium">{t('messages.sentCamly', { amount: message.camly_amount })}</span>
+                                    </div>
+                                    <div className={cn(
+                                      'flex items-center gap-1 px-4 pb-2',
+                                      isOwn ? 'justify-end' : ''
+                                    )}>
+                                      <span className={cn(
+                                        'text-[10px]',
+                                        isOwn ? 'text-primary-foreground/60' : 'text-muted-foreground'
+                                      )}>
+                                        {formatDistanceToNow(new Date(message.created_at), { addSuffix: false })}
+                                      </span>
+                                      {isOwn && (
+                                        <MessageStatus
+                                          status={(message as any).status || 'sent'}
+                                          sentAt={message.created_at}
+                                          deliveredAt={(message as any).delivered_at}
+                                          seenAt={(message as any).seen_at}
+                                          isOwn={isOwn}
+                                        />
+                                      )}
+                                    </div>
+                                  </>
+                                )}
+
+                                {/* Text message */}
+                                {(message.message_type === 'text' || !message.message_type || 
+                                  (message.message_type !== 'image' && message.message_type !== 'video' && message.message_type !== 'camly_gift')) && (
+                                  <>
+                                    <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
+                                    <div className={cn(
+                                      'flex items-center gap-1 mt-1',
+                                      isOwn ? 'justify-end' : ''
+                                    )}>
+                                      <span className={cn(
+                                        'text-[10px]',
+                                        isOwn ? 'text-primary-foreground/60' : 'text-muted-foreground'
+                                      )}>
+                                        {formatDistanceToNow(new Date(message.created_at), { addSuffix: false })}
+                                      </span>
+                                      {isOwn && (
+                                        <MessageStatus
+                                          status={(message as any).status || 'sent'}
+                                          sentAt={message.created_at}
+                                          deliveredAt={(message as any).delivered_at}
+                                          seenAt={(message as any).seen_at}
+                                          isOwn={isOwn}
+                                        />
+                                      )}
+                                    </div>
+                                  </>
+                                )}
                               </div>
                             </motion.div>
                           );
@@ -389,22 +504,27 @@ export default function Messages() {
                     />
                   ) : (
                     <div className="flex items-center gap-2">
+                      {/* Image/Video picker button */}
                       <Button 
                         variant="ghost" 
                         size="icon"
                         className="shrink-0 hover:bg-primary/10 hover:text-primary"
+                        onClick={() => setShowMediaPicker(true)}
+                        title={t('messages.sendMedia')}
                       >
                         <Image className="h-5 w-5" />
                       </Button>
                       
+                      {/* Stickers */}
                       <Popover open={showStickers} onOpenChange={setShowStickers}>
                         <PopoverTrigger asChild>
                           <Button 
                             variant="ghost" 
                             size="icon"
                             className="shrink-0 hover:bg-primary/10 hover:text-primary"
+                            title={t('messages.stickers')}
                           >
-                            <Smile className="h-5 w-5" />
+                            <span className="text-lg">🌿</span>
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="p-2 w-auto" align="start">
@@ -412,11 +532,30 @@ export default function Messages() {
                         </PopoverContent>
                       </Popover>
 
+                      {/* Emoji picker */}
+                      <Popover open={showEmojis} onOpenChange={setShowEmojis}>
+                        <PopoverTrigger asChild>
+                          <Button 
+                            variant="ghost" 
+                            size="icon"
+                            className="shrink-0 hover:bg-primary/10 hover:text-primary"
+                            title={t('messages.emoji')}
+                          >
+                            <Smile className="h-5 w-5" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="p-2 w-auto" align="start">
+                          <EmojiPickerFull onSelectEmoji={handleSelectEmoji} />
+                        </PopoverContent>
+                      </Popover>
+
+                      {/* Voice recorder */}
                       <Button 
                         variant="ghost" 
                         size="icon"
                         className="shrink-0 hover:bg-primary/10 hover:text-primary"
                         onClick={() => setShowVoiceRecorder(true)}
+                        title={t('messages.voiceMessage')}
                       >
                         <Mic className="h-5 w-5" />
                       </Button>
@@ -426,7 +565,7 @@ export default function Messages() {
                         onChange={handleInputChange}
                         onKeyPress={handleKeyPress}
                         onBlur={stopTyping}
-                        placeholder={t('messages.typePlaceholder')}
+                        placeholder={t('messages.typeMessage')}
                         className="flex-1 bg-muted/50 border-muted focus-visible:ring-primary/20"
                       />
                       
@@ -441,6 +580,14 @@ export default function Messages() {
                     </div>
                   )}
                 </div>
+
+                {/* Media Picker Modal */}
+                <MediaPicker
+                  open={showMediaPicker}
+                  onOpenChange={setShowMediaPicker}
+                  onSendMedia={handleSendMedia}
+                  isSending={uploadMedia.isPending || sendMessage.isPending}
+                />
 
                 {/* Camly Gift Modal */}
                 <CamlyGiftModal
