@@ -29,6 +29,7 @@ import { EmojiPickerFull } from '@/components/messages/EmojiPickerFull';
 import { MediaPicker } from '@/components/messages/MediaPicker';
 import { CamlyGiftModal } from '@/components/messages/CamlyGiftModal';
 import { VoiceRecorder } from '@/components/messages/VoiceRecorder';
+import { NewMessageModal } from '@/components/messages/NewMessageModal';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
@@ -49,6 +50,7 @@ export default function Messages() {
   const [showGiftModal, setShowGiftModal] = useState(false);
   const [showMediaPicker, setShowMediaPicker] = useState(false);
   const [showVoiceRecorder, setShowVoiceRecorder] = useState(false);
+  const [showNewMessage, setShowNewMessage] = useState(false);
   const [isCreatingConversation, setIsCreatingConversation] = useState(false);
 
   // Enable online presence tracking
@@ -214,6 +216,7 @@ export default function Messages() {
               conversations={conversations}
               isLoading={conversationsLoading}
               activeConversationId={conversationId}
+              onNewMessage={() => setShowNewMessage(true)}
             />
           </Card>
 
@@ -397,6 +400,23 @@ export default function Messages() {
                                   </div>
                                 )}
 
+                                {/* Voice message */}
+                                {message.message_type === 'voice' && message.media_url && (
+                                  <div className="flex items-center gap-2 px-4 py-2.5">
+                                    <div className={cn(
+                                      'flex items-center gap-2 rounded-full px-3 py-1.5',
+                                      isOwn ? 'bg-primary-foreground/20' : 'bg-background/30'
+                                    )}>
+                                      <Mic className="h-4 w-4" />
+                                      <audio 
+                                        src={message.media_url} 
+                                        controls 
+                                        className="h-8 max-w-[180px]" 
+                                      />
+                                    </div>
+                                  </div>
+                                )}
+
                                 {/* Camly gift message */}
                                 {message.message_type === 'camly_gift' && (
                                   <>
@@ -496,9 +516,23 @@ export default function Messages() {
                     </div>
                   ) : showVoiceRecorder ? (
                     <VoiceRecorder
-                      onSendVoice={(blob, duration) => {
-                        // TODO: Upload voice and send
-                        setShowVoiceRecorder(false);
+                      onSendVoice={async (blob, duration) => {
+                        try {
+                          const file = new File([blob], `voice_${Date.now()}.webm`, { type: 'audio/webm' });
+                          const mediaUrl = await uploadMedia.mutateAsync(file);
+                          const mins = Math.floor(duration / 60);
+                          const secs = duration % 60;
+                          await handleSendMessage(
+                            `${t('messages.voiceMessage')} (${mins}:${secs.toString().padStart(2, '0')})`,
+                            'voice',
+                            mediaUrl
+                          );
+                          setShowVoiceRecorder(false);
+                        } catch (error) {
+                          console.error('Failed to send voice message:', error);
+                          toast.error(t('messages.uploadFailed'));
+                          setShowVoiceRecorder(false);
+                        }
                       }}
                       onCancel={() => setShowVoiceRecorder(false)}
                     />
@@ -612,6 +646,12 @@ export default function Messages() {
             )}
           </Card>
         </div>
+
+        {/* New Message Modal */}
+        <NewMessageModal 
+          open={showNewMessage} 
+          onOpenChange={setShowNewMessage} 
+        />
       </div>
     </Layout>
   );
