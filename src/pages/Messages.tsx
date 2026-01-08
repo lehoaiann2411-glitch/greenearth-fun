@@ -46,9 +46,23 @@ export default function Messages() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<HTMLElement | null>(null);
   const isAtBottomRef = useRef<boolean>(true);
   const hasInitialScrolledRef = useRef<boolean>(false);
   const prevLastMessageIdRef = useRef<string | null>(null);
+
+  // Helper function to scroll chat to bottom without affecting window scroll
+  const scrollChatToBottom = useCallback((behavior: ScrollBehavior = 'auto') => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+    
+    requestAnimationFrame(() => {
+      viewport.scrollTo({
+        top: viewport.scrollHeight,
+        behavior
+      });
+    });
+  }, []);
   const [messageInput, setMessageInput] = useState('');
   const [showStickers, setShowStickers] = useState(false);
   const [showEmojis, setShowEmojis] = useState(false);
@@ -121,26 +135,35 @@ export default function Messages() {
     isAtBottomRef.current = true;
   }, [conversationId]);
 
-  // Track scroll position to determine if user is at bottom
+  // Cache viewport ref and track scroll position
   useEffect(() => {
     const scrollArea = scrollAreaRef.current;
     if (!scrollArea) return;
 
     const viewport = scrollArea.querySelector('[data-radix-scroll-area-viewport]') as HTMLElement;
     if (!viewport) return;
+    
+    // Cache the viewport element
+    viewportRef.current = viewport;
 
-    const handleScroll = () => {
+    const checkScrollPosition = () => {
       const { scrollHeight, scrollTop, clientHeight } = viewport;
       const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
       // Consider "at bottom" if within 100px of the bottom
       isAtBottomRef.current = distanceFromBottom <= 100;
     };
 
-    viewport.addEventListener('scroll', handleScroll);
-    return () => viewport.removeEventListener('scroll', handleScroll);
+    // Check immediately on mount
+    checkScrollPosition();
+
+    viewport.addEventListener('scroll', checkScrollPosition, { passive: true });
+    return () => {
+      viewport.removeEventListener('scroll', checkScrollPosition);
+      viewportRef.current = null;
+    };
   }, [conversationId]);
 
-  // Smart scroll: only scroll when appropriate
+  // Smart scroll: only scroll when appropriate (using viewport scroll, not scrollIntoView)
   useEffect(() => {
     if (!messages || messages.length === 0) return;
 
@@ -151,7 +174,7 @@ export default function Messages() {
 
     // Initial scroll when first loading conversation
     if (!hasInitialScrolledRef.current) {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'auto' });
+      scrollChatToBottom('auto');
       hasInitialScrolledRef.current = true;
       prevLastMessageIdRef.current = lastMessageId;
       return;
@@ -159,11 +182,11 @@ export default function Messages() {
 
     // Only scroll for new messages if user is at bottom OR it's their own message
     if (isNewMessage && (isAtBottomRef.current || isOwnMessage)) {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      scrollChatToBottom('smooth');
     }
 
     prevLastMessageIdRef.current = lastMessageId;
-  }, [messages, user?.id]);
+  }, [messages, user?.id, scrollChatToBottom]);
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setMessageInput(e.target.value);
