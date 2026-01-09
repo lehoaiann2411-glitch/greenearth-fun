@@ -16,11 +16,13 @@ import {
   Calendar,
   ArrowRight,
   MapPin,
+  Leaf,
 } from 'lucide-react';
 import { formatCamly } from '@/lib/camlyCoin';
 import { CamlyCoinIcon } from '@/components/rewards/CamlyCoinIcon';
 import { format } from 'date-fns';
 import { getDateLocale } from '@/lib/dateLocale';
+import { DailyHabitsTracker } from '@/components/habits/DailyHabitsTracker';
 
 export default function Dashboard() {
   const { t, i18n } = useTranslation();
@@ -130,6 +132,24 @@ export default function Dashboard() {
             </Card>
           ))}
         </div>
+
+        {/* Daily Eco Habits Section */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Leaf className="h-5 w-5 text-green-500" />
+              {i18n.language === 'vi' ? 'Thói Quen Xanh Hàng Ngày' : 'Daily Eco Habits'}
+            </CardTitle>
+            <CardDescription>
+              {i18n.language === 'vi' 
+                ? 'Hoàn thành mỗi ngày để nhận Camly Coin!' 
+                : 'Complete daily to earn Camly Coin!'}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <DailyHabitsTracker />
+          </CardContent>
+        </Card>
 
         <div className="grid gap-8 lg:grid-cols-3">
           {/* Quick Actions */}

@@ -44,6 +44,12 @@ export const CAMLY_REWARDS = {
   STREAK_7_DAY_BONUS: 2000,    // 7-day streak bonus
   STREAK_30_DAY_BONUS: 5000,   // 30-day streak bonus
   
+  // Eco Habits
+  COMPLETE_HABIT: 30,          // Complete 1 eco habit
+  COMPLETE_ALL_HABITS: 100,    // Complete all daily habits
+  HABIT_STREAK_7_DAY: 200,     // 7-day habit streak bonus
+  HABIT_STREAK_30_DAY: 500,    // 30-day habit streak bonus
+  
   // Main Actions
   SIGNUP_BONUS: 10000,         // Signup bonus
   PLANT_TREE: 5000,            // Plant tree/upload proof
@@ -155,6 +161,10 @@ export const ACTION_TYPES = {
   GROUP_EVENT_BONUS: 'group_event_bonus',
   GROUP_FIRST_POST: 'group_first_post',
   GROUP_JOIN: 'group_join',
+  // Habit actions
+  COMPLETE_HABIT: 'complete_habit',
+  COMPLETE_ALL_HABITS: 'complete_all_habits',
+  HABIT_STREAK_BONUS: 'habit_streak_bonus',
 };
 
 // Reaction types for posts
