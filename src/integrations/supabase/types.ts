@@ -227,6 +227,47 @@ export type Database = {
           },
         ]
       }
+      chatbot_conversations: {
+        Row: {
+          created_at: string | null
+          id: string
+          messages: Json | null
+          messages_count: number | null
+          points_earned: number | null
+          title: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          messages?: Json | null
+          messages_count?: number | null
+          points_earned?: number | null
+          title?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          messages?: Json | null
+          messages_count?: number | null
+          points_earned?: number | null
+          title?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chatbot_conversations_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       claims_history: {
         Row: {
           camly_received: number
@@ -261,6 +302,45 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "claims_history_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      content_views: {
+        Row: {
+          content_id: string
+          id: string
+          points_earned: number | null
+          user_id: string
+          viewed_at: string | null
+        }
+        Insert: {
+          content_id: string
+          id?: string
+          points_earned?: number | null
+          user_id: string
+          viewed_at?: string | null
+        }
+        Update: {
+          content_id?: string
+          id?: string
+          points_earned?: number | null
+          user_id?: string
+          viewed_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_views_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "educational_content"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "content_views_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -417,6 +497,63 @@ export type Database = {
           quest_type?: string
           title?: string
           title_vi?: string | null
+        }
+        Relationships: []
+      }
+      educational_content: {
+        Row: {
+          category: string
+          content_type: string
+          created_at: string | null
+          description: string | null
+          description_vi: string | null
+          duration_seconds: number | null
+          id: string
+          is_featured: boolean | null
+          is_published: boolean | null
+          media_url: string | null
+          points_reward: number | null
+          thumbnail_url: string | null
+          title: string
+          title_vi: string | null
+          updated_at: string | null
+          view_count: number | null
+        }
+        Insert: {
+          category?: string
+          content_type?: string
+          created_at?: string | null
+          description?: string | null
+          description_vi?: string | null
+          duration_seconds?: number | null
+          id?: string
+          is_featured?: boolean | null
+          is_published?: boolean | null
+          media_url?: string | null
+          points_reward?: number | null
+          thumbnail_url?: string | null
+          title: string
+          title_vi?: string | null
+          updated_at?: string | null
+          view_count?: number | null
+        }
+        Update: {
+          category?: string
+          content_type?: string
+          created_at?: string | null
+          description?: string | null
+          description_vi?: string | null
+          duration_seconds?: number | null
+          id?: string
+          is_featured?: boolean | null
+          is_published?: boolean | null
+          media_url?: string | null
+          points_reward?: number | null
+          thumbnail_url?: string | null
+          title?: string
+          title_vi?: string | null
+          updated_at?: string | null
+          view_count?: number | null
         }
         Relationships: []
       }
@@ -1026,6 +1163,54 @@ export type Database = {
           },
         ]
       }
+      influencers: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          bio_vi: string | null
+          cover_url: string | null
+          created_at: string | null
+          follower_count: string | null
+          id: string
+          is_featured: boolean | null
+          name: string
+          order_index: number | null
+          platform: string
+          profile_url: string | null
+          specialty: string[] | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          bio_vi?: string | null
+          cover_url?: string | null
+          created_at?: string | null
+          follower_count?: string | null
+          id?: string
+          is_featured?: boolean | null
+          name: string
+          order_index?: number | null
+          platform?: string
+          profile_url?: string | null
+          specialty?: string[] | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          bio_vi?: string | null
+          cover_url?: string | null
+          created_at?: string | null
+          follower_count?: string | null
+          id?: string
+          is_featured?: boolean | null
+          name?: string
+          order_index?: number | null
+          platform?: string
+          profile_url?: string | null
+          specialty?: string[] | null
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           camly_amount: number | null
@@ -1512,6 +1697,104 @@ export type Database = {
           wallet_address?: string | null
           website?: string | null
           work?: string | null
+        }
+        Relationships: []
+      }
+      quiz_questions: {
+        Row: {
+          created_at: string | null
+          explanation: string | null
+          explanation_vi: string | null
+          id: string
+          options: Json
+          order_index: number | null
+          question: string
+          question_vi: string | null
+          quiz_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          explanation?: string | null
+          explanation_vi?: string | null
+          id?: string
+          options?: Json
+          order_index?: number | null
+          question: string
+          question_vi?: string | null
+          quiz_id: string
+        }
+        Update: {
+          created_at?: string | null
+          explanation?: string | null
+          explanation_vi?: string | null
+          id?: string
+          options?: Json
+          order_index?: number | null
+          question?: string
+          question_vi?: string | null
+          quiz_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_questions_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "quizzes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quizzes: {
+        Row: {
+          attempts_count: number | null
+          category: string
+          created_at: string | null
+          description: string | null
+          description_vi: string | null
+          difficulty: string | null
+          duration_minutes: number | null
+          id: string
+          image_url: string | null
+          is_published: boolean | null
+          points_reward: number | null
+          questions_count: number | null
+          title: string
+          title_vi: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          attempts_count?: number | null
+          category?: string
+          created_at?: string | null
+          description?: string | null
+          description_vi?: string | null
+          difficulty?: string | null
+          duration_minutes?: number | null
+          id?: string
+          image_url?: string | null
+          is_published?: boolean | null
+          points_reward?: number | null
+          questions_count?: number | null
+          title: string
+          title_vi?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          attempts_count?: number | null
+          category?: string
+          created_at?: string | null
+          description?: string | null
+          description_vi?: string | null
+          difficulty?: string | null
+          duration_minutes?: number | null
+          id?: string
+          image_url?: string | null
+          is_published?: boolean | null
+          points_reward?: number | null
+          questions_count?: number | null
+          title?: string
+          title_vi?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -2223,6 +2506,60 @@ export type Database = {
           },
         ]
       }
+      user_quiz_attempts: {
+        Row: {
+          answers: Json | null
+          completed_at: string | null
+          id: string
+          percentage: number | null
+          points_earned: number | null
+          quiz_id: string
+          score: number
+          time_taken_seconds: number | null
+          total_questions: number
+          user_id: string
+        }
+        Insert: {
+          answers?: Json | null
+          completed_at?: string | null
+          id?: string
+          percentage?: number | null
+          points_earned?: number | null
+          quiz_id: string
+          score?: number
+          time_taken_seconds?: number | null
+          total_questions?: number
+          user_id: string
+        }
+        Update: {
+          answers?: Json | null
+          completed_at?: string | null
+          id?: string
+          percentage?: number | null
+          points_earned?: number | null
+          quiz_id?: string
+          score?: number
+          time_taken_seconds?: number | null
+          total_questions?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_quiz_attempts_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "quizzes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_quiz_attempts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           id: string
@@ -2240,6 +2577,68 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      waste_scans: {
+        Row: {
+          bin_color: string | null
+          disposal_instructions: string | null
+          disposal_instructions_vi: string | null
+          environmental_note: string | null
+          environmental_note_vi: string | null
+          id: string
+          image_url: string
+          material: string | null
+          points_earned: number | null
+          recyclable: boolean | null
+          reuse_suggestions: Json | null
+          scanned_at: string | null
+          user_id: string
+          waste_type: string | null
+          waste_type_vi: string | null
+        }
+        Insert: {
+          bin_color?: string | null
+          disposal_instructions?: string | null
+          disposal_instructions_vi?: string | null
+          environmental_note?: string | null
+          environmental_note_vi?: string | null
+          id?: string
+          image_url: string
+          material?: string | null
+          points_earned?: number | null
+          recyclable?: boolean | null
+          reuse_suggestions?: Json | null
+          scanned_at?: string | null
+          user_id: string
+          waste_type?: string | null
+          waste_type_vi?: string | null
+        }
+        Update: {
+          bin_color?: string | null
+          disposal_instructions?: string | null
+          disposal_instructions_vi?: string | null
+          environmental_note?: string | null
+          environmental_note_vi?: string | null
+          id?: string
+          image_url?: string
+          material?: string | null
+          points_earned?: number | null
+          recyclable?: boolean | null
+          reuse_suggestions?: Json | null
+          scanned_at?: string | null
+          user_id?: string
+          waste_type?: string | null
+          waste_type_vi?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "waste_scans_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
