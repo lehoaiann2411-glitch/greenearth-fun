@@ -926,5 +926,21 @@
     "userBlocked": "Đã chặn người dùng",
     "userUnblocked": "Đã bỏ chặn người dùng",
     "noBlockedUsers": "Không có người dùng bị chặn"
+  },
+  "habits": {
+    "title": "Thói Quen Xanh Hàng Ngày",
+    "subtitle": "Hoàn thành mỗi ngày để nhận Camly Coin!",
+    "streak": "{{count}} ngày liên tục",
+    "noStreak": "Bắt đầu streak của bạn ngay hôm nay!",
+    "nextMilestone": "Còn {{days}} ngày đến bonus",
+    "todayProgress": "Tiến độ hôm nay:",
+    "allCompleteToday": "Đã hoàn thành tất cả thói quen hôm nay!",
+    "allComplete": "Hoàn thành tất cả",
+    "partial": "Đang tiến hành",
+    "monthlyProgress": "Tháng này",
+    "celebrationTitle": "Tuyệt vời!",
+    "celebrationMessage": "Bạn đã hoàn thành tất cả thói quen xanh hôm nay và góp phần cứu Trái Đất! 🌍",
+    "bonusEarned": "Bonus đã nhận",
+    "keepItUp": "Tiếp tục phát huy"
   }
 }
