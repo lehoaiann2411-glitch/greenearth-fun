@@ -420,48 +420,6 @@ export type Database = {
         }
         Relationships: []
       }
-      daily_habits: {
-        Row: {
-          camly_reward: number | null
-          category: string | null
-          created_at: string | null
-          description: string | null
-          description_vi: string | null
-          icon_emoji: string | null
-          id: string
-          is_active: boolean | null
-          order_index: number | null
-          title: string
-          title_vi: string
-        }
-        Insert: {
-          camly_reward?: number | null
-          category?: string | null
-          created_at?: string | null
-          description?: string | null
-          description_vi?: string | null
-          icon_emoji?: string | null
-          id?: string
-          is_active?: boolean | null
-          order_index?: number | null
-          title: string
-          title_vi: string
-        }
-        Update: {
-          camly_reward?: number | null
-          category?: string | null
-          created_at?: string | null
-          description?: string | null
-          description_vi?: string | null
-          icon_emoji?: string | null
-          id?: string
-          is_active?: boolean | null
-          order_index?: number | null
-          title?: string
-          title_vi?: string
-        }
-        Relationships: []
-      }
       daily_limits: {
         Row: {
           created_at: string | null
@@ -1661,10 +1619,8 @@ export type Database = {
           full_name: string | null
           green_points: number
           green_reputation: number | null
-          habit_streak: number | null
           id: string
           last_check_in: string | null
-          last_habit_date: string | null
           location: string | null
           notification_sounds: boolean | null
           show_online_status: boolean | null
@@ -1695,10 +1651,8 @@ export type Database = {
           full_name?: string | null
           green_points?: number
           green_reputation?: number | null
-          habit_streak?: number | null
           id: string
           last_check_in?: string | null
-          last_habit_date?: string | null
           location?: string | null
           notification_sounds?: boolean | null
           show_online_status?: boolean | null
@@ -1729,10 +1683,8 @@ export type Database = {
           full_name?: string | null
           green_points?: number
           green_reputation?: number | null
-          habit_streak?: number | null
           id?: string
           last_check_in?: string | null
-          last_habit_date?: string | null
           location?: string | null
           notification_sounds?: boolean | null
           show_online_status?: boolean | null
@@ -2480,48 +2432,6 @@ export type Database = {
           {
             foreignKeyName: "user_follows_following_id_fkey"
             columns: ["following_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      user_habit_completions: {
-        Row: {
-          camly_earned: number | null
-          completed_date: string
-          created_at: string | null
-          habit_id: string
-          id: string
-          user_id: string
-        }
-        Insert: {
-          camly_earned?: number | null
-          completed_date?: string
-          created_at?: string | null
-          habit_id: string
-          id?: string
-          user_id: string
-        }
-        Update: {
-          camly_earned?: number | null
-          completed_date?: string
-          created_at?: string | null
-          habit_id?: string
-          id?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "user_habit_completions_habit_id_fkey"
-            columns: ["habit_id"]
-            isOneToOne: false
-            referencedRelation: "daily_habits"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "user_habit_completions_user_id_fkey"
-            columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]

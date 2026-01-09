@@ -916,25 +916,5 @@
     "userBlocked": "User blocked",
     "userUnblocked": "User unblocked",
     "noBlockedUsers": "No blocked users"
-  },
-  "habits": {
-    "title": "Daily Eco Habits",
-    "subtitle": "Complete daily to earn Camly Coin!",
-    "completed": "Done today",
-    "streak": "{{count}} day streak",
-    "streakBonus": "Bonus +{{amount}} Camly!",
-    "allComplete": "Amazing! You helped save the Earth today!",
-    "todayProgress": "{{completed}}/{{total}} completed",
-    "reward": "+{{amount}} Camly",
-    "startStreak": "Start your streak today!",
-    "comeBack": "Come back tomorrow to continue your streak!",
-    "eachHabit": "Each habit: +30 Camly",
-    "completeAll": "Complete all: +100 Bonus",
-    "streak7": "7-day streak: +200 Bonus",
-    "streak30": "30-day streak: +500 Bonus",
-    "viewCalendar": "View monthly calendar",
-    "hideCalendar": "Hide calendar",
-    "complete": "Complete",
-    "partial": "Partial"
   }
 }
