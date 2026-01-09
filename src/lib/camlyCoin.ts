@@ -3,6 +3,12 @@
 
 // Camly Coin rewards for different actions
 export const CAMLY_REWARDS = {
+  // Habit Actions
+  COMPLETE_HABIT: 30,              // Complete one eco habit
+  COMPLETE_ALL_HABITS: 100,        // Complete all daily habits
+  HABIT_STREAK_7_DAY: 200,         // 7-day habit streak bonus
+  HABIT_STREAK_30_DAY: 500,        // 30-day habit streak bonus
+  
   // Social Actions
   CREATE_POST: 3000,           // Post about environment
   CREATE_POST_WITH_IMAGE: 4000, // Post with image
@@ -117,6 +123,11 @@ export const STORY_STICKERS = [
 
 // Action type keys for tracking
 export const ACTION_TYPES = {
+  // Habit actions
+  COMPLETE_HABIT: 'complete_habit',
+  COMPLETE_ALL_HABITS: 'complete_all_habits',
+  HABIT_STREAK_BONUS: 'habit_streak_bonus',
+  
   CREATE_POST: 'create_post',
   CREATE_POST_WITH_IMAGE: 'create_post_with_image',
   CREATE_POST_WITH_POLL: 'create_post_with_poll',
