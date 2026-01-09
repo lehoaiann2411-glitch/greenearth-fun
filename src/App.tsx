@@ -12,6 +12,8 @@ import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import ProfileEdit from "./pages/ProfileEdit";
 import Leaderboard from "./pages/Leaderboard";
+import Learn from "./pages/Learn";
+import WasteScanner from "./pages/WasteScanner";
 
 import Campaigns from "./pages/Campaigns";
 import CampaignDetail from "./pages/CampaignDetail";
@@ -61,6 +63,8 @@ const App = () => (
                 <Route path="/groups/:id" element={<GroupDetail />} />
                 <Route path="/impact" element={<ImpactDashboard />} />
                 <Route path="/rewards" element={<Rewards />} />
+                <Route path="/learn" element={<Learn />} />
+                <Route path="/waste-scanner" element={<WasteScanner />} />
                 
                 {/* Social Network Routes */}
                 <Route path="/messages" element={<Messages />} />

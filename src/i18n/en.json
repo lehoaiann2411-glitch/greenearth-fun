@@ -76,7 +76,9 @@
     "logout": "Logout",
     "rewards": "Rewards",
     "messages": "Messages",
-    "friends": "Friends"
+    "friends": "Friends",
+    "learn": "Learn",
+    "scan": "Scan"
   },
   "header": {
     "lightMode": "Light mode",
