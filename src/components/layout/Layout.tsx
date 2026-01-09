@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { Header } from './Header';
 import { Footer } from './Footer';
+import { GreenBuddyButton } from '@/components/chatbot/GreenBuddyButton';
 
 interface LayoutProps {
   children: ReactNode;
@@ -28,6 +29,9 @@ export function Layout({ children, showFooter = true }: LayoutProps) {
         <main className="flex-1">{children}</main>
         {showFooter && <Footer />}
       </div>
+
+      {/* Green Buddy Chatbot Button */}
+      <GreenBuddyButton />
     </div>
   );
 }

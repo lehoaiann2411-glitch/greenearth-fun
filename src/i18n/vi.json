@@ -76,7 +76,9 @@
     "logout": "Đăng xuất",
     "rewards": "Phần thưởng",
     "messages": "Tin nhắn",
-    "friends": "Bạn bè"
+    "friends": "Bạn bè",
+    "learn": "Học hỏi",
+    "scan": "Quét rác"
   },
   "messages": {
     "title": "Tin nhắn",

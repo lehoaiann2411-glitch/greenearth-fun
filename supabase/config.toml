@@ -1,1 +1,4 @@
 project_id = "mngorzlybgkahwkvyofd"
+
+[functions.green-buddy-chat]
+verify_jwt = false
