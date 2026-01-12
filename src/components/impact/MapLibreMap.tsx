@@ -554,12 +554,13 @@ export function MapLibreMap({
           selectedArchipelago={selectedArchipelago?.id}
         />
 
-        {/* Archipelago Popup */}
+        {/* Archipelago Popup - Dynamic anchor to avoid toolbar overlap */}
         {selectedArchipelago && (
           <Popup
             longitude={selectedArchipelago.data.center[0]}
             latitude={selectedArchipelago.data.center[1]}
-            anchor="bottom"
+            anchor={selectedArchipelago.data.center[1] > viewState.latitude ? 'top' : 'bottom'}
+            offset={15}
             onClose={() => setSelectedArchipelago(null)}
             closeButton={true}
             closeOnClick={false}
