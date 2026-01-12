@@ -1,12 +1,72 @@
+import { useState, useCallback } from 'react';
 import { Layout } from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Camera, Upload, Recycle, Leaf, MessageCircle, Sparkles } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Camera, Upload, Loader2, Scan } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
+import { useAuth } from '@/contexts/AuthContext';
+import { useAnalyzeWaste, WasteAnalysisResult } from '@/hooks/useWasteScanner';
+import { CameraCapture } from '@/components/scanner/CameraCapture';
+import { ImageUpload } from '@/components/scanner/ImageUpload';
+import { ScanResult } from '@/components/scanner/ScanResult';
+import { BinColorGuide } from '@/components/scanner/BinColorGuide';
+import { ScanHistory } from '@/components/scanner/ScanHistory';
+import { useToast } from '@/hooks/use-toast';
+
+type ScannerState = 'idle' | 'camera' | 'analyzing' | 'result';
 
 export default function WasteScanner() {
   const { t } = useTranslation();
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const { analyzeWaste, saveScanResult, isAnalyzing } = useAnalyzeWaste();
+
+  const [state, setState] = useState<ScannerState>('idle');
+  const [result, setResult] = useState<WasteAnalysisResult | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  const handleImageCapture = useCallback(
+    async (imageBase64: string) => {
+      setImagePreview(imageBase64);
+      setState('analyzing');
+
+      try {
+        const analysisResult = await analyzeWaste(imageBase64);
+        setResult(analysisResult);
+        setState('result');
+
+        // Save to database if user is logged in
+        if (user) {
+          await saveScanResult(analysisResult);
+        }
+      } catch (error) {
+        console.error('Analysis error:', error);
+        toast({
+          title: t('scanner.error', 'Analysis Failed'),
+          description: error instanceof Error ? error.message : t('scanner.errorDesc', 'Could not analyze the image. Please try again.'),
+          variant: 'destructive',
+        });
+        setState('idle');
+        setImagePreview(null);
+      }
+    },
+    [analyzeWaste, saveScanResult, user, toast, t]
+  );
+
+  const handleReset = useCallback(() => {
+    setState('idle');
+    setResult(null);
+    setImagePreview(null);
+  }, []);
+
+  const openCamera = useCallback(() => {
+    setState('camera');
+  }, []);
+
+  const closeCamera = useCallback(() => {
+    setState('idle');
+  }, []);
 
   return (
     <Layout>
@@ -14,112 +74,99 @@ export default function WasteScanner() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="max-w-4xl mx-auto"
+          className="max-w-2xl mx-auto"
         >
-          {/* Hero Section */}
-          <div className="text-center mb-12">
+          {/* Header */}
+          <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 mb-4">
-              <Sparkles className="w-4 h-4" />
-              <span className="text-sm font-medium">{t('scanner.comingSoon', 'Coming Soon')}</span>
+              <Scan className="w-4 h-4" />
+              <span className="text-sm font-medium">{t('scanner.aiPowered', 'AI-Powered')}</span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+            <h1 className="text-3xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
               {t('scanner.title', 'Waste Scanner')}
             </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              {t('scanner.description', 'Scan any waste item with AI to learn how to properly recycle, compost, or dispose of it. Coming soon!')}
+            <p className="text-muted-foreground">
+              {t('scanner.subtitle', 'Scan any waste item to learn how to properly recycle it')}
             </p>
           </div>
 
-          {/* Preview Card */}
-          <Card className="mb-8 overflow-hidden border-dashed border-2 border-green-300 dark:border-green-700">
-            <CardContent className="p-12 text-center">
-              <div className="w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 flex items-center justify-center">
-                <Camera className="w-16 h-16 text-green-600 dark:text-green-400" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">
-                {t('scanner.previewTitle', 'AI-Powered Waste Recognition')}
-              </h3>
-              <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                {t('scanner.previewDescription', 'Take a photo or upload an image of any waste item and our AI will identify it and provide recycling instructions.')}
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button disabled size="lg" className="gap-2">
-                  <Camera className="w-5 h-5" />
-                  {t('scanner.capture', 'Take Photo')}
-                </Button>
-                <Button disabled variant="outline" size="lg" className="gap-2">
-                  <Upload className="w-5 h-5" />
-                  {t('scanner.upload', 'Upload Image')}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Main Content */}
+          {state === 'idle' && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="space-y-6"
+            >
+              {/* Scan Card */}
+              <Card className="overflow-hidden">
+                <CardContent className="p-8 text-center">
+                  <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 flex items-center justify-center">
+                    <Camera className="w-12 h-12 text-green-600 dark:text-green-400" />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2">
+                    {t('scanner.scanTitle', 'Scan Your Waste')}
+                  </h3>
+                  <p className="text-sm text-muted-foreground mb-6 max-w-sm mx-auto">
+                    {t('scanner.scanDesc', 'Take a photo or upload an image of any waste item and our AI will identify it and provide recycling instructions.')}
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                    <Button onClick={openCamera} size="lg" className="gap-2">
+                      <Camera className="w-5 h-5" />
+                      {t('scanner.capture', 'Take Photo')}
+                    </Button>
+                    <ImageUpload onImageSelect={handleImageCapture} />
+                  </div>
+                </CardContent>
+              </Card>
 
-          {/* Features Grid */}
-          <div className="grid md:grid-cols-3 gap-6 mb-8">
-            <Card className="text-center">
-              <CardHeader>
-                <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                  <Camera className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                </div>
-                <CardTitle className="text-lg">{t('scanner.feature1Title', 'Instant Recognition')}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  {t('scanner.feature1Desc', 'AI identifies waste items in seconds from your camera or photos')}
-                </CardDescription>
-              </CardContent>
-            </Card>
+              {/* Bin Color Guide */}
+              <BinColorGuide />
 
-            <Card className="text-center">
-              <CardHeader>
-                <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                  <Recycle className="w-6 h-6 text-green-600 dark:text-green-400" />
-                </div>
-                <CardTitle className="text-lg">{t('scanner.feature2Title', 'Recycling Guide')}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  {t('scanner.feature2Desc', 'Get specific instructions for Vietnam recycling bins and centers')}
-                </CardDescription>
-              </CardContent>
-            </Card>
+              {/* Scan History */}
+              {user && <ScanHistory />}
+            </motion.div>
+          )}
 
-            <Card className="text-center">
-              <CardHeader>
-                <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
-                  <Leaf className="w-6 h-6 text-amber-600 dark:text-amber-400" />
-                </div>
-                <CardTitle className="text-lg">{t('scanner.feature3Title', 'Earn Camly')}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  {t('scanner.feature3Desc', 'Get rewarded for scanning and properly disposing of waste')}
-                </CardDescription>
-              </CardContent>
-            </Card>
-          </div>
+          {state === 'camera' && (
+            <CameraCapture onCapture={handleImageCapture} onClose={closeCamera} />
+          )}
 
-          {/* CTA to Chatbot */}
-          <Card className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/50 dark:to-emerald-950/50 border-green-200 dark:border-green-800">
-            <CardContent className="p-6 flex flex-col md:flex-row items-center gap-4">
-              <div className="w-16 h-16 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
-                <MessageCircle className="w-8 h-8 text-white" />
-              </div>
-              <div className="flex-1 text-center md:text-left">
-                <h3 className="font-semibold text-lg mb-1">
-                  {t('scanner.chatbotCta', 'Need help with recycling now?')}
-                </h3>
-                <p className="text-muted-foreground text-sm">
-                  {t('scanner.chatbotCtaDesc', 'Ask Green Buddy! Our AI chatbot can answer all your questions about waste sorting, recycling, and eco-friendly living.')}
-                </p>
-              </div>
-              <Button className="gap-2 bg-green-600 hover:bg-green-700">
-                <MessageCircle className="w-4 h-4" />
-                {t('scanner.askGreenBuddy', 'Ask Green Buddy')}
-              </Button>
-            </CardContent>
-          </Card>
+          {state === 'analyzing' && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center py-12"
+            >
+              <Card>
+                <CardContent className="p-8">
+                  {imagePreview && (
+                    <div className="w-48 h-48 mx-auto mb-6 rounded-2xl overflow-hidden">
+                      <img
+                        src={`data:image/jpeg;base64,${imagePreview}`}
+                        alt="Analyzing"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                  <Loader2 className="w-12 h-12 mx-auto mb-4 text-green-600 animate-spin" />
+                  <h3 className="text-lg font-semibold mb-2">
+                    {t('scanner.analyzing', 'Analyzing...')}
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    {t('scanner.analyzingDesc', 'Our AI is identifying the waste item')}
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          )}
+
+          {state === 'result' && result && (
+            <ScanResult
+              result={result}
+              imagePreview={imagePreview || undefined}
+              onScanAgain={handleReset}
+            />
+          )}
         </motion.div>
       </div>
     </Layout>
