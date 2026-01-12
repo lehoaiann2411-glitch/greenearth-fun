@@ -156,6 +156,7 @@ export type Database = {
           creator_id: string
           description: string | null
           end_date: string
+          forest_type: string | null
           green_points_reward: number
           id: string
           image_url: string | null
@@ -163,6 +164,7 @@ export type Database = {
           location: string | null
           longitude: number | null
           organization_id: string | null
+          region: string | null
           start_date: string
           status: Database["public"]["Enums"]["campaign_status"]
           target_participants: number
@@ -176,6 +178,7 @@ export type Database = {
           creator_id: string
           description?: string | null
           end_date: string
+          forest_type?: string | null
           green_points_reward?: number
           id?: string
           image_url?: string | null
@@ -183,6 +186,7 @@ export type Database = {
           location?: string | null
           longitude?: number | null
           organization_id?: string | null
+          region?: string | null
           start_date: string
           status?: Database["public"]["Enums"]["campaign_status"]
           target_participants?: number
@@ -196,6 +200,7 @@ export type Database = {
           creator_id?: string
           description?: string | null
           end_date?: string
+          forest_type?: string | null
           green_points_reward?: number
           id?: string
           image_url?: string | null
@@ -203,6 +208,7 @@ export type Database = {
           location?: string | null
           longitude?: number | null
           organization_id?: string | null
+          region?: string | null
           start_date?: string
           status?: Database["public"]["Enums"]["campaign_status"]
           target_participants?: number
