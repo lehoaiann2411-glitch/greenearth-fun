@@ -475,6 +475,355 @@ export const WORLD_ARCHIPELAGOS: Record<string, Archipelago> = {
       { nameKey: 'islands.westmanIslands', coords: [-20.27, 63.43] },
     ]
   },
+  greenland: {
+    id: 'greenland',
+    nameKey: 'islands.greenland',
+    region: 'arctic',
+    sovereignty: 'Denmark',
+    center: [-42.0, 72.0],
+    color: '#e2e8f0',
+    seaArea: '~2,166,086',
+    islandCount: '1',
+    islands: [
+      { nameKey: 'islands.greenlandMain', coords: [-42.0, 72.0] },
+      { nameKey: 'islands.disko', coords: [-53.5, 69.75] },
+    ]
+  },
+
+  // ==================== ADDITIONAL SOUTHEAST ASIA ====================
+  philippines: {
+    id: 'philippines',
+    nameKey: 'islands.philippines',
+    region: 'southeast_asia',
+    sovereignty: 'Philippines',
+    center: [121.77, 12.88],
+    color: '#f59e0b',
+    seaArea: '~300,000',
+    islandCount: '7,641',
+    islands: [
+      { nameKey: 'islands.luzon', coords: [121.0, 16.0] },
+      { nameKey: 'islands.visayas', coords: [123.5, 10.5] },
+      { nameKey: 'islands.mindanao', coords: [125.5, 7.5] },
+      { nameKey: 'islands.palawan', coords: [118.7, 9.8] },
+    ]
+  },
+  indonesia: {
+    id: 'indonesia',
+    nameKey: 'islands.indonesia',
+    region: 'southeast_asia',
+    sovereignty: 'Indonesia',
+    center: [113.9, -0.79],
+    color: '#ef4444',
+    seaArea: '~1,904,569',
+    islandCount: '17,508',
+    islands: [
+      { nameKey: 'islands.java', coords: [110.0, -7.5] },
+      { nameKey: 'islands.sumatra', coords: [101.5, 0.5] },
+      { nameKey: 'islands.borneo', coords: [116.0, 0.5] },
+      { nameKey: 'islands.sulawesi', coords: [121.0, -2.0] },
+      { nameKey: 'islands.bali', coords: [115.2, -8.4] },
+    ]
+  },
+
+  // ==================== EAST ASIA ====================
+  japan: {
+    id: 'japan',
+    nameKey: 'islands.japan',
+    region: 'pacific',
+    sovereignty: 'Japan',
+    center: [138.25, 36.2],
+    color: '#dc2626',
+    seaArea: '~377,975',
+    islandCount: '6,852',
+    islands: [
+      { nameKey: 'islands.honshu', coords: [138.0, 36.0] },
+      { nameKey: 'islands.hokkaido', coords: [143.0, 43.0] },
+      { nameKey: 'islands.kyushu', coords: [131.0, 33.0] },
+      { nameKey: 'islands.shikoku', coords: [133.5, 33.8] },
+      { nameKey: 'islands.okinawa', coords: [127.8, 26.5] },
+    ]
+  },
+  taiwan: {
+    id: 'taiwan',
+    nameKey: 'islands.taiwan',
+    region: 'pacific',
+    sovereignty: 'Taiwan',
+    center: [121.0, 23.7],
+    color: '#3b82f6',
+    seaArea: '~36,193',
+    islandCount: '166',
+    islands: [
+      { nameKey: 'islands.taiwanMain', coords: [121.0, 23.7] },
+      { nameKey: 'islands.penghu', coords: [119.6, 23.6] },
+    ]
+  },
+
+  // ==================== OCEANIA ====================
+  newZealand: {
+    id: 'new-zealand',
+    nameKey: 'islands.newZealand',
+    region: 'pacific',
+    sovereignty: 'New Zealand',
+    center: [174.0, -41.0],
+    color: '#22c55e',
+    seaArea: '~268,021',
+    islandCount: '600+',
+    islands: [
+      { nameKey: 'islands.northIsland', coords: [175.5, -39.0] },
+      { nameKey: 'islands.southIsland', coords: [170.5, -44.0] },
+      { nameKey: 'islands.stewart', coords: [167.8, -46.9] },
+    ]
+  },
+  vanuatu: {
+    id: 'vanuatu',
+    nameKey: 'islands.vanuatu',
+    region: 'pacific',
+    sovereignty: 'Vanuatu',
+    center: [166.96, -15.38],
+    color: '#84cc16',
+    seaArea: '~12,189',
+    islandCount: '83',
+    islands: [
+      { nameKey: 'islands.efate', coords: [168.3, -17.7] },
+      { nameKey: 'islands.espiritu', coords: [167.0, -15.4] },
+    ]
+  },
+  palau: {
+    id: 'palau',
+    nameKey: 'islands.palau',
+    region: 'pacific',
+    sovereignty: 'Palau',
+    center: [134.58, 7.51],
+    color: '#06b6d4',
+    seaArea: '~459',
+    islandCount: '340',
+    islands: [
+      { nameKey: 'islands.babeldaob', coords: [134.6, 7.5] },
+      { nameKey: 'islands.koror', coords: [134.47, 7.34] },
+    ]
+  },
+  guam: {
+    id: 'guam',
+    nameKey: 'islands.guam',
+    region: 'pacific',
+    sovereignty: 'USA',
+    center: [144.79, 13.44],
+    color: '#3b82f6',
+    seaArea: '~549',
+    islandCount: '1',
+    islands: [
+      { nameKey: 'islands.guamMain', coords: [144.79, 13.44] },
+    ]
+  },
+  mariana: {
+    id: 'mariana',
+    nameKey: 'islands.mariana',
+    region: 'pacific',
+    sovereignty: 'USA',
+    center: [145.75, 15.2],
+    color: '#8b5cf6',
+    seaArea: '~464',
+    islandCount: '15',
+    islands: [
+      { nameKey: 'islands.saipan', coords: [145.75, 15.2] },
+      { nameKey: 'islands.tinian', coords: [145.63, 15.0] },
+    ]
+  },
+  cookIslands: {
+    id: 'cook-islands',
+    nameKey: 'islands.cookIslands',
+    region: 'pacific',
+    sovereignty: 'New Zealand',
+    center: [-159.78, -21.24],
+    color: '#14b8a6',
+    seaArea: '~236',
+    islandCount: '15',
+    islands: [
+      { nameKey: 'islands.rarotonga', coords: [-159.78, -21.24] },
+      { nameKey: 'islands.aitutaki', coords: [-159.77, -18.86] },
+    ]
+  },
+  marshallIslands: {
+    id: 'marshall-islands',
+    nameKey: 'islands.marshallIslands',
+    region: 'pacific',
+    sovereignty: 'Marshall Islands',
+    center: [171.18, 7.13],
+    color: '#f97316',
+    seaArea: '~181',
+    islandCount: '1,156',
+    islands: [
+      { nameKey: 'islands.majuro', coords: [171.38, 7.09] },
+      { nameKey: 'islands.kwajalein', coords: [167.73, 8.72] },
+    ]
+  },
+  micronesia: {
+    id: 'micronesia',
+    nameKey: 'islands.micronesia',
+    region: 'pacific',
+    sovereignty: 'Micronesia',
+    center: [158.22, 6.92],
+    color: '#6366f1',
+    seaArea: '~702',
+    islandCount: '607',
+    islands: [
+      { nameKey: 'islands.pohnpei', coords: [158.22, 6.88] },
+      { nameKey: 'islands.chuuk', coords: [151.85, 7.42] },
+    ]
+  },
+  kiribati: {
+    id: 'kiribati',
+    nameKey: 'islands.kiribati',
+    region: 'pacific',
+    sovereignty: 'Kiribati',
+    center: [-157.36, 1.87],
+    color: '#eab308',
+    seaArea: '~811',
+    islandCount: '33',
+    islands: [
+      { nameKey: 'islands.tarawa', coords: [172.98, 1.43] },
+      { nameKey: 'islands.christmas', coords: [-157.47, 1.87] },
+    ]
+  },
+  tuvalu: {
+    id: 'tuvalu',
+    nameKey: 'islands.tuvalu',
+    region: 'pacific',
+    sovereignty: 'Tuvalu',
+    center: [179.2, -7.48],
+    color: '#10b981',
+    seaArea: '~26',
+    islandCount: '9',
+    islands: [
+      { nameKey: 'islands.funafuti', coords: [179.2, -8.52] },
+    ]
+  },
+
+  // ==================== ADDITIONAL EUROPE ====================
+  sicily: {
+    id: 'sicily',
+    nameKey: 'islands.sicily',
+    region: 'europe',
+    sovereignty: 'Italy',
+    center: [14.0, 37.6],
+    color: '#22c55e',
+    seaArea: '~25,711',
+    islandCount: '1',
+    islands: [
+      { nameKey: 'islands.sicilyMain', coords: [14.0, 37.6] },
+    ]
+  },
+  sardinia: {
+    id: 'sardinia',
+    nameKey: 'islands.sardinia',
+    region: 'europe',
+    sovereignty: 'Italy',
+    center: [9.12, 40.12],
+    color: '#14b8a6',
+    seaArea: '~24,090',
+    islandCount: '1',
+    islands: [
+      { nameKey: 'islands.sardiniaMain', coords: [9.12, 40.12] },
+    ]
+  },
+  corsica: {
+    id: 'corsica',
+    nameKey: 'islands.corsica',
+    region: 'europe',
+    sovereignty: 'France',
+    center: [9.0, 42.04],
+    color: '#3b82f6',
+    seaArea: '~8,680',
+    islandCount: '1',
+    islands: [
+      { nameKey: 'islands.corsicaMain', coords: [9.0, 42.04] },
+    ]
+  },
+  cyprus: {
+    id: 'cyprus',
+    nameKey: 'islands.cyprus',
+    region: 'europe',
+    sovereignty: 'Cyprus',
+    center: [33.43, 35.13],
+    color: '#f59e0b',
+    seaArea: '~9,251',
+    islandCount: '1',
+    islands: [
+      { nameKey: 'islands.cyprusMain', coords: [33.43, 35.13] },
+    ]
+  },
+
+  // ==================== ADDITIONAL INDIAN OCEAN ====================
+  sriLanka: {
+    id: 'sri-lanka',
+    nameKey: 'islands.sriLanka',
+    region: 'indian',
+    sovereignty: 'Sri Lanka',
+    center: [80.77, 7.87],
+    color: '#dc2626',
+    seaArea: '~65,610',
+    islandCount: '1',
+    islands: [
+      { nameKey: 'islands.sriLankaMain', coords: [80.77, 7.87] },
+    ]
+  },
+  zanzibar: {
+    id: 'zanzibar',
+    nameKey: 'islands.zanzibar',
+    region: 'indian',
+    sovereignty: 'Tanzania',
+    center: [39.2, -6.16],
+    color: '#84cc16',
+    seaArea: '~2,654',
+    islandCount: '2',
+    islands: [
+      { nameKey: 'islands.unguja', coords: [39.2, -6.16] },
+      { nameKey: 'islands.pemba', coords: [39.75, -5.0] },
+    ]
+  },
+  comoros: {
+    id: 'comoros',
+    nameKey: 'islands.comoros',
+    region: 'indian',
+    sovereignty: 'Comoros',
+    center: [43.87, -11.88],
+    color: '#22c55e',
+    seaArea: '~2,235',
+    islandCount: '4',
+    islands: [
+      { nameKey: 'islands.grandeComore', coords: [43.33, -11.7] },
+      { nameKey: 'islands.anjouan', coords: [44.44, -12.23] },
+      { nameKey: 'islands.mayotte', coords: [45.14, -12.83] },
+    ]
+  },
+
+  // ==================== SOUTH AMERICA ====================
+  easterIsland: {
+    id: 'easter-island',
+    nameKey: 'islands.easterIsland',
+    region: 'pacific',
+    sovereignty: 'Chile',
+    center: [-109.35, -27.12],
+    color: '#dc2626',
+    seaArea: '~163',
+    islandCount: '1',
+    islands: [
+      { nameKey: 'islands.easterIslandMain', coords: [-109.35, -27.12] },
+    ]
+  },
+  fernandoDeNoronha: {
+    id: 'fernando-de-noronha',
+    nameKey: 'islands.fernandoDeNoronha',
+    region: 'atlantic',
+    sovereignty: 'Brazil',
+    center: [-32.42, -3.85],
+    color: '#22c55e',
+    seaArea: '~26',
+    islandCount: '21',
+    islands: [
+      { nameKey: 'islands.noronhaMain', coords: [-32.42, -3.85] },
+    ]
+  },
 };
 
 export const REGION_COLORS: Record<string, string> = {

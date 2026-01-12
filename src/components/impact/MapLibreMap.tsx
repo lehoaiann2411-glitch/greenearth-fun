@@ -275,6 +275,28 @@ export function MapLibreMap({
     }
   }, []);
 
+  // Zoom in
+  const handleZoomIn = useCallback(() => {
+    if (mapRef.current) {
+      const currentZoom = mapRef.current.getZoom();
+      mapRef.current.flyTo({
+        zoom: Math.min(currentZoom + 1, 20),
+        duration: 300
+      });
+    }
+  }, []);
+
+  // Zoom out
+  const handleZoomOut = useCallback(() => {
+    if (mapRef.current) {
+      const currentZoom = mapRef.current.getZoom();
+      mapRef.current.flyTo({
+        zoom: Math.max(currentZoom - 1, 1),
+        duration: 300
+      });
+    }
+  }, []);
+
   // Fly to Hoang Sa
   const handleFlyToHoangSa = useCallback(() => {
     if (mapRef.current) {
@@ -428,7 +450,10 @@ export function MapLibreMap({
         onZoomHome={handleZoomHome}
         onZoomOverview={handleZoomOverview}
         onFlyToIslands={handleFlyToAllIslands}
+        onZoomIn={handleZoomIn}
+        onZoomOut={handleZoomOut}
         isLoadingLocation={isLoadingLocation}
+        currentZoom={viewState.zoom}
         className="absolute top-20 right-3 z-10"
       />
 
