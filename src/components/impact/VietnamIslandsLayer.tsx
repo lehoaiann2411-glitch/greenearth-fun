@@ -128,27 +128,14 @@ export function VietnamIslandsLayer({ onIslandClick, selectedIsland }: VietnamIs
           >
             {/* Glow effect */}
             <motion.div
-              className="absolute inset-0 w-10 h-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-red-500/30 blur-sm"
-              animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.6, 0.3] }}
+              className="absolute inset-0 w-6 h-6 -translate-x-1/2 -translate-y-1/2 rounded-full bg-red-500/40 blur-md"
+              animate={{ scale: [1, 1.4, 1], opacity: [0.4, 0.7, 0.4] }}
               transition={{ repeat: Infinity, duration: 2, delay: index * 0.2 }}
             />
-            {/* Island emoji */}
-            <motion.div
-              className="relative flex items-center justify-center text-2xl drop-shadow-lg"
-              animate={{ y: [0, -2, 0] }}
-              transition={{ repeat: Infinity, duration: 2, delay: index * 0.1 }}
-            >
-              🏝️
-            </motion.div>
-            {/* Vietnam flag badge */}
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.3 + index * 0.05 }}
-              className="absolute -top-1 -right-2 text-sm"
-            >
-              🇻🇳
-            </motion.div>
+            {/* Island marker - circle with dot */}
+            <div className="relative w-4 h-4 rounded-full bg-gradient-to-br from-red-500 to-red-600 border-2 border-white shadow-lg flex items-center justify-center">
+              <div className="w-1.5 h-1.5 rounded-full bg-yellow-400" />
+            </div>
           </motion.div>
         </Marker>
       ))}
@@ -173,27 +160,14 @@ export function VietnamIslandsLayer({ onIslandClick, selectedIsland }: VietnamIs
           >
             {/* Glow effect */}
             <motion.div
-              className="absolute inset-0 w-10 h-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-red-500/30 blur-sm"
-              animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.6, 0.3] }}
+              className="absolute inset-0 w-6 h-6 -translate-x-1/2 -translate-y-1/2 rounded-full bg-red-500/40 blur-md"
+              animate={{ scale: [1, 1.4, 1], opacity: [0.4, 0.7, 0.4] }}
               transition={{ repeat: Infinity, duration: 2, delay: index * 0.2 }}
             />
-            {/* Island emoji */}
-            <motion.div
-              className="relative flex items-center justify-center text-2xl drop-shadow-lg"
-              animate={{ y: [0, -2, 0] }}
-              transition={{ repeat: Infinity, duration: 2, delay: index * 0.1 }}
-            >
-              🏝️
-            </motion.div>
-            {/* Vietnam flag badge */}
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.3 + index * 0.05 }}
-              className="absolute -top-1 -right-2 text-sm"
-            >
-              🇻🇳
-            </motion.div>
+            {/* Island marker - circle with dot */}
+            <div className="relative w-4 h-4 rounded-full bg-gradient-to-br from-red-500 to-red-600 border-2 border-white shadow-lg flex items-center justify-center">
+              <div className="w-1.5 h-1.5 rounded-full bg-yellow-400" />
+            </div>
           </motion.div>
         </Marker>
       ))}
@@ -207,9 +181,9 @@ export function VietnamIslandsLayer({ onIslandClick, selectedIsland }: VietnamIs
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="px-3 py-1.5 bg-gradient-to-r from-red-600 to-red-500 text-white text-sm font-bold rounded-full shadow-lg border-2 border-white/50 whitespace-nowrap"
+          className="px-3 py-1.5 bg-gradient-to-r from-red-600 to-red-500 text-white text-sm font-bold rounded-full shadow-lg border-2 border-white/50 whitespace-nowrap flex items-center gap-1.5"
         >
-          <span className="mr-1">🇻🇳</span>
+          <div className="w-2 h-2 rounded-full bg-yellow-400" />
           {t('islands.hoangSa')}
         </motion.div>
       </Marker>
@@ -222,9 +196,9 @@ export function VietnamIslandsLayer({ onIslandClick, selectedIsland }: VietnamIs
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          className="px-3 py-1.5 bg-gradient-to-r from-red-600 to-red-500 text-white text-sm font-bold rounded-full shadow-lg border-2 border-white/50 whitespace-nowrap"
+          className="px-3 py-1.5 bg-gradient-to-r from-red-600 to-red-500 text-white text-sm font-bold rounded-full shadow-lg border-2 border-white/50 whitespace-nowrap flex items-center gap-1.5"
         >
-          <span className="mr-1">🇻🇳</span>
+          <div className="w-2 h-2 rounded-full bg-yellow-400" />
           {t('islands.truongSa')}
         </motion.div>
       </Marker>
