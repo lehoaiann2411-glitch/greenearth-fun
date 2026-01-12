@@ -6,7 +6,7 @@ export interface Island {
 export interface Archipelago {
   id: string;
   nameKey: string;
-  region: 'southeast_asia' | 'pacific' | 'atlantic' | 'indian' | 'europe' | 'arctic';
+  region: 'southeast_asia' | 'pacific' | 'atlantic' | 'indian' | 'europe' | 'arctic' | 'north_america' | 'south_america' | 'africa' | 'oceania' | 'russia';
   sovereignty?: string;
   highlighted?: boolean;
   center: [number, number]; // [lng, lat]
@@ -824,6 +824,398 @@ export const WORLD_ARCHIPELAGOS: Record<string, Archipelago> = {
       { nameKey: 'islands.noronhaMain', coords: [-32.42, -3.85] },
     ]
   },
+
+  // ==================== RUSSIA ====================
+  sakhalin: {
+    id: 'sakhalin',
+    nameKey: 'islands.sakhalin',
+    region: 'russia',
+    sovereignty: 'Russia',
+    center: [143.0, 50.5],
+    color: '#ef4444',
+    seaArea: '~76,400',
+    islandCount: '1',
+    islands: [
+      { nameKey: 'islands.sakhalinMain', coords: [143.0, 50.5] },
+    ]
+  },
+  kurilIslands: {
+    id: 'kuril-islands',
+    nameKey: 'islands.kurilIslands',
+    region: 'russia',
+    sovereignty: 'Russia',
+    center: [150.5, 46.0],
+    color: '#dc2626',
+    seaArea: '~10,500',
+    islandCount: '56',
+    islands: [
+      { nameKey: 'islands.iturup', coords: [148.0, 45.0] },
+      { nameKey: 'islands.kunashir', coords: [145.85, 44.0] },
+      { nameKey: 'islands.shikotan', coords: [146.75, 43.8] },
+      { nameKey: 'islands.paramushir', coords: [155.7, 50.3] },
+    ]
+  },
+  novayaZemlya: {
+    id: 'novaya-zemlya',
+    nameKey: 'islands.novayaZemlya',
+    region: 'russia',
+    sovereignty: 'Russia',
+    center: [56.0, 74.0],
+    color: '#94a3b8',
+    seaArea: '~90,650',
+    islandCount: '2',
+    islands: [
+      { nameKey: 'islands.severnyIsland', coords: [56.0, 75.0] },
+      { nameKey: 'islands.yuzhnyIsland', coords: [56.0, 72.5] },
+    ]
+  },
+  newSiberianIslands: {
+    id: 'new-siberian-islands',
+    nameKey: 'islands.newSiberianIslands',
+    region: 'russia',
+    sovereignty: 'Russia',
+    center: [140.0, 75.0],
+    color: '#64748b',
+    seaArea: '~38,400',
+    islandCount: '24',
+    islands: [
+      { nameKey: 'islands.kotelny', coords: [137.5, 75.4] },
+      { nameKey: 'islands.faddeevsky', coords: [144.0, 75.5] },
+    ]
+  },
+  franzJosefLand: {
+    id: 'franz-josef-land',
+    nameKey: 'islands.franzJosefLand',
+    region: 'russia',
+    sovereignty: 'Russia',
+    center: [55.0, 80.5],
+    color: '#475569',
+    seaArea: '~16,134',
+    islandCount: '192',
+    islands: [
+      { nameKey: 'islands.alexandraLand', coords: [47.0, 80.5] },
+      { nameKey: 'islands.georgeLand', coords: [52.5, 80.8] },
+      { nameKey: 'islands.rudolfIsland', coords: [58.5, 81.8] },
+    ]
+  },
+  wrangelIsland: {
+    id: 'wrangel-island',
+    nameKey: 'islands.wrangelIsland',
+    region: 'russia',
+    sovereignty: 'Russia',
+    center: [-179.0, 71.0],
+    color: '#78716c',
+    seaArea: '~7,600',
+    islandCount: '1',
+    islands: [
+      { nameKey: 'islands.wrangelMain', coords: [-179.0, 71.0] },
+    ]
+  },
+
+  // ==================== NORTH AMERICA ====================
+  vancouverIsland: {
+    id: 'vancouver-island',
+    nameKey: 'islands.vancouverIsland',
+    region: 'north_america',
+    sovereignty: 'Canada',
+    center: [-125.5, 49.5],
+    color: '#ef4444',
+    seaArea: '~31,285',
+    islandCount: '1',
+    islands: [
+      { nameKey: 'islands.vancouverMain', coords: [-125.5, 49.5] },
+      { nameKey: 'islands.victoria', coords: [-123.37, 48.43] },
+    ]
+  },
+  baffinIsland: {
+    id: 'baffin-island',
+    nameKey: 'islands.baffinIsland',
+    region: 'north_america',
+    sovereignty: 'Canada',
+    center: [-68.0, 69.0],
+    color: '#dc2626',
+    seaArea: '~507,451',
+    islandCount: '1',
+    islands: [
+      { nameKey: 'islands.baffinMain', coords: [-68.0, 69.0] },
+      { nameKey: 'islands.iqaluit', coords: [-68.52, 63.75] },
+    ]
+  },
+  queenElizabethIslands: {
+    id: 'queen-elizabeth-islands',
+    nameKey: 'islands.queenElizabethIslands',
+    region: 'north_america',
+    sovereignty: 'Canada',
+    center: [-95.0, 78.0],
+    color: '#b91c1c',
+    seaArea: '~418,961',
+    islandCount: '36',
+    islands: [
+      { nameKey: 'islands.ellesmerIsland', coords: [-80.0, 80.0] },
+      { nameKey: 'islands.axelHeiberg', coords: [-90.0, 79.5] },
+      { nameKey: 'islands.devonIsland', coords: [-86.0, 75.5] },
+    ]
+  },
+  alexanderArchipelago: {
+    id: 'alexander-archipelago',
+    nameKey: 'islands.alexanderArchipelago',
+    region: 'north_america',
+    sovereignty: 'USA',
+    center: [-134.0, 57.0],
+    color: '#3b82f6',
+    seaArea: '~35,000',
+    islandCount: '1100+',
+    islands: [
+      { nameKey: 'islands.princeOfWales', coords: [-133.0, 55.5] },
+      { nameKey: 'islands.baranof', coords: [-135.0, 57.0] },
+      { nameKey: 'islands.chichagof', coords: [-135.5, 57.8] },
+    ]
+  },
+  aleutianIslands: {
+    id: 'aleutian-islands',
+    nameKey: 'islands.aleutianIslands',
+    region: 'north_america',
+    sovereignty: 'USA',
+    center: [-175.0, 52.0],
+    color: '#2563eb',
+    seaArea: '~17,666',
+    islandCount: '300+',
+    islands: [
+      { nameKey: 'islands.unalaska', coords: [-166.5, 53.9] },
+      { nameKey: 'islands.attu', coords: [172.9, 52.9] },
+      { nameKey: 'islands.adak', coords: [-176.6, 51.9] },
+    ]
+  },
+
+  // ==================== OCEANIA / AUSTRALIA ====================
+  tasmania: {
+    id: 'tasmania',
+    nameKey: 'islands.tasmania',
+    region: 'oceania',
+    sovereignty: 'Australia',
+    center: [146.5, -42.0],
+    color: '#ec4899',
+    seaArea: '~68,401',
+    islandCount: '334',
+    islands: [
+      { nameKey: 'islands.tasmaniaMain', coords: [146.5, -42.0] },
+      { nameKey: 'islands.hobart', coords: [147.33, -42.88] },
+      { nameKey: 'islands.kingIsland', coords: [143.9, -39.9] },
+      { nameKey: 'islands.flindersIsland', coords: [148.0, -40.0] },
+    ]
+  },
+  torresStraitIslands: {
+    id: 'torres-strait-islands',
+    nameKey: 'islands.torresStraitIslands',
+    region: 'oceania',
+    sovereignty: 'Australia',
+    center: [142.2, -10.0],
+    color: '#f472b6',
+    seaArea: '~48,000',
+    islandCount: '274',
+    islands: [
+      { nameKey: 'islands.thursdayIsland', coords: [142.22, -10.58] },
+      { nameKey: 'islands.hornIsland', coords: [142.29, -10.62] },
+    ]
+  },
+  greatBarrierReef: {
+    id: 'great-barrier-reef',
+    nameKey: 'islands.greatBarrierReef',
+    region: 'oceania',
+    sovereignty: 'Australia',
+    center: [146.0, -18.0],
+    color: '#06b6d4',
+    seaArea: '~344,400',
+    islandCount: '900+',
+    islands: [
+      { nameKey: 'islands.whitsundayIsland', coords: [148.93, -20.25] },
+      { nameKey: 'islands.hamiltonIsland', coords: [148.95, -20.35] },
+      { nameKey: 'islands.lizardIsland', coords: [145.47, -14.67] },
+    ]
+  },
+  papuaNewGuinea: {
+    id: 'papua-new-guinea',
+    nameKey: 'islands.papuaNewGuinea',
+    region: 'oceania',
+    sovereignty: 'Papua New Guinea',
+    center: [147.0, -6.0],
+    color: '#84cc16',
+    seaArea: '~462,840',
+    islandCount: '600+',
+    islands: [
+      { nameKey: 'islands.newBritain', coords: [150.5, -5.5] },
+      { nameKey: 'islands.newIreland', coords: [152.0, -3.5] },
+      { nameKey: 'islands.bougainville', coords: [155.5, -6.2] },
+      { nameKey: 'islands.portMoresby', coords: [147.15, -9.45] },
+    ]
+  },
+
+  // ==================== SOUTH AMERICA ====================
+  tierraDelFuego: {
+    id: 'tierra-del-fuego',
+    nameKey: 'islands.tierraDelFuego',
+    region: 'south_america',
+    sovereignty: 'Argentina/Chile',
+    center: [-68.5, -54.0],
+    color: '#14b8a6',
+    seaArea: '~48,100',
+    islandCount: '20+',
+    islands: [
+      { nameKey: 'islands.islaGrande', coords: [-68.5, -54.0] },
+      { nameKey: 'islands.ushuaia', coords: [-68.3, -54.8] },
+      { nameKey: 'islands.navarino', coords: [-67.6, -55.1] },
+    ]
+  },
+  chiloeArchipelago: {
+    id: 'chiloe-archipelago',
+    nameKey: 'islands.chiloeArchipelago',
+    region: 'south_america',
+    sovereignty: 'Chile',
+    center: [-73.5, -42.5],
+    color: '#0d9488',
+    seaArea: '~9,181',
+    islandCount: '40+',
+    islands: [
+      { nameKey: 'islands.chiloeIsland', coords: [-73.8, -42.5] },
+      { nameKey: 'islands.castro', coords: [-73.77, -42.48] },
+    ]
+  },
+  juanFernandezIslands: {
+    id: 'juan-fernandez-islands',
+    nameKey: 'islands.juanFernandezIslands',
+    region: 'south_america',
+    sovereignty: 'Chile',
+    center: [-78.85, -33.6],
+    color: '#10b981',
+    seaArea: '~100',
+    islandCount: '3',
+    islands: [
+      { nameKey: 'islands.robinsonCrusoe', coords: [-78.85, -33.65] },
+      { nameKey: 'islands.alejandroSelkirk', coords: [-80.77, -33.77] },
+    ]
+  },
+  falklandIslands: {
+    id: 'falkland-islands',
+    nameKey: 'islands.falklandIslands',
+    region: 'south_america',
+    sovereignty: 'UK',
+    center: [-59.0, -51.75],
+    color: '#3b82f6',
+    seaArea: '~12,173',
+    islandCount: '778',
+    islands: [
+      { nameKey: 'islands.eastFalkland', coords: [-58.5, -51.7] },
+      { nameKey: 'islands.westFalkland', coords: [-60.0, -51.8] },
+      { nameKey: 'islands.stanley', coords: [-57.85, -51.69] },
+    ]
+  },
+
+  // ==================== AFRICA ====================
+  saoTomePrincipe: {
+    id: 'sao-tome-principe',
+    nameKey: 'islands.saoTomePrincipe',
+    region: 'africa',
+    sovereignty: 'São Tomé and Príncipe',
+    center: [6.73, 0.33],
+    color: '#84cc16',
+    seaArea: '~1,001',
+    islandCount: '2',
+    islands: [
+      { nameKey: 'islands.saoTome', coords: [6.73, 0.33] },
+      { nameKey: 'islands.principe', coords: [7.42, 1.62] },
+    ]
+  },
+  bioko: {
+    id: 'bioko',
+    nameKey: 'islands.bioko',
+    region: 'africa',
+    sovereignty: 'Equatorial Guinea',
+    center: [8.7, 3.5],
+    color: '#65a30d',
+    seaArea: '~2,017',
+    islandCount: '1',
+    islands: [
+      { nameKey: 'islands.biokoMain', coords: [8.7, 3.5] },
+      { nameKey: 'islands.malabo', coords: [8.78, 3.75] },
+    ]
+  },
+  socotra: {
+    id: 'socotra',
+    nameKey: 'islands.socotra',
+    region: 'africa',
+    sovereignty: 'Yemen',
+    center: [53.87, 12.5],
+    color: '#eab308',
+    seaArea: '~3,625',
+    islandCount: '4',
+    islands: [
+      { nameKey: 'islands.socotraMain', coords: [53.87, 12.5] },
+    ]
+  },
+  pembaZanzibar: {
+    id: 'pemba-zanzibar',
+    nameKey: 'islands.pembaZanzibar',
+    region: 'africa',
+    sovereignty: 'Tanzania',
+    center: [39.5, -5.5],
+    color: '#f59e0b',
+    seaArea: '~2,643',
+    islandCount: '50+',
+    islands: [
+      { nameKey: 'islands.zanzibarIsland', coords: [39.2, -6.15] },
+      { nameKey: 'islands.pembaIsland', coords: [39.75, -5.0] },
+      { nameKey: 'islands.stoneTown', coords: [39.19, -6.16] },
+    ]
+  },
+
+  // ==================== MEDITERRANEAN (More) ====================
+  dalmatianIslands: {
+    id: 'dalmatian-islands',
+    nameKey: 'islands.dalmatianIslands',
+    region: 'europe',
+    sovereignty: 'Croatia',
+    center: [16.5, 43.5],
+    color: '#6366f1',
+    seaArea: '~2,500',
+    islandCount: '1,246',
+    islands: [
+      { nameKey: 'islands.hvar', coords: [16.68, 43.17] },
+      { nameKey: 'islands.brac', coords: [16.65, 43.32] },
+      { nameKey: 'islands.korcula', coords: [17.13, 42.96] },
+      { nameKey: 'islands.vis', coords: [16.18, 43.05] },
+    ]
+  },
+  dodecanese: {
+    id: 'dodecanese',
+    nameKey: 'islands.dodecanese',
+    region: 'europe',
+    sovereignty: 'Greece',
+    center: [27.0, 36.5],
+    color: '#8b5cf6',
+    seaArea: '~2,714',
+    islandCount: '163',
+    islands: [
+      { nameKey: 'islands.rhodes', coords: [28.0, 36.44] },
+      { nameKey: 'islands.kos', coords: [27.0, 36.88] },
+      { nameKey: 'islands.patmos', coords: [26.55, 37.32] },
+      { nameKey: 'islands.karpathos', coords: [27.15, 35.55] },
+    ]
+  },
+  aegeanIslands: {
+    id: 'aegean-islands',
+    nameKey: 'islands.aegeanIslands',
+    region: 'europe',
+    sovereignty: 'Greece',
+    center: [25.5, 37.5],
+    color: '#a855f7',
+    seaArea: '~9,122',
+    islandCount: '2,000+',
+    islands: [
+      { nameKey: 'islands.lesbos', coords: [26.27, 39.17] },
+      { nameKey: 'islands.chios', coords: [26.05, 38.37] },
+      { nameKey: 'islands.samos', coords: [26.83, 37.75] },
+    ]
+  },
 };
 
 export const REGION_COLORS: Record<string, string> = {
@@ -833,6 +1225,11 @@ export const REGION_COLORS: Record<string, string> = {
   indian: '#06b6d4',
   europe: '#6366f1',
   arctic: '#94a3b8',
+  north_america: '#ef4444',
+  south_america: '#14b8a6',
+  africa: '#84cc16',
+  oceania: '#ec4899',
+  russia: '#f43f5e',
 };
 
 export const getArchipelagosByRegion = (region: string): Archipelago[] => {

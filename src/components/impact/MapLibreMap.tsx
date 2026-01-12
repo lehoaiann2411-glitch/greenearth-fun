@@ -18,8 +18,11 @@ import {
   Trees, 
   MapPin, 
   Navigation, 
-  Eye
+  Eye,
+  Satellite,
+  Map as MapIcon
 } from 'lucide-react';
+import { MapSearchBox } from './MapSearchBox';
 import { ForestPolygonDrawer } from './ForestPolygonDrawer';
 import { StreetViewModal } from './StreetViewModal';
 import { MapToolbar } from './MapToolbar';
@@ -411,6 +414,38 @@ export function MapLibreMap({
 
   return (
     <div className={`relative ${isFullscreen ? 'fixed inset-0 z-50' : 'h-full w-full'} ${className}`}>
+
+      {/* Search Box - Góc trái trên */}
+      <div className="absolute top-3 left-3 z-20 w-72">
+        <MapSearchBox 
+          onLocationSelect={(lat, lon, name) => {
+            flyToLocation(lat, lon, name);
+          }}
+          placeholder={t('impact.map.search.placeholder', 'Tìm địa điểm...')}
+        />
+      </div>
+
+      {/* Map Style Toggle - Góc trái dưới */}
+      <div className="absolute bottom-24 left-3 z-10 flex flex-col gap-1 bg-background/90 backdrop-blur rounded-lg p-1 shadow-lg border">
+        <Button
+          variant={mapStyle === 'satellite' ? 'default' : 'ghost'}
+          size="icon"
+          onClick={() => setMapStyle('satellite')}
+          className="h-8 w-8"
+          title={t('impact.map.satellite', 'Vệ tinh')}
+        >
+          <Satellite className="h-4 w-4" />
+        </Button>
+        <Button
+          variant={mapStyle === 'bright' || mapStyle === 'streets' ? 'default' : 'ghost'}
+          size="icon"
+          onClick={() => setMapStyle('bright')}
+          className="h-8 w-8"
+          title={t('impact.map.streets', 'Đường')}
+        >
+          <MapIcon className="h-4 w-4" />
+        </Button>
+      </div>
 
       {/* Floating Exit Fullscreen Button - Chỉ hiện khi fullscreen */}
       {isFullscreen && (
