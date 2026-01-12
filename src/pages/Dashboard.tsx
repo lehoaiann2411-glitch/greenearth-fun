@@ -16,9 +16,7 @@ import {
   Calendar,
   ArrowRight,
   MapPin,
-  Leaf,
 } from 'lucide-react';
-import { DailyHabitsTracker } from '@/components/habits/DailyHabitsTracker';
 import { formatCamly } from '@/lib/camlyCoin';
 import { CamlyCoinIcon } from '@/components/rewards/CamlyCoinIcon';
 import { format } from 'date-fns';
@@ -229,22 +227,6 @@ export default function Dashboard() {
             </CardContent>
           </Card>
         </div>
-
-        {/* Daily Eco Habits Section */}
-        <Card className="mt-8">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Leaf className="h-5 w-5 text-green-500" />
-              {t('habits.title')}
-            </CardTitle>
-            <CardDescription>
-              {t('habits.subtitle')}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <DailyHabitsTracker />
-          </CardContent>
-        </Card>
 
         {/* Upcoming Campaigns */}
         <Card className="mt-8">
