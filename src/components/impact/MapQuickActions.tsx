@@ -9,6 +9,7 @@ interface MapQuickActionsProps {
   onMyLocation: () => void;
   onZoomHome: () => void;
   onZoomOverview: () => void;
+  onFlyToIslands?: () => void;
   isLoadingLocation?: boolean;
   className?: string;
 }
@@ -17,6 +18,7 @@ export function MapQuickActions({
   onMyLocation,
   onZoomHome,
   onZoomOverview,
+  onFlyToIslands,
   isLoadingLocation = false,
   className
 }: MapQuickActionsProps) {
@@ -47,7 +49,15 @@ export function MapQuickActions({
       cuteLabel: 'Xem cả Việt Nam 🗺️',
       onClick: onZoomOverview,
       gradient: 'from-green-400 to-emerald-400'
-    }
+    },
+    ...(onFlyToIslands ? [{
+      id: 'islands',
+      emoji: '🏝️',
+      label: t('islands.viewAll', 'Biển đảo'),
+      cuteLabel: t('islands.viewAll', 'Xem biển đảo Việt Nam') + ' 🇻🇳',
+      onClick: onFlyToIslands,
+      gradient: 'from-red-400 to-orange-400'
+    }] : [])
   ];
 
   return (
