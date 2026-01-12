@@ -291,7 +291,12 @@
       "locationPermissionDenied": "Location permission denied",
       "locationUnavailable": "Location unavailable",
       "locationTimeout": "Location timeout",
-      "locationError": "Location error"
+      "locationError": "Location error",
+      "satellite": "Satellite",
+      "streets": "Streets",
+      "hybrid": "Hybrid",
+      "terrain": "Terrain",
+      "fullscreen": "Fullscreen"
     }
   },
   "calculator": {
