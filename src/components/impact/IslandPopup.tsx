@@ -14,14 +14,12 @@ const ARCHIPELAGO_INFO = {
   hoangSa: {
     coords: '16°30\'N - 112°00\'E',
     seaArea: '~15,000',
-    islandCount: '130+',
-    emoji: '🏝️'
+    islandCount: '130+'
   },
   truongSa: {
     coords: '8°38\'N - 111°55\'E',
     seaArea: '~160,000',
-    islandCount: '100+',
-    emoji: '🏝️'
+    islandCount: '100+'
   }
 };
 
@@ -43,8 +41,10 @@ export function IslandPopup({ archipelago, islandKey, onClose }: IslandPopupProp
     >
       {/* Header with gradient */}
       <div className="bg-gradient-to-r from-red-600 via-red-500 to-orange-500 p-4 text-white">
-        <div className="flex items-center gap-2 mb-1">
-          <span className="text-2xl">{info.emoji}</span>
+        <div className="flex items-center gap-3 mb-1">
+          <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+            <div className="w-4 h-4 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-500 border-2 border-white" />
+          </div>
           <div>
             <h3 className="font-bold text-lg leading-tight">
               {islandName || archipelagoName}
@@ -56,7 +56,7 @@ export function IslandPopup({ archipelago, islandKey, onClose }: IslandPopupProp
         </div>
         <div className="flex items-center gap-1.5 mt-2">
           <Flag className="h-4 w-4" />
-          <span className="font-semibold text-sm">🇻🇳 {t('islands.sovereignty')}</span>
+          <span className="font-semibold text-sm">{t('islands.sovereignty')}</span>
         </div>
       </div>
 
@@ -111,7 +111,7 @@ export function IslandPopup({ archipelago, islandKey, onClose }: IslandPopupProp
             transition={{ delay: 0.3, type: 'spring' }}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-red-50 to-yellow-50 dark:from-red-900/20 dark:to-yellow-900/20 rounded-full border border-red-200 dark:border-red-800"
           >
-            <span className="text-lg">🇻🇳</span>
+            <div className="w-3 h-3 rounded-full bg-gradient-to-br from-red-500 to-red-600 border border-white" />
             <span className="text-xs font-semibold text-red-600 dark:text-red-400">
               {t('islands.vietnamTerritory')}
             </span>
