@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useState, useEffect } from 'react';
+import React, { useRef, useCallback, useState, useEffect, useMemo } from 'react';
 import Map, { 
   NavigationControl, 
   GeolocateControl,
@@ -25,10 +25,16 @@ import { StreetViewModal } from './StreetViewModal';
 import { MapToolbar } from './MapToolbar';
 import { MapQuickActions } from './MapQuickActions';
 import { MapTour } from './MapTour';
+import { WeatherLayerControl, WeatherLayerType } from './WeatherLayerControl';
+import { AQILayerControl } from './AQILayerControl';
+import { AQIStationMarker } from './AQIStationMarker';
+import { AQIPopup } from './AQIPopup';
+import { useAQIStations, AQIStation } from '@/hooks/useAQIData';
+import { WEATHER_TILE_LAYERS } from '@/hooks/useWeatherData';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 
-// Map styles
+// Map styles - Enhanced with bright option
 const MAP_STYLES = {
   satellite: {
     version: 8 as const,
@@ -54,6 +60,7 @@ const MAP_STYLES = {
     ]
   },
   streets: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
+  bright: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json', // Brighter, more colorful
   hybrid: {
     version: 8 as const,
     sources: {
@@ -93,7 +100,17 @@ const MAP_STYLES = {
   }
 };
 
-type MapStyle = 'satellite' | 'streets' | 'hybrid';
+// Forest type colors for gradient effect
+const FOREST_COLORS: Record<string, { fill: string; stroke: string }> = {
+  mangrove: { fill: '#06b6d4', stroke: '#0891b2' },
+  rainforest: { fill: '#22c55e', stroke: '#16a34a' },
+  pine: { fill: '#10b981', stroke: '#059669' },
+  bamboo: { fill: '#84cc16', stroke: '#65a30d' },
+  mixed: { fill: '#14b8a6', stroke: '#0d9488' },
+  default: { fill: '#22c55e', stroke: '#15803d' }
+};
+
+type MapStyle = 'satellite' | 'streets' | 'hybrid' | 'bright';
 
 interface MapLibreMapProps {
   locations: TreeLocation[];
@@ -123,7 +140,7 @@ export function MapLibreMap({
     bearing: 0
   });
   
-  const [mapStyle, setMapStyle] = useState<MapStyle>('satellite');
+  const [mapStyle, setMapStyle] = useState<MapStyle>('bright');
   const [show3D, setShow3D] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<TreeLocation | null>(null);
   const [streetViewLocation, setStreetViewLocation] = useState<{lat: number; lng: number} | null>(null);
@@ -131,8 +148,31 @@ export function MapLibreMap({
   const [isDrawing, setIsDrawing] = useState(false);
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
   const [showTour, setShowTour] = useState(true);
+  
+  // Weather & AQI states
+  const [showWeatherPanel, setShowWeatherPanel] = useState(false);
+  const [activeWeatherLayer, setActiveWeatherLayer] = useState<WeatherLayerType>(null);
+  const [showAQIPanel, setShowAQIPanel] = useState(false);
+  const [showAQI, setShowAQI] = useState(false);
+  const [showAQIStations, setShowAQIStations] = useState(true);
+  const [selectedAQIStation, setSelectedAQIStation] = useState<AQIStation | null>(null);
 
   const { data: forestAreas = [] } = useForestAreas();
+  
+  // Get map bounds for AQI stations
+  const mapBounds = useMemo(() => {
+    if (!mapRef.current) return undefined;
+    const bounds = mapRef.current.getBounds();
+    if (!bounds) return undefined;
+    return {
+      north: bounds.getNorth(),
+      south: bounds.getSouth(),
+      east: bounds.getEast(),
+      west: bounds.getWest()
+    };
+  }, [viewState]);
+  
+  const { data: aqiStations = [], refetch: refetchAQI, isLoading: isLoadingAQI } = useAQIStations(mapBounds, showAQI);
 
   // Fit bounds to locations
   useEffect(() => {
@@ -289,7 +329,32 @@ export function MapLibreMap({
         onLocationSelect={flyToLocation}
         totalTrees={totalTrees}
         totalCO2={totalCO2}
+        showWeather={showWeatherPanel}
+        onToggleWeather={() => setShowWeatherPanel(!showWeatherPanel)}
+        showAQI={showAQIPanel}
+        onToggleAQI={() => setShowAQIPanel(!showAQIPanel)}
         className="absolute top-3 left-3 right-3 z-10"
+      />
+
+      {/* Weather Layer Control Panel */}
+      <WeatherLayerControl
+        isOpen={showWeatherPanel}
+        onClose={() => setShowWeatherPanel(false)}
+        activeLayer={activeWeatherLayer}
+        onLayerChange={setActiveWeatherLayer}
+        lastUpdated={new Date()}
+      />
+
+      {/* AQI Layer Control Panel */}
+      <AQILayerControl
+        isOpen={showAQIPanel}
+        onClose={() => setShowAQIPanel(false)}
+        isEnabled={showAQI}
+        onToggle={() => setShowAQI(!showAQI)}
+        showStations={showAQIStations}
+        onToggleStations={() => setShowAQIStations(!showAQIStations)}
+        isLoading={isLoadingAQI}
+        onRefresh={() => refetchAQI()}
       />
 
       {/* Quick Action Buttons */}
@@ -346,6 +411,51 @@ export function MapLibreMap({
             }}
           />
         </Source>
+
+        {/* Weather Layer */}
+        {activeWeatherLayer && import.meta.env.VITE_OPENWEATHERMAP_API_KEY && (
+          <Source
+            id="weather-layer"
+            type="raster"
+            tiles={[WEATHER_TILE_LAYERS[activeWeatherLayer]]}
+            tileSize={256}
+          >
+            <Layer
+              id="weather-overlay"
+              type="raster"
+              paint={{ 'raster-opacity': 0.6 }}
+            />
+          </Source>
+        )}
+
+        {/* AQI Station Markers */}
+        {showAQI && showAQIStations && aqiStations.map((station) => (
+          <Marker
+            key={station.uid}
+            longitude={station.lon}
+            latitude={station.lat}
+            onClick={(e) => {
+              e.originalEvent.stopPropagation();
+              setSelectedAQIStation(station);
+            }}
+          >
+            <AQIStationMarker aqi={station.aqi as number} name={station.station.name} />
+          </Marker>
+        ))}
+
+        {/* AQI Station Popup */}
+        {selectedAQIStation && (
+          <Popup
+            longitude={selectedAQIStation.lon}
+            latitude={selectedAQIStation.lat}
+            anchor="bottom"
+            onClose={() => setSelectedAQIStation(null)}
+            closeButton={true}
+            closeOnClick={false}
+          >
+            <AQIPopup station={selectedAQIStation as any} />
+          </Popup>
+        )}
 
         {/* Cute Emoji Markers */}
         {locations.map((location, index) => (
