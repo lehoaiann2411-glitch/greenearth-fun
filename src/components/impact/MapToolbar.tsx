@@ -1,10 +1,16 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
-import { Maximize2, Minimize2 } from 'lucide-react';
+import { Maximize2, Minimize2, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { MapSearchBox } from './MapSearchBox';
 import { motion } from 'framer-motion';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 type MapStyle = 'satellite' | 'streets' | 'hybrid' | 'bright';
 
@@ -26,6 +32,10 @@ interface MapToolbarProps {
   onToggleWeather?: () => void;
   showAQI?: boolean;
   onToggleAQI?: () => void;
+  // Vietnam Islands controls
+  onFlyToHoangSa?: () => void;
+  onFlyToTruongSa?: () => void;
+  onFlyToAllIslands?: () => void;
 }
 
 const mapStyleOptions = [
@@ -51,7 +61,10 @@ export function MapToolbar({
   showWeather = false,
   onToggleWeather,
   showAQI = false,
-  onToggleAQI
+  onToggleAQI,
+  onFlyToHoangSa,
+  onFlyToTruongSa,
+  onFlyToAllIslands
 }: MapToolbarProps) {
   const { t, i18n } = useTranslation();
   const isVi = i18n.language === 'vi';
@@ -162,6 +175,41 @@ export function MapToolbar({
           </motion.span>
           <span className="hidden md:inline">AQI</span>
         </motion.button>
+      )}
+
+      {/* Vietnam Islands Dropdown */}
+      {(onFlyToHoangSa || onFlyToTruongSa || onFlyToAllIslands) && (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className={cn(
+                'flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium',
+                'bg-gradient-to-r from-red-500 to-orange-500 text-white shadow-md',
+                'hover:shadow-lg transition-shadow'
+              )}
+            >
+              <span>🏝️</span>
+              <span className="hidden md:inline">{t('islands.title')}</span>
+              <ChevronDown className="h-3 w-3" />
+            </motion.button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="min-w-[180px]">
+            <DropdownMenuItem onClick={onFlyToHoangSa} className="gap-2">
+              <span>🇻🇳</span>
+              {t('islands.hoangSa')}
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={onFlyToTruongSa} className="gap-2">
+              <span>🇻🇳</span>
+              {t('islands.truongSa')}
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={onFlyToAllIslands} className="gap-2">
+              <span>🌊</span>
+              {t('islands.viewAll')}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       )}
 
       {/* Draw Button - Cute */}

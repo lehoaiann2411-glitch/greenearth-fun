@@ -29,6 +29,8 @@ import { WeatherLayerControl, WeatherLayerType } from './WeatherLayerControl';
 import { AQILayerControl } from './AQILayerControl';
 import { AQIStationMarker } from './AQIStationMarker';
 import { AQIPopup } from './AQIPopup';
+import { VietnamIslandsLayer, VIETNAM_ISLANDS } from './VietnamIslandsLayer';
+import { IslandPopup } from './IslandPopup';
 import { useAQIStations, AQIStation } from '@/hooks/useAQIData';
 import { WEATHER_TILE_LAYERS } from '@/hooks/useWeatherData';
 import { toast } from 'sonner';
@@ -133,9 +135,9 @@ export function MapLibreMap({
   const mapRef = useRef<maplibregl.Map | null>(null);
   
   const [viewState, setViewState] = useState({
-    longitude: 106.6297,
-    latitude: 16.4637,
-    zoom: 5.5,
+    longitude: 110.0,
+    latitude: 14.0,
+    zoom: 4.5,
     pitch: 0,
     bearing: 0
   });
@@ -156,6 +158,9 @@ export function MapLibreMap({
   const [showAQI, setShowAQI] = useState(false);
   const [showAQIStations, setShowAQIStations] = useState(true);
   const [selectedAQIStation, setSelectedAQIStation] = useState<AQIStation | null>(null);
+  
+  // Vietnam Islands state
+  const [selectedIsland, setSelectedIsland] = useState<{ archipelago: 'hoangSa' | 'truongSa'; islandKey: string } | null>(null);
 
   const { data: forestAreas = [] } = useForestAreas();
   
@@ -262,11 +267,52 @@ export function MapLibreMap({
   const handleZoomOverview = useCallback(() => {
     if (mapRef.current) {
       mapRef.current.flyTo({
-        center: [106.6297, 16.4637],
-        zoom: 5.5,
+        center: [110.0, 14.0],
+        zoom: 4.5,
         duration: 1500
       });
     }
+  }, []);
+
+  // Fly to Hoang Sa
+  const handleFlyToHoangSa = useCallback(() => {
+    if (mapRef.current) {
+      mapRef.current.flyTo({
+        center: VIETNAM_ISLANDS.hoangSa.center,
+        zoom: 7,
+        duration: 2000
+      });
+      toast.success(t('islands.flyTo') + ' ' + t('islands.hoangSa'));
+    }
+  }, [t]);
+
+  // Fly to Truong Sa
+  const handleFlyToTruongSa = useCallback(() => {
+    if (mapRef.current) {
+      mapRef.current.flyTo({
+        center: VIETNAM_ISLANDS.truongSa.center,
+        zoom: 6,
+        duration: 2000
+      });
+      toast.success(t('islands.flyTo') + ' ' + t('islands.truongSa'));
+    }
+  }, [t]);
+
+  // Fly to all islands (East Sea view)
+  const handleFlyToAllIslands = useCallback(() => {
+    if (mapRef.current) {
+      mapRef.current.flyTo({
+        center: [113.0, 12.0],
+        zoom: 5,
+        duration: 2000
+      });
+      toast.success(t('islands.viewAll'));
+    }
+  }, [t]);
+
+  // Handle island click
+  const handleIslandClick = useCallback((archipelago: 'hoangSa' | 'truongSa', islandKey: string) => {
+    setSelectedIsland({ archipelago, islandKey });
   }, []);
 
   // Start drawing
@@ -333,6 +379,9 @@ export function MapLibreMap({
         onToggleWeather={() => setShowWeatherPanel(!showWeatherPanel)}
         showAQI={showAQIPanel}
         onToggleAQI={() => setShowAQIPanel(!showAQIPanel)}
+        onFlyToHoangSa={handleFlyToHoangSa}
+        onFlyToTruongSa={handleFlyToTruongSa}
+        onFlyToAllIslands={handleFlyToAllIslands}
         className="absolute top-3 left-3 right-3 z-10"
       />
 
@@ -362,6 +411,7 @@ export function MapLibreMap({
         onMyLocation={handleMyLocation}
         onZoomHome={handleZoomHome}
         onZoomOverview={handleZoomOverview}
+        onFlyToIslands={handleFlyToAllIslands}
         isLoadingLocation={isLoadingLocation}
         className="absolute top-20 right-3 z-10"
       />
@@ -454,6 +504,30 @@ export function MapLibreMap({
             closeOnClick={false}
           >
             <AQIPopup station={selectedAQIStation as any} />
+          </Popup>
+        )}
+
+        {/* Vietnam Islands Layer - Hoang Sa & Truong Sa */}
+        <VietnamIslandsLayer 
+          onIslandClick={handleIslandClick}
+          selectedIsland={selectedIsland?.islandKey}
+        />
+
+        {/* Island Popup */}
+        {selectedIsland && (
+          <Popup
+            longitude={VIETNAM_ISLANDS[selectedIsland.archipelago].center[0]}
+            latitude={VIETNAM_ISLANDS[selectedIsland.archipelago].center[1]}
+            anchor="bottom"
+            onClose={() => setSelectedIsland(null)}
+            closeButton={true}
+            closeOnClick={false}
+            maxWidth="320px"
+          >
+            <IslandPopup 
+              archipelago={selectedIsland.archipelago}
+              islandKey={selectedIsland.islandKey}
+            />
           </Popup>
         )}
 
