@@ -531,3 +531,54 @@
 
 [dir="rtl"] .flex-row { flex-direction: row-reverse; }
 [dir="rtl"] .rtl\:flex-row-reverse { flex-direction: row; }
+
+/* Tree Map Marker Animations */
+@keyframes tree-pulse {
+  0%, 100% {
+    box-shadow: 0 0 8px currentColor;
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 20px currentColor, 0 0 35px currentColor;
+    transform: scale(1.05);
+  }
+}
+
+.tree-marker-glow {
+  animation: tree-pulse 2s ease-in-out infinite;
+}
+
+/* Custom tree marker styles */
+.custom-tree-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
+.custom-tree-marker > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Leaflet popup customization for tree markers */
+.tree-popup .leaflet-popup-content-wrapper {
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+.tree-popup .leaflet-popup-content {
+  margin: 8px;
+}
+
+.tree-popup .leaflet-popup-tip {
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.1);
+}
+
+/* Heatmap legend gradient */
+.heatmap-legend-gradient {
+  background: linear-gradient(to right, #86efac, #22c55e, #16a34a, #15803d, #166534);
+}
+
+.heatmap-legend-gradient-carbon {
+  background: linear-gradient(to right, #bef264, #a3e635, #84cc16, #65a30d, #4d7c0f);
+}
