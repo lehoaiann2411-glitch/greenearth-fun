@@ -1,8 +1,9 @@
 import React from 'react';
-import { Marker, Source, Layer } from 'react-map-gl/maplibre';
+import { Marker } from 'react-map-gl/maplibre';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { WORLD_ARCHIPELAGOS, Archipelago } from '@/data/worldArchipelagos';
+import { CountryFlag } from './CountryFlag';
 
 interface WorldArchipelagosLayerProps {
   onArchipelagoClick?: (archipelagoId: string, archipelago: Archipelago) => void;
@@ -27,7 +28,7 @@ export function WorldArchipelagosLayer({
     <>
       {archipelagos.map(([key, archipelago]) => (
         <React.Fragment key={key}>
-          {/* Individual island markers */}
+          {/* Individual island markers - now with flags */}
           {archipelago.islands.map((island, idx) => (
             <Marker
               key={`${key}-island-${idx}`}
@@ -45,10 +46,10 @@ export function WorldArchipelagosLayer({
                 {/* Glow effect for highlighted (Vietnam) islands */}
                 {archipelago.highlighted && (
                   <motion.div
-                    className="absolute inset-0 rounded-full"
-                    style={{ backgroundColor: archipelago.color }}
+                    className="absolute -inset-1 rounded-sm"
+                    style={{ backgroundColor: '#dc2626' }}
                     animate={{
-                      scale: [1, 1.8, 1],
+                      scale: [1, 1.5, 1],
                       opacity: [0.6, 0, 0.6],
                     }}
                     transition={{
@@ -59,25 +60,23 @@ export function WorldArchipelagosLayer({
                   />
                 )}
                 
-                {/* Island marker */}
+                {/* Flag marker */}
                 <div
-                  className="relative w-3 h-3 rounded-full border-2 border-white shadow-lg transition-transform group-hover:scale-150"
-                  style={{ 
-                    backgroundColor: archipelago.color,
-                    boxShadow: archipelago.highlighted 
-                      ? `0 0 10px ${archipelago.color}, 0 0 20px ${archipelago.color}` 
-                      : `0 2px 4px rgba(0,0,0,0.3)`
-                  }}
+                  className={`
+                    relative transition-transform group-hover:scale-125
+                    ${archipelago.highlighted ? 'ring-2 ring-yellow-400 ring-offset-1 rounded-sm' : ''}
+                  `}
                 >
-                  {/* Center dot */}
-                  <div className="absolute inset-1 rounded-full bg-white/80" />
+                  <CountryFlag 
+                    country={archipelago.sovereignty} 
+                    size={archipelago.highlighted ? 20 : 16} 
+                  />
                 </div>
                 
                 {/* Tooltip on hover */}
-                <div className="absolute left-1/2 -translate-x-1/2 -top-8 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                <div className="absolute left-1/2 -translate-x-1/2 -top-8 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">
                   <div 
-                    className="px-2 py-1 rounded text-[10px] font-medium text-white shadow-lg"
-                    style={{ backgroundColor: archipelago.color }}
+                    className="px-2 py-1 rounded text-[10px] font-medium text-white shadow-lg bg-gray-900/90 backdrop-blur-sm"
                   >
                     {t(island.nameKey)}
                   </div>
@@ -86,7 +85,7 @@ export function WorldArchipelagosLayer({
             </Marker>
           ))}
 
-          {/* Archipelago center label */}
+          {/* Archipelago center label - now white text like country names */}
           {showLabels && (
             <Marker
               longitude={archipelago.center[0]}
@@ -102,33 +101,34 @@ export function WorldArchipelagosLayer({
               >
                 <div
                   className={`
-                    px-3 py-1.5 rounded-full shadow-lg
-                    flex items-center gap-2
+                    flex items-center gap-1.5
                     transition-all hover:scale-105
-                    ${selectedArchipelago === key ? 'ring-2 ring-white ring-offset-2' : ''}
+                    ${selectedArchipelago === key ? 'scale-110' : ''}
                   `}
-                  style={{ 
-                    backgroundColor: archipelago.color,
-                    boxShadow: archipelago.highlighted 
-                      ? `0 0 15px ${archipelago.color}` 
-                      : '0 4px 6px rgba(0,0,0,0.2)'
-                  }}
                 >
-                  {/* Marker dot */}
-                  <div className="w-2.5 h-2.5 rounded-full bg-white/90 shadow-inner" />
-                  
-                  {/* Label */}
-                  <span className="text-xs font-bold text-white drop-shadow-md whitespace-nowrap">
+                  {/* White italic text like country names on maps */}
+                  <span 
+                    className="
+                      text-[11px] font-semibold italic tracking-wide
+                      text-white/95
+                      drop-shadow-[0_1px_1px_rgba(0,0,0,0.9)]
+                      [text-shadow:_0_1px_3px_rgba(0,0,0,0.8),_0_0_8px_rgba(0,0,0,0.5)]
+                      whitespace-nowrap
+                      select-none
+                    "
+                  >
                     {t(archipelago.nameKey)}
                   </span>
                   
-                  {/* Vietnam sovereignty badge */}
+                  {/* Vietnam sovereignty badge for highlighted archipelagos */}
                   {archipelago.highlighted && (
-                    <div className="w-4 h-3 rounded-sm overflow-hidden shadow-sm flex-shrink-0">
-                      <div className="w-full h-full bg-gradient-to-b from-red-500 to-red-600 flex items-center justify-center">
-                        <div className="w-1.5 h-1.5 bg-yellow-400" style={{ clipPath: 'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)' }} />
-                      </div>
-                    </div>
+                    <motion.div 
+                      className="flex-shrink-0"
+                      animate={{ scale: [1, 1.05, 1] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                    >
+                      <CountryFlag country="Vietnam" size={14} className="ring-1 ring-yellow-400" />
+                    </motion.div>
                   )}
                 </div>
               </motion.div>
