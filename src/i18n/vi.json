@@ -368,7 +368,12 @@
       "locationPermissionDenied": "Bạn đã từ chối quyền định vị",
       "locationUnavailable": "Không thể lấy vị trí",
       "locationTimeout": "Hết thời gian chờ định vị",
-      "locationError": "Lỗi định vị"
+      "locationError": "Lỗi định vị",
+      "satellite": "Vệ tinh",
+      "streets": "Đường",
+      "hybrid": "Kết hợp",
+      "terrain": "Địa hình",
+      "fullscreen": "Toàn màn hình"
     }
   },
   "calculator": {

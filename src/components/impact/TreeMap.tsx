@@ -4,7 +4,8 @@ import { MapContainer, TileLayer, useMap } from 'react-leaflet';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
-import { TreePine, MapPin, Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { TreePine, MapPin, Loader2, Maximize2, Minimize2 } from 'lucide-react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -14,6 +15,7 @@ import { GlowingTreeMarker } from './GlowingTreeMarker';
 import { TreeMapTimeline } from './TreeMapTimeline';
 import { TreeMapHeatLayerControl, TreeMapHeatLayerLegend, HeatLayer } from './TreeMapHeatLayer';
 import { NearestLocationFinder } from './NearestLocationFinder';
+import { MapStyleSwitcher, MapStyle, mapStyles } from './MapStyleSwitcher';
 import { formatCO2 } from '@/lib/carbonCalculations';
 
 // Fix for default marker icons in Leaflet with Vite
@@ -35,13 +37,27 @@ function FlyToLocation({ location }: { location: TreeLocation | null }) {
   
   useEffect(() => {
     if (location) {
-      map.flyTo([location.latitude, location.longitude], 12, {
+      map.flyTo([location.latitude, location.longitude], 15, {
         duration: 1.5,
       });
     }
   }, [location, map]);
   
   return null;
+}
+
+// Component to handle fullscreen
+function FullscreenControl({ isFullscreen, onToggle }: { isFullscreen: boolean; onToggle: () => void }) {
+  return (
+    <Button
+      variant="secondary"
+      size="icon"
+      className="absolute top-3 right-3 z-[1000] bg-background/90 backdrop-blur-sm shadow-md"
+      onClick={onToggle}
+    >
+      {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+    </Button>
+  );
 }
 
 export function TreeMap() {
@@ -53,6 +69,11 @@ export function TreeMap() {
   const [heatmapEnabled, setHeatmapEnabled] = useState(false);
   const [heatmapMode, setHeatmapMode] = useState<'trees' | 'carbon'>('trees');
   const [selectedLocation, setSelectedLocation] = useState<TreeLocation | null>(null);
+  const [mapStyle, setMapStyle] = useState<MapStyle>(() => {
+    const saved = localStorage.getItem('treeMapStyle');
+    return (saved as MapStyle) || 'satellite';
+  });
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Fetch data with filters
   const { data: locations = [], isLoading, error } = useTreeMapData(filters);
@@ -69,6 +90,11 @@ export function TreeMap() {
     setMapReady(true);
   }, []);
 
+  // Save map style preference
+  useEffect(() => {
+    localStorage.setItem('treeMapStyle', mapStyle);
+  }, [mapStyle]);
+
   const handleTimelineChange = useCallback((filtered: TreeLocation[]) => {
     setTimelineLocations(filtered);
   }, []);
@@ -76,6 +102,12 @@ export function TreeMap() {
   const handleLocationSelect = useCallback((location: TreeLocation) => {
     setSelectedLocation(location);
   }, []);
+
+  const toggleFullscreen = useCallback(() => {
+    setIsFullscreen(prev => !prev);
+  }, []);
+
+  const currentStyle = mapStyles[mapStyle];
 
   if (error) {
     return (
@@ -91,7 +123,7 @@ export function TreeMap() {
 
   return (
     <div className="space-y-4">
-      <Card>
+      <Card className={isFullscreen ? 'fixed inset-4 z-50 flex flex-col' : ''}>
         <CardHeader className="pb-3">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
@@ -120,35 +152,51 @@ export function TreeMap() {
           </div>
         </CardHeader>
         
-        <CardContent className="space-y-4">
-          {/* Filters and Heatmap Controls */}
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <CardContent className={`space-y-4 ${isFullscreen ? 'flex-1 flex flex-col' : ''}`}>
+          {/* Map Style Switcher + Filters + Heatmap Controls */}
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <MapStyleSwitcher value={mapStyle} onChange={setMapStyle} />
+              <TreeMapHeatLayerControl
+                enabled={heatmapEnabled}
+                onEnabledChange={setHeatmapEnabled}
+                mode={heatmapMode}
+                onModeChange={setHeatmapMode}
+              />
+            </div>
             <TreeMapFilters filters={filters} onFiltersChange={setFilters} />
-            <TreeMapHeatLayerControl
-              enabled={heatmapEnabled}
-              onEnabledChange={setHeatmapEnabled}
-              mode={heatmapMode}
-              onModeChange={setHeatmapMode}
-            />
           </div>
 
           {/* Map Container */}
           {isLoading ? (
-            <Skeleton className="h-[450px] w-full rounded-lg" />
+            <Skeleton className={`w-full rounded-lg ${isFullscreen ? 'flex-1' : 'h-[450px]'}`} />
           ) : mapReady ? (
-            <div className="relative h-[450px] rounded-lg overflow-hidden border">
+            <div className={`relative rounded-lg overflow-hidden border shadow-lg ${isFullscreen ? 'flex-1' : 'h-[450px]'}`}>
               <MapContainer
                 center={defaultCenter}
                 zoom={defaultZoom}
                 style={{ height: '100%', width: '100%' }}
                 scrollWheelZoom={true}
                 className="z-0"
+                maxZoom={currentStyle.maxZoom}
               >
-                {/* Dark tile layer for better contrast */}
+                {/* Main tile layer */}
                 <TileLayer
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> | <a href="https://carto.com/">CARTO</a>'
-                  url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+                  key={`main-${mapStyle}`}
+                  attribution={currentStyle.attribution}
+                  url={currentStyle.url}
+                  maxZoom={currentStyle.maxZoom}
                 />
+                
+                {/* Labels layer for hybrid mode */}
+                {mapStyle === 'hybrid' && currentStyle.labelsUrl && (
+                  <TileLayer
+                    key="labels"
+                    url={currentStyle.labelsUrl}
+                    maxZoom={currentStyle.maxZoom}
+                    opacity={0.9}
+                  />
+                )}
                 
                 {/* Heatmap Layer */}
                 {heatmapEnabled && (
@@ -164,11 +212,24 @@ export function TreeMap() {
                 <FlyToLocation location={selectedLocation} />
               </MapContainer>
 
+              {/* Fullscreen toggle */}
+              <FullscreenControl isFullscreen={isFullscreen} onToggle={toggleFullscreen} />
+
               {/* Heatmap Legend */}
               {heatmapEnabled && <TreeMapHeatLayerLegend mode={heatmapMode} />}
+              
+              {/* Map style indicator */}
+              <div className="absolute bottom-3 left-3 z-[1000]">
+                <Badge variant="secondary" className="bg-background/90 backdrop-blur-sm shadow-md text-xs">
+                  {mapStyle === 'satellite' && '🛰️ HD Satellite'}
+                  {mapStyle === 'streets' && '🗺️ Streets'}
+                  {mapStyle === 'hybrid' && '🌍 Hybrid'}
+                  {mapStyle === 'terrain' && '⛰️ Terrain'}
+                </Badge>
+              </div>
             </div>
           ) : (
-            <div className="h-[450px] flex items-center justify-center bg-muted rounded-lg">
+            <div className={`flex items-center justify-center bg-muted rounded-lg ${isFullscreen ? 'flex-1' : 'h-[450px]'}`}>
               <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
             </div>
           )}
@@ -189,7 +250,7 @@ export function TreeMap() {
       </Card>
 
       {/* Timeline Animation */}
-      {locations.length > 0 && (
+      {locations.length > 0 && !isFullscreen && (
         <TreeMapTimeline
           locations={locations}
           onTimeChange={handleTimelineChange}
@@ -199,10 +260,12 @@ export function TreeMap() {
       )}
 
       {/* Nearest Location Finder */}
-      <NearestLocationFinder
-        locations={locations}
-        onLocationSelect={handleLocationSelect}
-      />
+      {!isFullscreen && (
+        <NearestLocationFinder
+          locations={locations}
+          onLocationSelect={handleLocationSelect}
+        />
+      )}
     </div>
   );
 }
