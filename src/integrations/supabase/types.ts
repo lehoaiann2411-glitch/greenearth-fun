@@ -713,6 +713,53 @@ export type Database = {
           },
         ]
       }
+      forest_areas: {
+        Row: {
+          area_hectares: number | null
+          campaign_id: string | null
+          coordinates: Json
+          created_at: string | null
+          created_by: string | null
+          forest_type: string | null
+          id: string
+          name: string
+          trees_count: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          area_hectares?: number | null
+          campaign_id?: string | null
+          coordinates: Json
+          created_at?: string | null
+          created_by?: string | null
+          forest_type?: string | null
+          id?: string
+          name: string
+          trees_count?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          area_hectares?: number | null
+          campaign_id?: string | null
+          coordinates?: Json
+          created_at?: string | null
+          created_by?: string | null
+          forest_type?: string | null
+          id?: string
+          name?: string
+          trees_count?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forest_areas_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       friendships: {
         Row: {
           accepted_at: string | null
