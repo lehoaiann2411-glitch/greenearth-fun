@@ -215,6 +215,17 @@ export function MapLibreMap({
     setIsFullscreen(!isFullscreen);
   }, [isFullscreen]);
 
+  // Resize map when fullscreen changes
+  useEffect(() => {
+    if (mapRef.current) {
+      // Delay để CSS transition hoàn thành trước khi resize
+      const timer = setTimeout(() => {
+        mapRef.current?.resize();
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [isFullscreen]);
+
   // Fly to location (search)
   const flyToLocation = useCallback((lat: number, lon: number, name: string) => {
     if (mapRef.current) {
