@@ -411,28 +411,6 @@ export function MapLibreMap({
 
   return (
     <div className={`relative ${isFullscreen ? 'fixed inset-0 z-50' : 'h-full w-full'} ${className}`}>
-      {/* Unified Toolbar */}
-      <MapToolbar
-        mapStyle={mapStyle}
-        onMapStyleChange={setMapStyle}
-        show3D={show3D}
-        onToggle3D={toggle3D}
-        isFullscreen={isFullscreen}
-        onToggleFullscreen={toggleFullscreen}
-        isDrawing={isDrawing}
-        onStartDrawing={handleStartDrawing}
-        onLocationSelect={flyToLocation}
-        totalTrees={totalTrees}
-        totalCO2={totalCO2}
-        showWeather={showWeatherPanel}
-        onToggleWeather={() => setShowWeatherPanel(!showWeatherPanel)}
-        showAQI={showAQIPanel}
-        onToggleAQI={() => setShowAQIPanel(!showAQIPanel)}
-        onFlyToHoangSa={handleFlyToHoangSa}
-        onFlyToTruongSa={handleFlyToTruongSa}
-        onFlyToAllIslands={handleFlyToAllIslands}
-        className="absolute top-3 left-3 right-3 z-10"
-      />
 
       {/* Floating Exit Fullscreen Button - Chỉ hiện khi fullscreen */}
       {isFullscreen && (
