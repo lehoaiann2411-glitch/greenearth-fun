@@ -234,20 +234,25 @@ export function MapLibreMap({
     setIsDrawing(true);
   }, []);
 
-  // Get marker color based on trees planted
-  const getMarkerColor = (treesPlanted: number) => {
-    if (treesPlanted >= 10000) return '#15803d'; // green-700
-    if (treesPlanted >= 5000) return '#22c55e'; // green-500
-    if (treesPlanted >= 1000) return '#4ade80'; // green-400
-    return '#86efac'; // green-300
+  // Get forest emoji based on type
+  const getForestEmoji = (forestType?: string) => {
+    const emojis: Record<string, string> = {
+      'mangrove': '🌊',
+      'rainforest': '🌴',
+      'pine': '🌲',
+      'bamboo': '🎋',
+      'mixed': '🌳',
+      'planted': '🌱'
+    };
+    return emojis[forestType?.toLowerCase() || ''] || '🌳';
   };
 
-  // Get marker size
+  // Get marker size based on trees
   const getMarkerSize = (treesPlanted: number) => {
-    if (treesPlanted >= 10000) return 24;
-    if (treesPlanted >= 5000) return 20;
-    if (treesPlanted >= 1000) return 16;
-    return 14;
+    if (treesPlanted >= 10000) return 48;
+    if (treesPlanted >= 5000) return 42;
+    if (treesPlanted >= 1000) return 36;
+    return 32;
   };
 
   // Convert forest areas to GeoJSON
@@ -342,7 +347,7 @@ export function MapLibreMap({
           />
         </Source>
 
-        {/* Location Markers */}
+        {/* Cute Emoji Markers */}
         {locations.map((location, index) => (
           <Marker
             key={location.id}
@@ -356,23 +361,41 @@ export function MapLibreMap({
             <motion.div 
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: index * 0.05, type: 'spring', stiffness: 300 }}
-              className="relative cursor-pointer transition-transform hover:scale-110"
+              transition={{ delay: index * 0.03, type: 'spring', stiffness: 300 }}
+              whileHover={{ scale: 1.2 }}
+              className="relative cursor-pointer"
               style={{
                 width: getMarkerSize(location.treesPlanted),
                 height: getMarkerSize(location.treesPlanted)
               }}
             >
-              <div 
-                className="absolute inset-0 rounded-full animate-ping opacity-75"
-                style={{ backgroundColor: getMarkerColor(location.treesPlanted) }}
+              {/* Glow effect */}
+              <motion.div 
+                className="absolute inset-0 rounded-full bg-primary/30 blur-md"
+                animate={{ scale: [1, 1.3, 1], opacity: [0.5, 0.8, 0.5] }}
+                transition={{ repeat: Infinity, duration: 2, delay: index * 0.1 }}
               />
-              <div 
-                className="absolute inset-0 rounded-full flex items-center justify-center"
-                style={{ backgroundColor: getMarkerColor(location.treesPlanted) }}
+              
+              {/* Main emoji */}
+              <motion.div 
+                className="absolute inset-0 flex items-center justify-center text-2xl drop-shadow-lg"
+                animate={{ y: [0, -3, 0] }}
+                transition={{ repeat: Infinity, duration: 2, delay: index * 0.2 }}
               >
-                <Trees className="h-3 w-3 text-white" />
-              </div>
+                {getForestEmoji(location.forestType)}
+              </motion.div>
+              
+              {/* Tree count badge */}
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.3 + index * 0.03, type: 'spring' }}
+                className="absolute -top-1 -right-1 min-w-[20px] h-5 px-1 flex items-center justify-center bg-white dark:bg-gray-900 rounded-full text-[10px] font-bold text-primary shadow-lg border-2 border-primary/20"
+              >
+                {location.treesPlanted >= 1000 
+                  ? `${(location.treesPlanted / 1000).toFixed(0)}k` 
+                  : location.treesPlanted}
+              </motion.div>
             </motion.div>
           </Marker>
         ))}

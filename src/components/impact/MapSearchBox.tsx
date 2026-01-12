@@ -16,12 +16,13 @@ interface SearchResult {
 interface MapSearchBoxProps {
   onLocationSelect: (lat: number, lon: number, name: string) => void;
   className?: string;
+  placeholder?: string;
 }
 
 const RECENT_SEARCHES_KEY = 'map_recent_searches';
 const MAX_RECENT = 5;
 
-export function MapSearchBox({ onLocationSelect, className }: MapSearchBoxProps) {
+export function MapSearchBox({ onLocationSelect, className, placeholder }: MapSearchBoxProps) {
   const { t } = useTranslation();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -138,8 +139,8 @@ export function MapSearchBox({ onLocationSelect, className }: MapSearchBoxProps)
           value={query}
           onChange={(e) => handleInputChange(e.target.value)}
           onFocus={() => setShowDropdown(true)}
-          placeholder={t('impact.map.search.placeholder', 'Tìm địa điểm...')}
-          className="pl-9 pr-8 h-9 bg-background/95 backdrop-blur"
+          placeholder={placeholder || t('impact.map.search.placeholder', 'Tìm địa điểm...')}
+          className="pl-9 pr-8 h-9 bg-background/95 backdrop-blur rounded-xl border-2 border-transparent focus:border-primary/30"
         />
         {query && (
           <Button

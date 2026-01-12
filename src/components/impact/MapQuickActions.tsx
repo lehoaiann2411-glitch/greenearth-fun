@@ -2,7 +2,6 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
-import { Navigation, Home, Globe, Compass } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 
@@ -26,22 +25,28 @@ export function MapQuickActions({
   const actions = [
     {
       id: 'my-location',
-      icon: Navigation,
-      label: t('impact.map.myLocation', 'Vị trí của tôi'),
+      emoji: '📍',
+      label: t('impact.map.myLocation', 'Tìm tôi nè!'),
+      cuteLabel: 'Tìm tôi nè! 🎯',
       onClick: onMyLocation,
-      loading: isLoadingLocation
+      loading: isLoadingLocation,
+      gradient: 'from-blue-400 to-cyan-400'
     },
     {
       id: 'zoom-home',
-      icon: Home,
+      emoji: '🏠',
       label: t('impact.map.zoomHome', 'Zoom gần'),
-      onClick: onZoomHome
+      cuteLabel: 'Xem gần hơn 🔍',
+      onClick: onZoomHome,
+      gradient: 'from-orange-400 to-amber-400'
     },
     {
       id: 'overview',
-      icon: Globe,
+      emoji: '🌏',
       label: t('impact.map.overview', 'Tổng quan'),
-      onClick: onZoomOverview
+      cuteLabel: 'Xem cả Việt Nam 🗺️',
+      onClick: onZoomOverview,
+      gradient: 'from-green-400 to-emerald-400'
     }
   ];
 
@@ -52,16 +57,23 @@ export function MapQuickActions({
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.3 }}
         className={cn(
-          'flex flex-col gap-2',
+          'flex flex-col gap-2.5',
           className
         )}
       >
         {actions.map((action, index) => (
           <motion.div
             key={action.id}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.4 + index * 0.1 }}
+            initial={{ opacity: 0, scale: 0.5, x: 20 }}
+            animate={{ opacity: 1, scale: 1, x: 0 }}
+            transition={{ 
+              delay: 0.4 + index * 0.1,
+              type: 'spring',
+              stiffness: 300,
+              damping: 15
+            }}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
           >
             <Tooltip>
               <TooltipTrigger asChild>
@@ -71,18 +83,40 @@ export function MapQuickActions({
                   onClick={action.onClick}
                   disabled={action.loading}
                   className={cn(
-                    'h-10 w-10 rounded-full shadow-lg bg-background/95 backdrop-blur hover:bg-primary hover:text-primary-foreground transition-all',
+                    'h-12 w-12 rounded-2xl shadow-lg',
+                    'bg-white/95 dark:bg-gray-900/95 backdrop-blur-md',
+                    'border-2 border-white/50 dark:border-gray-700/50',
+                    'hover:shadow-xl hover:border-primary/30',
+                    'transition-all duration-300',
                     action.loading && 'animate-pulse'
                   )}
                 >
-                  <action.icon className={cn(
-                    'h-5 w-5',
-                    action.loading && 'animate-spin'
-                  )} />
+                  <motion.span 
+                    className="text-xl"
+                    animate={action.loading ? { rotate: 360 } : { 
+                      y: [0, -2, 0],
+                    }}
+                    transition={action.loading ? { 
+                      repeat: Infinity, 
+                      duration: 1, 
+                      ease: 'linear' 
+                    } : {
+                      repeat: Infinity,
+                      duration: 2,
+                      repeatDelay: 1 + index
+                    }}
+                  >
+                    {action.emoji}
+                  </motion.span>
                 </Button>
               </TooltipTrigger>
-              <TooltipContent side="left" className="font-medium">
-                {action.label}
+              <TooltipContent 
+                side="left" 
+                className="font-medium px-3 py-2 rounded-xl bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-2 border-primary/20"
+              >
+                <span className="flex items-center gap-1.5">
+                  <span>{action.cuteLabel}</span>
+                </span>
               </TooltipContent>
             </Tooltip>
           </motion.div>
