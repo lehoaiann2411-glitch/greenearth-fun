@@ -11,23 +11,22 @@ import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useTranslation } from 'react-i18next';
 import { TreeLocation } from '@/hooks/useTreeMapData';
-import { useForestAreas, ForestArea } from '@/hooks/useForestAreas';
+import { useForestAreas } from '@/hooks/useForestAreas';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
   Trees, 
   MapPin, 
   Navigation, 
-  Eye,
-  Building2,
-  Satellite,
-  Map as MapIcon,
-  Layers,
-  Maximize2,
-  Minimize2
+  Eye
 } from 'lucide-react';
 import { ForestPolygonDrawer } from './ForestPolygonDrawer';
 import { StreetViewModal } from './StreetViewModal';
+import { MapToolbar } from './MapToolbar';
+import { MapQuickActions } from './MapQuickActions';
+import { MapTour } from './MapTour';
+import { toast } from 'sonner';
+import { motion } from 'framer-motion';
 
 // Map styles
 const MAP_STYLES = {
@@ -100,6 +99,8 @@ interface MapLibreMapProps {
   locations: TreeLocation[];
   onLocationClick?: (location: TreeLocation) => void;
   showDrawTools?: boolean;
+  totalTrees?: number;
+  totalCO2?: number;
   className?: string;
 }
 
@@ -107,6 +108,8 @@ export function MapLibreMap({
   locations, 
   onLocationClick,
   showDrawTools = true,
+  totalTrees = 0,
+  totalCO2 = 0,
   className = ''
 }: MapLibreMapProps) {
   const { t } = useTranslation();
@@ -126,6 +129,8 @@ export function MapLibreMap({
   const [streetViewLocation, setStreetViewLocation] = useState<{lat: number; lng: number} | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isDrawing, setIsDrawing] = useState(false);
+  const [isLoadingLocation, setIsLoadingLocation] = useState(false);
+  const [showTour, setShowTour] = useState(true);
 
   const { data: forestAreas = [] } = useForestAreas();
 
@@ -164,6 +169,71 @@ export function MapLibreMap({
     setIsFullscreen(!isFullscreen);
   }, [isFullscreen]);
 
+  // Fly to location (search)
+  const flyToLocation = useCallback((lat: number, lon: number, name: string) => {
+    if (mapRef.current) {
+      mapRef.current.flyTo({
+        center: [lon, lat],
+        zoom: 15,
+        duration: 2000
+      });
+      toast.success(t('impact.map.flyingTo', 'Đang bay đến {{name}}', { name: name.split(',')[0] }));
+    }
+  }, [t]);
+
+  // Get user location
+  const handleMyLocation = useCallback(() => {
+    setIsLoadingLocation(true);
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          if (mapRef.current) {
+            mapRef.current.flyTo({
+              center: [position.coords.longitude, position.coords.latitude],
+              zoom: 14,
+              duration: 1500
+            });
+          }
+          setIsLoadingLocation(false);
+        },
+        (error) => {
+          toast.error(t('impact.map.locationError', 'Không thể lấy vị trí'));
+          setIsLoadingLocation(false);
+        },
+        { enableHighAccuracy: true }
+      );
+    } else {
+      toast.error(t('impact.map.geolocationNotSupported', 'Trình duyệt không hỗ trợ định vị'));
+      setIsLoadingLocation(false);
+    }
+  }, [t]);
+
+  // Zoom home (level 14)
+  const handleZoomHome = useCallback(() => {
+    if (mapRef.current) {
+      mapRef.current.flyTo({
+        zoom: 17,
+        duration: 1000
+      });
+    }
+  }, []);
+
+  // Zoom overview (level 6)
+  const handleZoomOverview = useCallback(() => {
+    if (mapRef.current) {
+      mapRef.current.flyTo({
+        center: [106.6297, 16.4637],
+        zoom: 5.5,
+        duration: 1500
+      });
+    }
+  }, []);
+
+  // Start drawing
+  const handleStartDrawing = useCallback(() => {
+    setIsDrawing(true);
+  }, []);
+
   // Get marker color based on trees planted
   const getMarkerColor = (treesPlanted: number) => {
     if (treesPlanted >= 10000) return '#15803d'; // green-700
@@ -199,74 +269,32 @@ export function MapLibreMap({
     }))
   };
 
-  // Get forest type color
-  const getForestTypeColor = (forestType?: string) => {
-    switch (forestType) {
-      case 'mangrove': return 'rgba(6, 78, 59, 0.5)';
-      case 'rainforest': return 'rgba(22, 101, 52, 0.5)';
-      case 'pine': return 'rgba(34, 139, 34, 0.5)';
-      case 'bamboo': return 'rgba(74, 222, 128, 0.5)';
-      default: return 'rgba(34, 197, 94, 0.5)';
-    }
-  };
-
   return (
     <div className={`relative ${isFullscreen ? 'fixed inset-0 z-50' : 'h-full w-full'} ${className}`}>
-      {/* Style Switcher */}
-      <div className="absolute top-3 left-3 z-10 flex gap-1 bg-background/90 backdrop-blur rounded-lg p-1 shadow-lg">
-        <Button
-          variant={mapStyle === 'satellite' ? 'default' : 'ghost'}
-          size="sm"
-          onClick={() => setMapStyle('satellite')}
-          className="gap-1"
-        >
-          <Satellite className="h-4 w-4" />
-          <span className="hidden sm:inline">{t('impact.map.satellite', 'Vệ tinh')}</span>
-        </Button>
-        <Button
-          variant={mapStyle === 'streets' ? 'default' : 'ghost'}
-          size="sm"
-          onClick={() => setMapStyle('streets')}
-          className="gap-1"
-        >
-          <MapIcon className="h-4 w-4" />
-          <span className="hidden sm:inline">{t('impact.map.streets', 'Đường')}</span>
-        </Button>
-        <Button
-          variant={mapStyle === 'hybrid' ? 'default' : 'ghost'}
-          size="sm"
-          onClick={() => setMapStyle('hybrid')}
-          className="gap-1"
-        >
-          <Layers className="h-4 w-4" />
-          <span className="hidden sm:inline">{t('impact.map.hybrid', 'Kết hợp')}</span>
-        </Button>
-      </div>
+      {/* Unified Toolbar */}
+      <MapToolbar
+        mapStyle={mapStyle}
+        onMapStyleChange={setMapStyle}
+        show3D={show3D}
+        onToggle3D={toggle3D}
+        isFullscreen={isFullscreen}
+        onToggleFullscreen={toggleFullscreen}
+        isDrawing={isDrawing}
+        onStartDrawing={handleStartDrawing}
+        onLocationSelect={flyToLocation}
+        totalTrees={totalTrees}
+        totalCO2={totalCO2}
+        className="absolute top-3 left-3 right-3 z-10"
+      />
 
-      {/* 3D & Fullscreen Controls */}
-      <div className="absolute top-3 right-3 z-10 flex flex-col gap-2">
-        <Button
-          variant={show3D ? 'default' : 'outline'}
-          size="sm"
-          onClick={toggle3D}
-          className="gap-1 bg-background/90 backdrop-blur"
-        >
-          <Building2 className="h-4 w-4" />
-          <span className="hidden sm:inline">3D</span>
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={toggleFullscreen}
-          className="bg-background/90 backdrop-blur"
-        >
-          {isFullscreen ? (
-            <Minimize2 className="h-4 w-4" />
-          ) : (
-            <Maximize2 className="h-4 w-4" />
-          )}
-        </Button>
-      </div>
+      {/* Quick Action Buttons */}
+      <MapQuickActions
+        onMyLocation={handleMyLocation}
+        onZoomHome={handleZoomHome}
+        onZoomOverview={handleZoomOverview}
+        isLoadingLocation={isLoadingLocation}
+        className="absolute top-20 right-3 z-10"
+      />
 
       {/* Draw Tools */}
       {showDrawTools && (
@@ -300,8 +328,8 @@ export function MapLibreMap({
             id="forest-areas-fill"
             type="fill"
             paint={{
-              'fill-color': ['get', 'forest_type'],
-              'fill-opacity': 0.5
+              'fill-color': '#22c55e',
+              'fill-opacity': 0.4
             }}
           />
           <Layer
@@ -315,7 +343,7 @@ export function MapLibreMap({
         </Source>
 
         {/* Location Markers */}
-        {locations.map(location => (
+        {locations.map((location, index) => (
           <Marker
             key={location.id}
             longitude={location.longitude}
@@ -325,7 +353,10 @@ export function MapLibreMap({
               setSelectedLocation(location);
             }}
           >
-            <div 
+            <motion.div 
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: index * 0.05, type: 'spring', stiffness: 300 }}
               className="relative cursor-pointer transition-transform hover:scale-110"
               style={{
                 width: getMarkerSize(location.treesPlanted),
@@ -342,7 +373,7 @@ export function MapLibreMap({
               >
                 <Trees className="h-3 w-3 text-white" />
               </div>
-            </div>
+            </motion.div>
           </Marker>
         ))}
 
@@ -419,6 +450,11 @@ export function MapLibreMap({
           </Popup>
         )}
       </Map>
+
+      {/* Onboarding Tour */}
+      {showTour && (
+        <MapTour onComplete={() => setShowTour(false)} />
+      )}
 
       {/* Street View Modal */}
       <StreetViewModal

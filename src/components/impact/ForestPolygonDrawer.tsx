@@ -4,6 +4,8 @@ import maplibregl from 'maplibre-gl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
 import {
   Select,
   SelectContent,
@@ -22,13 +24,16 @@ import {
 import { 
   Pencil, 
   Save, 
-  Trash2, 
   Undo2,
-  X
+  X,
+  MousePointer,
+  Check
 } from 'lucide-react';
 import { useCreateForestArea, calculatePolygonArea } from '@/hooks/useForestAreas';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
+import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 interface ForestPolygonDrawerProps {
   mapRef: React.MutableRefObject<maplibregl.Map | null>;
@@ -37,12 +42,19 @@ interface ForestPolygonDrawerProps {
 }
 
 const FOREST_TYPES = [
-  { value: 'mangrove', label: 'Rừng ngập mặn' },
-  { value: 'rainforest', label: 'Rừng mưa nhiệt đới' },
-  { value: 'pine', label: 'Rừng thông' },
-  { value: 'bamboo', label: 'Rừng tre' },
-  { value: 'mixed', label: 'Rừng hỗn hợp' },
-  { value: 'planted', label: 'Rừng trồng' }
+  { value: 'mangrove', label: 'Rừng ngập mặn', emoji: '🌊' },
+  { value: 'rainforest', label: 'Rừng mưa nhiệt đới', emoji: '🌴' },
+  { value: 'pine', label: 'Rừng thông', emoji: '🌲' },
+  { value: 'bamboo', label: 'Rừng tre', emoji: '🎋' },
+  { value: 'mixed', label: 'Rừng hỗn hợp', emoji: '🌳' },
+  { value: 'planted', label: 'Rừng trồng', emoji: '🌱' }
+];
+
+const STEPS = [
+  { min: 0, label: 'Chọn điểm đầu tiên' },
+  { min: 1, label: 'Chọn điểm thứ 2' },
+  { min: 2, label: 'Thêm điểm để tạo hình' },
+  { min: 3, label: 'Có thể lưu hoặc thêm điểm' }
 ];
 
 export function ForestPolygonDrawer({ 
@@ -56,7 +68,6 @@ export function ForestPolygonDrawer({
   
   const [points, setPoints] = useState<[number, number][]>([]);
   const [markers, setMarkers] = useState<maplibregl.Marker[]>([]);
-  const [polygon, setPolygon] = useState<maplibregl.GeoJSONSource | null>(null);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [areaName, setAreaName] = useState('');
   const [forestType, setForestType] = useState('');
@@ -64,6 +75,17 @@ export function ForestPolygonDrawer({
 
   // Calculate area
   const calculatedArea = calculatePolygonArea(points);
+
+  // Get current step
+  const getCurrentStep = () => {
+    if (points.length === 0) return 0;
+    if (points.length === 1) return 1;
+    if (points.length === 2) return 2;
+    return 3;
+  };
+
+  const currentStep = getCurrentStep();
+  const progress = Math.min((points.length / 3) * 100, 100);
 
   // Clean up markers and polygon
   const cleanup = useCallback(() => {
@@ -164,10 +186,15 @@ export function ForestPolygonDrawer({
     const handleClick = (e: maplibregl.MapMouseEvent) => {
       const lngLat: [number, number] = [e.lngLat.lng, e.lngLat.lat];
       
+      // Create marker element with animation
+      const el = document.createElement('div');
+      el.className = 'w-4 h-4 bg-primary rounded-full border-2 border-white shadow-lg animate-bounce';
+      el.style.animation = 'bounce 0.5s ease-out';
+      
       // Add marker
       const marker = new maplibregl.Marker({ 
-        color: '#22c55e',
-        scale: 0.7
+        element: el,
+        anchor: 'center'
       })
         .setLngLat(lngLat)
         .addTo(map);
@@ -224,88 +251,108 @@ export function ForestPolygonDrawer({
   };
 
   if (!isDrawing) {
-    return (
-      <div className="absolute bottom-20 left-3 z-10">
-        <Button
-          onClick={startDrawing}
-          className="gap-2 bg-primary shadow-lg"
-        >
-          <Pencil className="h-4 w-4" />
-          {t('impact.map.drawPolygon', 'Vẽ khu vực')}
-        </Button>
-      </div>
-    );
+    return null; // Draw button is now in MapToolbar
   }
 
   return (
     <>
-      {/* Drawing Controls */}
-      <div className="absolute bottom-20 left-3 z-10 bg-background/95 backdrop-blur rounded-lg p-3 shadow-lg space-y-3">
-        <div className="flex items-center gap-2">
-          <Pencil className="h-4 w-4 text-primary" />
-          <span className="font-medium text-sm">
-            {t('impact.map.drawMode', 'Chế độ vẽ')}
-          </span>
-        </div>
+      {/* Drawing Controls with Step Guidance */}
+      <AnimatePresence>
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 20 }}
+          className="absolute bottom-20 left-3 z-10 bg-background/95 backdrop-blur rounded-xl p-4 shadow-2xl border space-y-4 max-w-[280px]"
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <Pencil className="h-4 w-4 text-primary" />
+              </div>
+              <div>
+                <h4 className="font-semibold text-sm">{t('impact.map.drawMode', 'Chế độ vẽ')}</h4>
+                <p className="text-xs text-muted-foreground">
+                  {t('impact.map.step', 'Bước')} {currentStep + 1}/4
+                </p>
+              </div>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={stopDrawing}
+              className="h-8 w-8"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
 
-        <p className="text-xs text-muted-foreground">
-          {t('impact.map.drawInstructions', 'Click trên bản đồ để đánh dấu khu vực rừng')}
-        </p>
+          {/* Progress Bar */}
+          <Progress value={progress} className="h-2" />
 
-        {points.length > 0 && (
-          <div className="text-xs space-y-1">
-            <p>
-              <span className="font-medium">{t('impact.map.points', 'Điểm')}:</span> {points.length}
-            </p>
+          {/* Step Guidance */}
+          <motion.div 
+            key={currentStep}
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex items-center gap-2 p-2 bg-primary/5 rounded-lg"
+          >
+            <MousePointer className="h-4 w-4 text-primary animate-pulse" />
+            <span className="text-sm font-medium">{STEPS[currentStep].label}</span>
+          </motion.div>
+
+          {/* Stats */}
+          {points.length > 0 && (
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <div className="flex items-center gap-1.5 p-2 bg-muted rounded-lg">
+                <Badge variant="secondary" className="h-5 w-5 p-0 flex items-center justify-center text-xs">
+                  {points.length}
+                </Badge>
+                <span className="text-muted-foreground">{t('impact.map.points', 'điểm')}</span>
+              </div>
+              {points.length >= 3 && (
+                <div className="flex items-center gap-1.5 p-2 bg-muted rounded-lg">
+                  <span className="font-semibold text-primary">{calculatedArea.toFixed(2)}</span>
+                  <span className="text-muted-foreground">ha</span>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Action Buttons */}
+          <div className="flex gap-2">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={undoLastPoint}
+              disabled={points.length === 0}
+              className="flex-1 gap-1"
+            >
+              <Undo2 className="h-3 w-3" />
+              {t('impact.map.undo', 'Hoàn tác')}
+            </Button>
+            
             {points.length >= 3 && (
-              <p>
-                <span className="font-medium">{t('impact.map.area', 'Diện tích')}:</span>{' '}
-                {calculatedArea.toFixed(2)} ha
-              </p>
+              <Button
+                size="sm"
+                onClick={() => setShowSaveDialog(true)}
+                className="flex-1 gap-1"
+              >
+                <Check className="h-3 w-3" />
+                {t('common.done', 'Hoàn tất')}
+              </Button>
             )}
           </div>
-        )}
-
-        <div className="flex gap-2">
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={undoLastPoint}
-            disabled={points.length === 0}
-            className="gap-1"
-          >
-            <Undo2 className="h-3 w-3" />
-            {t('impact.map.undo', 'Hoàn tác')}
-          </Button>
-          
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={stopDrawing}
-            className="gap-1"
-          >
-            <X className="h-3 w-3" />
-            {t('common.cancel', 'Hủy')}
-          </Button>
-        </div>
-
-        {points.length >= 3 && (
-          <Button
-            size="sm"
-            onClick={() => setShowSaveDialog(true)}
-            className="w-full gap-1"
-          >
-            <Save className="h-3 w-3" />
-            {t('impact.map.saveArea', 'Lưu khu vực')}
-          </Button>
-        )}
-      </div>
+        </motion.div>
+      </AnimatePresence>
 
       {/* Save Dialog */}
       <Dialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>{t('impact.map.saveForestArea', 'Lưu khu vực rừng')}</DialogTitle>
+            <DialogTitle className="flex items-center gap-2">
+              🌳 {t('impact.map.saveForestArea', 'Lưu khu vực rừng')}
+            </DialogTitle>
             <DialogDescription>
               {t('impact.map.saveDescription', 'Nhập thông tin về khu vực rừng bạn vừa vẽ')}
             </DialogDescription>
@@ -331,7 +378,10 @@ export function ForestPolygonDrawer({
                 <SelectContent>
                   {FOREST_TYPES.map(type => (
                     <SelectItem key={type.value} value={type.value}>
-                      {type.label}
+                      <span className="flex items-center gap-2">
+                        <span>{type.emoji}</span>
+                        <span>{type.label}</span>
+                      </span>
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -349,13 +399,13 @@ export function ForestPolygonDrawer({
               />
             </div>
 
-            <div className="bg-muted p-3 rounded-lg text-sm">
-              <p>
-                <span className="font-medium">{t('impact.map.calculatedArea', 'Diện tích tính được')}:</span>{' '}
-                <span className="text-primary font-bold">{calculatedArea.toFixed(2)} ha</span>
-              </p>
-              <p className="text-xs text-muted-foreground mt-1">
-                ({points.length} {t('impact.map.points', 'điểm')})
+            <div className="bg-primary/5 p-4 rounded-xl">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium">{t('impact.map.calculatedArea', 'Diện tích')}</span>
+                <span className="text-lg font-bold text-primary">{calculatedArea.toFixed(2)} ha</span>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {t('impact.map.basedOnPoints', 'Dựa trên {{count}} điểm đã chọn', { count: points.length })}
               </p>
             </div>
           </div>
@@ -367,12 +417,13 @@ export function ForestPolygonDrawer({
             <Button 
               onClick={handleSave}
               disabled={createForestArea.isPending}
+              className="gap-2"
             >
               {createForestArea.isPending ? (
                 t('common.loading', 'Đang tải...')
               ) : (
                 <>
-                  <Save className="h-4 w-4 mr-1" />
+                  <Save className="h-4 w-4" />
                   {t('common.save', 'Lưu')}
                 </>
               )}
