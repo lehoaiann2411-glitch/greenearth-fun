@@ -80,7 +80,8 @@
     "messages": "Tin nhắn",
     "friends": "Bạn bè",
     "learn": "Học hỏi",
-    "scan": "Quét rác"
+    "scan": "Quét rác",
+    "saved": "Kho lưu trữ"
   },
   "messages": {
     "title": "Tin nhắn",
@@ -1310,5 +1311,18 @@
     "lesbos": "Đảo Lesbos",
     "chios": "Đảo Chios",
     "samos": "Đảo Samos"
+  },
+  "saved": {
+    "title": "Kho lưu trữ",
+    "description": "Xem lại các bài viết, tin và reels đã lưu",
+    "posts": "Bài viết",
+    "stories": "Tin",
+    "reels": "Reels",
+    "emptyPosts": "Chưa có bài viết nào được lưu",
+    "emptyStories": "Chưa có tin nào được lưu",
+    "emptyReels": "Chưa có reel nào được lưu",
+    "saved": "Đã lưu",
+    "unsaved": "Đã bỏ lưu",
+    "removeFromSaved": "Xóa"
   }
 }

@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
-import { Leaf, Menu, X, User, LogOut, LayoutDashboard, Coins, Users, MessageCircle, UserPlus, PlayCircle, Sun, Moon, BookOpen, Camera } from 'lucide-react';
+import { Leaf, Menu, X, User, LogOut, LayoutDashboard, Coins, Users, MessageCircle, UserPlus, PlayCircle, Sun, Moon, BookOpen, Camera, Bookmark } from 'lucide-react';
 import greenEarthLogo from '@/assets/green-earth-logo.png';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -166,6 +166,12 @@ export function Header() {
                   <Link to="/profile" className="cursor-pointer flex items-center gap-2">
                     <User className="h-4 w-4" />
                     {t('nav.profile')}
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/saved" className="cursor-pointer flex items-center gap-2">
+                    <Bookmark className="h-4 w-4" />
+                    {t('nav.saved')}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />

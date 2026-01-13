@@ -80,7 +80,8 @@
     "messages": "Messages",
     "friends": "Friends",
     "learn": "Learn",
-    "scan": "Scan"
+    "scan": "Scan",
+    "saved": "Saved Items"
   },
   "header": {
     "lightMode": "Light mode",
@@ -1300,5 +1301,18 @@
     "lesbos": "Lesbos Island",
     "chios": "Chios Island",
     "samos": "Samos Island"
+  },
+  "saved": {
+    "title": "Saved Items",
+    "description": "View your saved posts, stories and reels",
+    "posts": "Posts",
+    "stories": "Stories",
+    "reels": "Reels",
+    "emptyPosts": "No saved posts yet",
+    "emptyStories": "No saved stories yet",
+    "emptyReels": "No saved reels yet",
+    "saved": "Saved",
+    "unsaved": "Removed from saved",
+    "removeFromSaved": "Remove"
   }
 }
