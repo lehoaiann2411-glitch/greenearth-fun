@@ -12,7 +12,13 @@
     "ringing": "Đang đổ chuông...",
     "calling": "Đang gọi...",
     "callEnded": "Cuộc gọi đã kết thúc",
-    "callback": "Gọi lại"
+    "callback": "Gọi lại",
+    "missedCall": "Cuộc gọi nhỡ",
+    "callRejected": "Cuộc gọi bị từ chối",
+    "noAnswer": "Không trả lời",
+    "minute": "phút",
+    "second": "giây",
+    "callDuration": "Thời lượng cuộc gọi"
   },
   "common": {
     "loading": "Đang tải...",

@@ -12,7 +12,13 @@
     "ringing": "Ringing...",
     "calling": "Calling...",
     "callEnded": "Call ended",
-    "callback": "Call back"
+    "callback": "Call back",
+    "missedCall": "Missed call",
+    "callRejected": "Call rejected",
+    "noAnswer": "No answer",
+    "minute": "min",
+    "second": "sec",
+    "callDuration": "Call duration"
   },
   "common": {
     "loading": "Loading...",

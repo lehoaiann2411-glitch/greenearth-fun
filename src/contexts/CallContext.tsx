@@ -12,8 +12,18 @@ import {
 } from '@/hooks/useCalls';
 import { IncomingCallModal } from '@/components/calls/IncomingCallModal';
 import { CallScreen } from '@/components/calls/CallScreen';
+import { CallEndedModal } from '@/components/calls/CallEndedModal';
 import { supabase } from '@/integrations/supabase/client';
 import { useCallSounds } from '@/hooks/useCallSounds';
+
+interface EndedCallInfo {
+  callType: 'voice' | 'video';
+  callStatus: 'ended' | 'missed' | 'rejected' | 'no_answer';
+  duration: number;
+  remoteName?: string;
+  remoteAvatar?: string;
+  remoteUserId?: string;
+}
 
 interface CallContextType {
   activeCall: Call | null;
@@ -47,10 +57,12 @@ export function CallProvider({ children }: CallProviderProps) {
   const [activeCall, setActiveCall] = useState<Call | null>(null);
   const [remoteUserInfo, setRemoteUserInfo] = useState<{ name?: string; avatar?: string }>({});
   const [isInitiator, setIsInitiator] = useState(false);
+  const [endedCallInfo, setEndedCallInfo] = useState<EndedCallInfo | null>(null);
   
   // Track if WebRTC has been initialized for current call
   const webrtcStartedRef = useRef(false);
   const currentCallIdRef = useRef<string | null>(null);
+  const callStartTimeRef = useRef<number | null>(null);
 
   const { playDialTone, stopAllSounds } = useCallSounds();
 
@@ -91,6 +103,16 @@ export function CallProvider({ children }: CallProviderProps) {
       currentCallIdRef.current = activeCall.id;
     }
   }, [activeCall?.id]);
+
+  // Track call start time when call is accepted
+  useEffect(() => {
+    if (activeCall?.status === 'accepted' && !callStartTimeRef.current) {
+      callStartTimeRef.current = Date.now();
+    }
+    if (!activeCall) {
+      callStartTimeRef.current = null;
+    }
+  }, [activeCall?.status]);
 
   // Initialize WebRTC when call is accepted
   useEffect(() => {
@@ -140,6 +162,29 @@ export function CallProvider({ children }: CallProviderProps) {
           console.log('CallContext: Call status changed', updatedCall.status);
           
           if (updatedCall.status === 'rejected' || updatedCall.status === 'ended' || updatedCall.status === 'missed') {
+            // Calculate duration
+            const duration = callStartTimeRef.current 
+              ? Math.floor((Date.now() - callStartTimeRef.current) / 1000)
+              : 0;
+
+            // Determine call status for the modal
+            let modalStatus: EndedCallInfo['callStatus'] = 'ended';
+            if (updatedCall.status === 'missed') {
+              modalStatus = isInitiator ? 'no_answer' : 'missed';
+            } else if (updatedCall.status === 'rejected') {
+              modalStatus = 'rejected';
+            }
+
+            // Show ended call modal
+            setEndedCallInfo({
+              callType: activeCall.call_type as 'voice' | 'video',
+              callStatus: modalStatus,
+              duration,
+              remoteName: remoteUserInfo.name,
+              remoteAvatar: remoteUserInfo.avatar,
+              remoteUserId: isInitiator ? activeCall.callee_id : activeCall.caller_id,
+            });
+
             cleanup();
             setActiveCall(null);
             setIsInitiator(false);
@@ -154,7 +199,7 @@ export function CallProvider({ children }: CallProviderProps) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [activeCall?.id, cleanup]);
+  }, [activeCall?.id, cleanup, isInitiator, remoteUserInfo]);
 
   const startCall = useCallback(
     async (userId: string, callType: 'voice' | 'video', userName?: string, userAvatar?: string) => {
@@ -202,8 +247,19 @@ export function CallProvider({ children }: CallProviderProps) {
   const endCurrentCall = useCallback(async () => {
     if (!activeCall) return;
 
-    const startTime = activeCall.started_at ? new Date(activeCall.started_at).getTime() : Date.now();
-    const duration = Math.floor((Date.now() - startTime) / 1000);
+    const duration = callStartTimeRef.current 
+      ? Math.floor((Date.now() - callStartTimeRef.current) / 1000)
+      : 0;
+
+    // Show ended call modal
+    setEndedCallInfo({
+      callType: activeCall.call_type as 'voice' | 'video',
+      callStatus: 'ended',
+      duration,
+      remoteName: remoteUserInfo.name,
+      remoteAvatar: remoteUserInfo.avatar,
+      remoteUserId: isInitiator ? activeCall.callee_id : activeCall.caller_id,
+    });
 
     await endCallMutation.mutateAsync({
       callId: activeCall.id,
@@ -216,7 +272,22 @@ export function CallProvider({ children }: CallProviderProps) {
     cleanup();
     setActiveCall(null);
     setIsInitiator(false);
-  }, [activeCall, endCallMutation, cleanup]);
+  }, [activeCall, endCallMutation, cleanup, remoteUserInfo, isInitiator]);
+
+  const handleCallback = useCallback(() => {
+    if (endedCallInfo?.remoteUserId) {
+      startCall(
+        endedCallInfo.remoteUserId,
+        endedCallInfo.callType,
+        endedCallInfo.remoteName,
+        endedCallInfo.remoteAvatar
+      );
+    }
+  }, [endedCallInfo, startCall]);
+
+  const handleCloseEndedModal = useCallback(() => {
+    setEndedCallInfo(null);
+  }, []);
 
   return (
     <CallContext.Provider
@@ -249,6 +320,20 @@ export function CallProvider({ children }: CallProviderProps) {
           remoteName={remoteUserInfo.name}
           remoteAvatar={remoteUserInfo.avatar}
           peerConnection={peerConnection}
+        />
+      )}
+
+      {/* Call ended modal */}
+      {endedCallInfo && (
+        <CallEndedModal
+          isOpen={!!endedCallInfo}
+          onClose={handleCloseEndedModal}
+          callType={endedCallInfo.callType}
+          callStatus={endedCallInfo.callStatus}
+          duration={endedCallInfo.duration}
+          remoteName={endedCallInfo.remoteName}
+          remoteAvatar={endedCallInfo.remoteAvatar}
+          onCallback={handleCallback}
         />
       )}
     </CallContext.Provider>
