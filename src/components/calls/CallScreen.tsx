@@ -165,8 +165,20 @@ export function CallScreen({
 
   const handleToggleVideo = () => {
     if (localStream) {
-      toggleVideo(localStream, isVideoOff);
-      setIsVideoOff(!isVideoOff);
+      const newVideoOff = !isVideoOff;
+      toggleVideo(localStream, !newVideoOff); // enabled = true khi bật camera
+      setIsVideoOff(newVideoOff);
+      
+      // Refresh video element khi bật lại camera
+      if (!newVideoOff && localVideoRef.current) {
+        const currentSrc = localVideoRef.current.srcObject;
+        localVideoRef.current.srcObject = null;
+        requestAnimationFrame(() => {
+          if (localVideoRef.current) {
+            localVideoRef.current.srcObject = currentSrc;
+          }
+        });
+      }
     }
   };
 
