@@ -894,6 +894,19 @@
       "updateError": "Failed to update profile",
       "onlyImages": "Only JPEG, PNG or WebP files allowed",
       "fileTooLarge": "File size must not exceed"
+    },
+    "photos": {
+      "title": "Photos & Videos",
+      "upload": "Upload",
+      "empty": "No photos or videos yet",
+      "uploadFirst": "Upload your first photo",
+      "filterAll": "All",
+      "filterPosts": "Posts",
+      "filterStories": "Stories",
+      "filterReels": "Reels",
+      "uploading": "Uploading...",
+      "uploadSuccess": "Upload successful!",
+      "uploadError": "Upload failed"
     }
   },
   "comment": {
