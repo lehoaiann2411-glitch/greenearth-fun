@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useStories, GroupedStories } from '@/hooks/useStories';
 import { useAuth } from '@/contexts/AuthContext';
+import { useProfile } from '@/hooks/useProfile';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { StoryViewer } from './StoryViewer';
 import { CreateStoryFullscreen } from '@/components/stories/CreateStoryFullscreen';
@@ -12,6 +13,7 @@ import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 export function StoriesBar() {
   const { t } = useTranslation();
   const { user } = useAuth();
+  const { data: profile } = useProfile();
   const { data: groupedStories, isLoading } = useStories();
   const [viewingStories, setViewingStories] = useState<GroupedStories | null>(null);
   const [storyIndex, setStoryIndex] = useState(0);
@@ -66,9 +68,9 @@ export function StoriesBar() {
                 }`}>
                   <div className="w-full h-full rounded-full p-[2px] bg-background">
                     <Avatar className="w-full h-full">
-                      <AvatarImage src={myStories?.user.avatar_url || undefined} />
-                      <AvatarFallback className="bg-primary/10 text-primary text-lg">
-                        {myStories?.user.full_name?.[0] || '🌱'}
+                      <AvatarImage src={myStories?.user.avatar_url || profile?.avatar_url || undefined} />
+                      <AvatarFallback className="bg-primary/10 text-primary">
+                        {myStories?.user.full_name?.[0] || profile?.full_name?.[0] || ''}
                       </AvatarFallback>
                     </Avatar>
                   </div>
