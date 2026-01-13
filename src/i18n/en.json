@@ -517,6 +517,8 @@
     "noMessages": "No messages yet",
     "sayHello": "Say hello! 👋",
     "sentCamly": "Sent {{amount}} Camly!",
+    "giftSuccess": "Successfully sent {{amount}} Camly! 🎁",
+    "giftFailed": "Failed to send Camly, please try again",
     "sentPhoto": "Sent a photo",
     "sentVideo": "Sent a video",
     "sendMedia": "Send photo/video",

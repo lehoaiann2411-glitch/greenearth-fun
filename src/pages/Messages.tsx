@@ -251,8 +251,14 @@ export default function Messages() {
         camlyAmount: amount,
       });
       setShowGiftModal(false);
-    } catch (error) {
+      toast.success(t('messages.giftSuccess', { amount }));
+    } catch (error: any) {
       console.error('Failed to send gift:', error);
+      if (error.message === 'INSUFFICIENT_BALANCE') {
+        toast.error(t('toast.insufficientBalance'));
+      } else {
+        toast.error(t('messages.giftFailed'));
+      }
     }
   };
 

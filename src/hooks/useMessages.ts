@@ -298,6 +298,84 @@ export function useSendMessage() {
     }) => {
       if (!user) throw new Error('Must be logged in');
 
+      // If sending Camly gift, validate and transfer coins FIRST
+      if (messageType === 'camly_gift' && camlyAmount) {
+        // 1. Check sender's balance
+        const { data: senderProfile, error: senderError } = await supabase
+          .from('profiles')
+          .select('camly_balance')
+          .eq('id', user.id)
+          .single();
+
+        if (senderError) throw senderError;
+        
+        const senderBalance = senderProfile?.camly_balance || 0;
+        if (senderBalance < camlyAmount) {
+          throw new Error('INSUFFICIENT_BALANCE');
+        }
+
+        // 2. Get recipient ID
+        const { data: participants, error: partError } = await supabase
+          .from('conversation_participants')
+          .select('user_id')
+          .eq('conversation_id', conversationId)
+          .neq('user_id', user.id);
+
+        if (partError) throw partError;
+        if (!participants || participants.length === 0) {
+          throw new Error('Recipient not found');
+        }
+
+        const recipientId = participants[0].user_id;
+
+        // 3. Get recipient's current balance
+        const { data: recipientProfile, error: recipientError } = await supabase
+          .from('profiles')
+          .select('camly_balance')
+          .eq('id', recipientId)
+          .single();
+
+        if (recipientError) throw recipientError;
+
+        const recipientBalance = recipientProfile?.camly_balance || 0;
+
+        // 4. Deduct from sender
+        const { error: deductError } = await supabase
+          .from('profiles')
+          .update({ camly_balance: senderBalance - camlyAmount })
+          .eq('id', user.id);
+
+        if (deductError) throw deductError;
+
+        // 5. Add to recipient
+        const { error: addError } = await supabase
+          .from('profiles')
+          .update({ camly_balance: recipientBalance + camlyAmount })
+          .eq('id', recipientId);
+
+        if (addError) {
+          // Rollback sender's balance if adding to recipient fails
+          await supabase
+            .from('profiles')
+            .update({ camly_balance: senderBalance })
+            .eq('id', user.id);
+          throw addError;
+        }
+
+        // 6. Create notification for recipient
+        await supabase.from('notifications').insert({
+          user_id: recipientId,
+          actor_id: user.id,
+          type: 'camly_gift',
+          title: 'Camly Gift Received',
+          message: `sent you ${camlyAmount} Camly Coins`,
+          camly_amount: camlyAmount,
+          reference_id: conversationId,
+          reference_type: 'conversation',
+        });
+      }
+
+      // Create the message
       const { data, error } = await supabase
         .from('messages')
         .insert({
@@ -313,37 +391,12 @@ export function useSendMessage() {
 
       if (error) throw error;
 
-      // If sending Camly gift, transfer coins
-      if (messageType === 'camly_gift' && camlyAmount) {
-        // Get recipient
-        const { data: participants } = await supabase
-          .from('conversation_participants')
-          .select('user_id')
-          .eq('conversation_id', conversationId)
-          .neq('user_id', user.id);
-
-        if (participants && participants.length > 0) {
-          const recipientId = participants[0].user_id;
-
-          // Create notification for recipient
-          await supabase.from('notifications').insert({
-            user_id: recipientId,
-            actor_id: user.id,
-            type: 'camly_gift',
-            title: 'Camly Gift Received',
-            message: `sent you ${camlyAmount} Camly Coins`,
-            camly_amount: camlyAmount,
-            reference_id: data.id,
-            reference_type: 'message',
-          });
-        }
-      }
-
       return data;
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['messages', data.conversation_id] });
       queryClient.invalidateQueries({ queryKey: ['conversations'] });
+      queryClient.invalidateQueries({ queryKey: ['profile'] });
     },
   });
 }
