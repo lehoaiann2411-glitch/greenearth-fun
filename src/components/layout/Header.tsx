@@ -18,6 +18,7 @@ import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { useUnreadMessagesCount } from '@/hooks/useMessages';
 import { useFriendRequestsCount } from '@/hooks/useFriendships';
+import { useProfile } from '@/hooks/useProfile';
 
 export function Header() {
   const { t } = useTranslation();
@@ -33,6 +34,7 @@ export function Header() {
   
   const { data: unreadMessages } = useUnreadMessagesCount();
   const { data: friendRequests } = useFriendRequestsCount();
+  const { data: profile } = useProfile();
 
   useEffect(() => {
     if (isDark) {
@@ -141,9 +143,9 @@ export function Header() {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-10 w-10 rounded-full ring-2 ring-white/30 hover:ring-white/50 transition-all">
                   <Avatar className="h-10 w-10">
-                    <AvatarImage src="" alt={user.email || ''} />
+                    <AvatarImage src={profile?.avatar_url || ''} alt={profile?.full_name || user.email || ''} />
                     <AvatarFallback className="bg-primary text-primary-foreground">
-                      {user.email?.charAt(0).toUpperCase()}
+                      {profile?.full_name?.[0] || user.email?.charAt(0).toUpperCase() || ''}
                     </AvatarFallback>
                   </Avatar>
                 </Button>
