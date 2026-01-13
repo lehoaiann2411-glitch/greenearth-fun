@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { 
   MessageCircle, Share2, MoreHorizontal, MapPin, 
-  TreePine, Trash2, Bookmark, Flag
+  TreePine, Trash2, Bookmark, BookmarkCheck, Flag
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { vi, enUS, zhCN, es, fr, de, pt, ja, ru, ar, hi, Locale } from 'date-fns/locale';
@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useLikePost, useSharePost, useDeletePost } from '@/hooks/usePosts';
 import { useAddReaction, useUserReaction } from '@/hooks/useReactions';
+import { useSavePost, useIsPostSaved } from '@/hooks/useSavedItems';
 import { useAuth } from '@/contexts/AuthContext';
 import { CamlyCoinIcon } from '@/components/rewards/CamlyCoinIcon';
 import { CommentSection } from './CommentSection';
@@ -68,6 +69,8 @@ export function PostCardEnhanced({ post, showComments = false }: PostCardEnhance
   const deletePost = useDeletePost();
   const addReaction = useAddReaction();
   const { data: userReaction } = useUserReaction(post.id);
+  const { data: isPostSaved } = useIsPostSaved(post.id);
+  const savePostMutation = useSavePost();
   
   const [isLiked, setIsLiked] = useState(post.has_liked || false);
   const [likesCount, setLikesCount] = useState(post.likes_count);
@@ -222,9 +225,13 @@ export function PostCardEnhanced({ post, showComments = false }: PostCardEnhance
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem>
-              <Bookmark className="w-4 h-4 mr-2" />
-              {t('post.savePost')}
+            <DropdownMenuItem onClick={() => savePostMutation.mutate({ postId: post.id, save: !isPostSaved })}>
+              {isPostSaved ? (
+                <BookmarkCheck className="w-4 h-4 mr-2 text-primary" />
+              ) : (
+                <Bookmark className="w-4 h-4 mr-2" />
+              )}
+              {isPostSaved ? t('post.unsavePost') : t('post.savePost')}
             </DropdownMenuItem>
             {isOwner ? (
               <>

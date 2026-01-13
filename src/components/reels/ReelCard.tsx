@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { Heart, MessageCircle, Bookmark, Music, UserPlus } from 'lucide-react';
+import { Heart, MessageCircle, Bookmark, BookmarkCheck, Music, UserPlus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ReelPlayer } from './ReelPlayer';
@@ -10,6 +10,7 @@ import { ReelGiftModal } from './ReelGiftModal';
 import { ShareReelModal } from './ShareReelModal';
 import { CamlyCoinIcon } from '@/components/rewards/CamlyCoinIcon';
 import { useLikeReel, useRecordReelView, REEL_REWARDS, type Reel } from '@/hooks/useReels';
+import { useSaveReel, useIsReelSaved } from '@/hooks/useSavedItems';
 import { useAuth } from '@/contexts/AuthContext';
 
 interface ReelCardProps {
@@ -26,11 +27,12 @@ export function ReelCard({ reel, isActive }: ReelCardProps) {
   const [showHeartAnimation, setShowHeartAnimation] = useState(false);
   const [localLiked, setLocalLiked] = useState(reel.user_has_liked || false);
   const [localLikesCount, setLocalLikesCount] = useState(reel.likes_count);
-  const [isSaved, setIsSaved] = useState(false);
   const hasRecordedView = useRef(false);
 
   const likeMutation = useLikeReel();
   const recordView = useRecordReelView();
+  const { data: isReelSaved } = useIsReelSaved(reel.id);
+  const saveReelMutation = useSaveReel();
 
   // Record view when active
   useEffect(() => {
@@ -68,7 +70,8 @@ export function ReelCard({ reel, isActive }: ReelCardProps) {
   };
 
   const handleSave = () => {
-    setIsSaved(!isSaved);
+    if (!user) return;
+    saveReelMutation.mutate({ reelId: reel.id, save: !isReelSaved });
   };
 
   const formatCount = (count: number) => {
@@ -198,11 +201,11 @@ export function ReelCard({ reel, isActive }: ReelCardProps) {
           whileTap={{ scale: 1.1 }}
           className="flex flex-col items-center"
         >
-          <Bookmark 
-            className={`h-8 w-8 transition-colors ${
-              isSaved ? 'text-yellow-500 fill-yellow-500' : 'text-white'
-            }`} 
-          />
+          {isReelSaved ? (
+            <BookmarkCheck className="h-8 w-8 text-yellow-500 fill-yellow-500" />
+          ) : (
+            <Bookmark className="h-8 w-8 text-white" />
+          )}
         </motion.button>
 
         {/* Gift Camly Button */}
