@@ -301,6 +301,7 @@
     "welcomeToGreenEarth": "Chào mừng bạn đến Green Earth! 🌱",
     "accountCreated": "Tài khoản đã được tạo thành công.",
     "invalidCredentials": "Email hoặc mật khẩu không đúng",
+    "rememberMe": "Ghi nhớ đăng nhập",
     "emailNotConfirmed": "Email chưa được xác nhận. Vui lòng kiểm tra hộp thư của bạn và nhấn vào link xác nhận.",
     "pleaseConfirmEmail": "Vui lòng kiểm tra email để xác nhận tài khoản trước khi đăng nhập.",
     "emailAlreadyRegistered": "Email này đã được đăng ký. Vui lòng đăng nhập hoặc sử dụng email khác.",
