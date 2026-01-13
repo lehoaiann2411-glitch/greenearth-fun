@@ -3106,6 +3106,10 @@ export type Database = {
         Args: { conv_id: string; u_id: string }
         Returns: boolean
       }
+      transfer_camly_coins: {
+        Args: { p_amount: number; p_receiver_id: string; p_sender_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       account_type: "individual" | "organization"

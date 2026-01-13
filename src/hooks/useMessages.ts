@@ -298,23 +298,9 @@ export function useSendMessage() {
     }) => {
       if (!user) throw new Error('Must be logged in');
 
-      // If sending Camly gift, validate and transfer coins FIRST
+      // If sending Camly gift, use secure RPC to transfer coins
       if (messageType === 'camly_gift' && camlyAmount) {
-        // 1. Check sender's balance
-        const { data: senderProfile, error: senderError } = await supabase
-          .from('profiles')
-          .select('camly_balance')
-          .eq('id', user.id)
-          .single();
-
-        if (senderError) throw senderError;
-        
-        const senderBalance = senderProfile?.camly_balance || 0;
-        if (senderBalance < camlyAmount) {
-          throw new Error('INSUFFICIENT_BALANCE');
-        }
-
-        // 2. Get recipient ID
+        // 1. Get recipient ID
         const { data: participants, error: partError } = await supabase
           .from('conversation_participants')
           .select('user_id')
@@ -328,41 +314,22 @@ export function useSendMessage() {
 
         const recipientId = participants[0].user_id;
 
-        // 3. Get recipient's current balance
-        const { data: recipientProfile, error: recipientError } = await supabase
-          .from('profiles')
-          .select('camly_balance')
-          .eq('id', recipientId)
-          .single();
+        // 2. Transfer coins using secure RPC function (handles both deduct & add atomically)
+        const { error: transferError } = await supabase
+          .rpc('transfer_camly_coins', {
+            p_sender_id: user.id,
+            p_receiver_id: recipientId,
+            p_amount: camlyAmount
+          });
 
-        if (recipientError) throw recipientError;
-
-        const recipientBalance = recipientProfile?.camly_balance || 0;
-
-        // 4. Deduct from sender
-        const { error: deductError } = await supabase
-          .from('profiles')
-          .update({ camly_balance: senderBalance - camlyAmount })
-          .eq('id', user.id);
-
-        if (deductError) throw deductError;
-
-        // 5. Add to recipient
-        const { error: addError } = await supabase
-          .from('profiles')
-          .update({ camly_balance: recipientBalance + camlyAmount })
-          .eq('id', recipientId);
-
-        if (addError) {
-          // Rollback sender's balance if adding to recipient fails
-          await supabase
-            .from('profiles')
-            .update({ camly_balance: senderBalance })
-            .eq('id', user.id);
-          throw addError;
+        if (transferError) {
+          if (transferError.message.includes('INSUFFICIENT_BALANCE')) {
+            throw new Error('INSUFFICIENT_BALANCE');
+          }
+          throw transferError;
         }
 
-        // 6. Create notification for recipient
+        // 3. Create notification for recipient
         await supabase.from('notifications').insert({
           user_id: recipientId,
           actor_id: user.id,
@@ -374,7 +341,7 @@ export function useSendMessage() {
           reference_type: 'conversation',
         });
 
-        // 7. Record transaction in camly_transactions table
+        // 4. Record transaction in camly_transactions table
         await supabase.from('camly_transactions').insert({
           sender_id: user.id,
           receiver_id: recipientId,
