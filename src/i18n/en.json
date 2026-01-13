@@ -213,7 +213,13 @@
       "invalidEmail": "Invalid email",
       "passwordMin": "Password must be at least 6 characters",
       "nameRequired": "Please enter your full name"
-    }
+    },
+    "forgotPassword": "Forgot password?",
+    "forgotPasswordDescription": "Enter your email to receive a password reset link",
+    "sendResetLink": "Send reset link",
+    "resetEmailSent": "Email sent!",
+    "checkYourEmail": "Please check your inbox to reset your password",
+    "error": "Error"
   },
   "hero": {
     "badge": "Web3 Environmental Protection Platform",
