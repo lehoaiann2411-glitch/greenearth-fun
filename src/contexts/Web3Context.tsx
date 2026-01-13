@@ -3,7 +3,6 @@ import { WagmiProvider, useAccount, useConnect, useDisconnect, useBalance } from
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { wagmiConfig, formatAddress } from '@/lib/web3Config';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from './AuthContext';
 
 interface Web3ContextType {
   address: string | undefined;
@@ -20,8 +19,27 @@ const Web3Context = createContext<Web3ContextType | undefined>(undefined);
 
 const queryClient = new QueryClient();
 
+// Get user from Supabase directly instead of useAuth to avoid circular dependency
+function useSupabaseUser() {
+  const [user, setUser] = useState<{ id: string } | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  return user;
+}
+
 function Web3ContextInner({ children }: { children: ReactNode }) {
-  const { user } = useAuth();
+  const user = useSupabaseUser();
   const { address, isConnected, isConnecting } = useAccount();
   const { connect, connectors, error } = useConnect();
   const { disconnect } = useDisconnect();
