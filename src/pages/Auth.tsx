@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Leaf, User, Building2, ArrowLeft, Loader2, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -31,6 +32,7 @@ export default function Auth() {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [forgotEmail, setForgotEmail] = useState('');
   const [forgotLoading, setForgotLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
   
   const { user, signIn, signUp, signInWithProvider } = useAuth();
   const navigate = useNavigate();
@@ -73,6 +75,13 @@ export default function Auth() {
     if (!validateForm(false)) return;
     
     setLoading(true);
+    
+    // Set session persistence based on "Remember me" checkbox
+    if (!rememberMe) {
+      // Clear any existing session from localStorage
+      localStorage.removeItem('sb-mngorzlybgkahwkvyofd-auth-token');
+    }
+    
     const { error } = await signIn(email, password);
     setLoading(false);
     
@@ -269,7 +278,17 @@ export default function Auth() {
                       )}
                     </div>
 
-                    <div className="flex justify-end">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="remember-me"
+                          checked={rememberMe}
+                          onCheckedChange={(checked) => setRememberMe(checked === true)}
+                        />
+                        <Label htmlFor="remember-me" className="text-sm font-normal cursor-pointer">
+                          {t('auth.rememberMe')}
+                        </Label>
+                      </div>
                       <button
                         type="button"
                         onClick={() => setShowForgotPassword(true)}

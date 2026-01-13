@@ -224,6 +224,7 @@
     "welcomeToGreenEarth": "Welcome to Green Earth! 🌱",
     "accountCreated": "Your account has been created successfully.",
     "invalidCredentials": "Invalid email or password",
+    "rememberMe": "Remember me",
     "emailNotConfirmed": "Email not confirmed. Please check your inbox and click the confirmation link.",
     "pleaseConfirmEmail": "Please check your email to confirm your account before logging in.",
     "emailAlreadyRegistered": "This email is already registered. Please login or use a different email.",
