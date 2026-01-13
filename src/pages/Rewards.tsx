@@ -15,6 +15,7 @@ import {
   Copy,
   Wallet,
   TrendingUp,
+  ArrowLeftRight,
 } from 'lucide-react';
 import { Layout } from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -30,6 +31,7 @@ import { CamlyCoinIcon } from '@/components/rewards/CamlyCoinIcon';
 import { CoinAnimation } from '@/components/rewards/CoinAnimation';
 import { DailyCheckIn } from '@/components/rewards/DailyCheckIn';
 import { EarningsBreakdown } from '@/components/rewards/EarningsBreakdown';
+import { TransactionHistory } from '@/components/rewards/TransactionHistory';
 import {
   CAMLY_REWARDS,
   DAILY_LIMITS,
@@ -149,10 +151,14 @@ export default function Rewards() {
         </div>
 
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full max-w-lg grid-cols-4">
+          <TabsList className="grid w-full max-w-2xl grid-cols-5">
             <TabsTrigger value="overview">
               <TrendingUp className="h-4 w-4 mr-2" />
               {t('rewards.overview', 'Overview')}
+            </TabsTrigger>
+            <TabsTrigger value="transactions">
+              <ArrowLeftRight className="h-4 w-4 mr-2" />
+              {t('rewards.transactions', 'Gifts')}
             </TabsTrigger>
             <TabsTrigger value="history">
               <History className="h-4 w-4 mr-2" />
@@ -176,6 +182,10 @@ export default function Rewards() {
               {/* Daily Check-in */}
               <DailyCheckIn />
             </div>
+          </TabsContent>
+
+          <TabsContent value="transactions">
+            <TransactionHistory />
           </TabsContent>
 
           <TabsContent value="history">
