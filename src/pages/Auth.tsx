@@ -8,8 +8,10 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Leaf, User, Building2, ArrowLeft, Loader2 } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Leaf, User, Building2, ArrowLeft, Loader2, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 import { z } from 'zod';
 
 export default function Auth() {
@@ -25,6 +27,10 @@ export default function Auth() {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string; fullName?: string }>({});
   const [socialLoading, setSocialLoading] = useState<'google' | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotLoading, setForgotLoading] = useState(false);
   
   const { user, signIn, signUp, signInWithProvider } = useAuth();
   const navigate = useNavigate();
@@ -141,6 +147,49 @@ export default function Auth() {
     // Note: OAuth redirects, so we don't need to setSocialLoading(null) on success
   };
 
+  const handleForgotPassword = async () => {
+    if (!forgotEmail.trim()) {
+      toast({
+        variant: 'destructive',
+        title: t('auth.error'),
+        description: t('auth.validation.invalidEmail'),
+      });
+      return;
+    }
+
+    try {
+      emailSchema.parse(forgotEmail);
+    } catch {
+      toast({
+        variant: 'destructive',
+        title: t('auth.error'),
+        description: t('auth.validation.invalidEmail'),
+      });
+      return;
+    }
+
+    setForgotLoading(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail, {
+      redirectTo: `${window.location.origin}/auth?mode=reset`,
+    });
+    setForgotLoading(false);
+
+    if (error) {
+      toast({
+        variant: 'destructive',
+        title: t('auth.error'),
+        description: error.message,
+      });
+    } else {
+      toast({
+        title: t('auth.resetEmailSent'),
+        description: t('auth.checkYourEmail'),
+      });
+      setShowForgotPassword(false);
+      setForgotEmail('');
+    }
+  };
+
   return (
     <div className="min-h-screen gradient-earth">
       {/* Back button */}
@@ -198,17 +247,40 @@ export default function Auth() {
                     
                     <div className="space-y-2">
                       <Label htmlFor="login-password">{t('auth.password')}</Label>
-                      <Input
-                        id="login-password"
-                        type="password"
-                        placeholder="••••••••"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className={errors.password ? 'border-destructive' : ''}
-                      />
+                      <div className="relative">
+                        <Input
+                          id="login-password"
+                          type={showPassword ? 'text' : 'password'}
+                          placeholder="••••••••"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          className={`pr-10 ${errors.password ? 'border-destructive' : ''}`}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                        >
+                          {showPassword ? (
+                            <EyeOff className="h-4 w-4" />
+                          ) : (
+                            <Eye className="h-4 w-4" />
+                          )}
+                        </button>
+                      </div>
                       {errors.password && (
                         <p className="text-sm text-destructive">{errors.password}</p>
                       )}
+                    </div>
+
+                    <div className="flex justify-end">
+                      <button
+                        type="button"
+                        onClick={() => setShowForgotPassword(true)}
+                        className="text-sm text-primary hover:underline"
+                      >
+                        {t('auth.forgotPassword')}
+                      </button>
                     </div>
 
                     <Button 
@@ -327,14 +399,27 @@ export default function Auth() {
                     
                     <div className="space-y-2">
                       <Label htmlFor="signup-password">{t('auth.password')}</Label>
-                      <Input
-                        id="signup-password"
-                        type="password"
-                        placeholder={t('auth.passwordPlaceholder')}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className={errors.password ? 'border-destructive' : ''}
-                      />
+                      <div className="relative">
+                        <Input
+                          id="signup-password"
+                          type={showPassword ? 'text' : 'password'}
+                          placeholder={t('auth.passwordPlaceholder')}
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          className={`pr-10 ${errors.password ? 'border-destructive' : ''}`}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                        >
+                          {showPassword ? (
+                            <EyeOff className="h-4 w-4" />
+                          ) : (
+                            <Eye className="h-4 w-4" />
+                          )}
+                        </button>
+                      </div>
                       {errors.password && (
                         <p className="text-sm text-destructive">{errors.password}</p>
                       )}
@@ -388,6 +473,38 @@ export default function Auth() {
           </Card>
         </div>
       </div>
+
+      {/* Forgot Password Modal */}
+      <Dialog open={showForgotPassword} onOpenChange={setShowForgotPassword}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{t('auth.forgotPassword')}</DialogTitle>
+            <DialogDescription>
+              {t('auth.forgotPasswordDescription')}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="forgot-email">{t('auth.email')}</Label>
+              <Input
+                id="forgot-email"
+                type="email"
+                placeholder="you@example.com"
+                value={forgotEmail}
+                onChange={(e) => setForgotEmail(e.target.value)}
+              />
+            </div>
+            <Button
+              onClick={handleForgotPassword}
+              disabled={forgotLoading}
+              className="w-full gradient-forest"
+            >
+              {forgotLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {t('auth.sendResetLink')}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

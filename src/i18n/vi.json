@@ -290,7 +290,13 @@
       "invalidEmail": "Email không hợp lệ",
       "passwordMin": "Mật khẩu phải có ít nhất 6 ký tự",
       "nameRequired": "Vui lòng nhập họ tên"
-    }
+    },
+    "forgotPassword": "Quên mật khẩu?",
+    "forgotPasswordDescription": "Nhập email của bạn để nhận link đặt lại mật khẩu",
+    "sendResetLink": "Gửi link đặt lại",
+    "resetEmailSent": "Email đã được gửi!",
+    "checkYourEmail": "Vui lòng kiểm tra hộp thư của bạn để đặt lại mật khẩu",
+    "error": "Lỗi"
   },
   "hero": {
     "badge": "Nền tảng Web3 Bảo vệ Môi trường",
