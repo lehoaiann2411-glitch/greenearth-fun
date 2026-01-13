@@ -802,6 +802,95 @@ export type Database = {
           },
         ]
       }
+      group_call_participants: {
+        Row: {
+          group_call_id: string
+          id: string
+          is_muted: boolean | null
+          is_video_off: boolean | null
+          joined_at: string | null
+          left_at: string | null
+          user_id: string
+        }
+        Insert: {
+          group_call_id: string
+          id?: string
+          is_muted?: boolean | null
+          is_video_off?: boolean | null
+          joined_at?: string | null
+          left_at?: string | null
+          user_id: string
+        }
+        Update: {
+          group_call_id?: string
+          id?: string
+          is_muted?: boolean | null
+          is_video_off?: boolean | null
+          joined_at?: string | null
+          left_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_call_participants_group_call_id_fkey"
+            columns: ["group_call_id"]
+            isOneToOne: false
+            referencedRelation: "group_calls"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_call_participants_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      group_calls: {
+        Row: {
+          call_type: string | null
+          created_at: string | null
+          ended_at: string | null
+          id: string
+          initiator_id: string
+          max_participants: number | null
+          started_at: string | null
+          status: string | null
+          title: string | null
+        }
+        Insert: {
+          call_type?: string | null
+          created_at?: string | null
+          ended_at?: string | null
+          id?: string
+          initiator_id: string
+          max_participants?: number | null
+          started_at?: string | null
+          status?: string | null
+          title?: string | null
+        }
+        Update: {
+          call_type?: string | null
+          created_at?: string | null
+          ended_at?: string | null
+          id?: string
+          initiator_id?: string
+          max_participants?: number | null
+          started_at?: string | null
+          status?: string | null
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_calls_initiator_id_fkey"
+            columns: ["initiator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       group_event_rsvps: {
         Row: {
           created_at: string | null
