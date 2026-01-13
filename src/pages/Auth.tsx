@@ -77,12 +77,19 @@ export default function Auth() {
     setLoading(false);
     
     if (error) {
+      let errorMessage = error.message;
+      
+      // Handle specific error cases
+      if (error.message.includes('Email not confirmed')) {
+        errorMessage = t('auth.emailNotConfirmed');
+      } else if (error.message === 'Invalid login credentials') {
+        errorMessage = t('auth.invalidCredentials');
+      }
+      
       toast({
         variant: 'destructive',
         title: t('auth.loginFailed'),
-        description: error.message === 'Invalid login credentials' 
-          ? t('auth.invalidCredentials')
-          : error.message,
+        description: errorMessage,
       });
     } else {
       toast({
@@ -99,9 +106,9 @@ export default function Auth() {
     
     setLoading(true);
     const { error } = await signUp(email, password, fullName, accountType);
+    setLoading(false);
     
     if (error) {
-      setLoading(false);
       let message = error.message;
       if (error.message.includes('already registered')) {
         message = t('auth.emailAlreadyRegistered');
@@ -112,23 +119,12 @@ export default function Auth() {
         description: message,
       });
     } else {
-      // Auto login after signup
-      const { error: signInError } = await signIn(email, password);
-      setLoading(false);
-      
-      if (signInError) {
-        toast({
-          title: t('auth.signupSuccess'),
-          description: t('auth.pleaseLogin'),
-        });
-        setActiveTab('login');
-      } else {
-        toast({
-          title: t('auth.welcomeToGreenEarth'),
-          description: t('auth.accountCreated'),
-        });
-        navigate('/dashboard');
-      }
+      // Show confirmation message - don't auto login since email confirmation is required
+      toast({
+        title: t('auth.signupSuccess'),
+        description: t('auth.pleaseConfirmEmail'),
+      });
+      setActiveTab('login');
     }
   };
 
