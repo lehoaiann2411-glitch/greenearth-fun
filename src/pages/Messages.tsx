@@ -31,6 +31,8 @@ import { CamlyGiftModal } from '@/components/messages/CamlyGiftModal';
 import { VoiceRecorder } from '@/components/messages/VoiceRecorder';
 import { NewMessageModal } from '@/components/messages/NewMessageModal';
 import { CallLogMessage } from '@/components/messages/CallLogMessage';
+import { CamlyGiftMessage } from '@/components/messages/CamlyGiftMessage';
+import { FlyingCoinAnimation } from '@/components/messages/FlyingCoinAnimation';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
@@ -71,6 +73,8 @@ export default function Messages() {
   const [showVoiceRecorder, setShowVoiceRecorder] = useState(false);
   const [showNewMessage, setShowNewMessage] = useState(false);
   const [isCreatingConversation, setIsCreatingConversation] = useState(false);
+  const [showCoinAnimation, setShowCoinAnimation] = useState(false);
+  const [coinAnimationAmount, setCoinAnimationAmount] = useState(0);
 
   // Enable online presence tracking
   useOnlinePresence();
@@ -242,6 +246,10 @@ export default function Messages() {
 
   const handleSendGift = async (amount: number) => {
     if (!conversationId) return;
+    
+    // Trigger coin animation
+    setCoinAnimationAmount(amount);
+    setShowCoinAnimation(true);
     
     try {
       await sendMessage.mutateAsync({
@@ -513,32 +521,11 @@ export default function Messages() {
 
                                 {/* Camly gift message */}
                                 {message.message_type === 'camly_gift' && (
-                                  <>
-                                    <div className="flex items-center gap-2 px-4 py-2.5">
-                                      <span className="text-xl">🎁</span>
-                                      <span className="font-medium">{t('messages.sentCamly', { amount: message.camly_amount })}</span>
-                                    </div>
-                                    <div className={cn(
-                                      'flex items-center gap-1 px-4 pb-2',
-                                      isOwn ? 'justify-end' : ''
-                                    )}>
-                                      <span className={cn(
-                                        'text-[10px]',
-                                        isOwn ? 'text-primary-foreground/60' : 'text-muted-foreground'
-                                      )}>
-                                        {formatDistanceToNow(new Date(message.created_at), { addSuffix: false })}
-                                      </span>
-                                      {isOwn && (
-                                        <MessageStatus
-                                          status={(message as any).status || 'sent'}
-                                          sentAt={message.created_at}
-                                          deliveredAt={(message as any).delivered_at}
-                                          seenAt={(message as any).seen_at}
-                                          isOwn={isOwn}
-                                        />
-                                      )}
-                                    </div>
-                                  </>
+                                  <CamlyGiftMessage 
+                                    amount={message.camly_amount || 0}
+                                    isSender={isOwn}
+                                    senderName={message.sender?.full_name || undefined}
+                                  />
                                 )}
 
                                 {/* Text message */}
@@ -745,6 +732,13 @@ export default function Messages() {
         <NewMessageModal 
           open={showNewMessage} 
           onOpenChange={setShowNewMessage} 
+        />
+
+        {/* Flying Coin Animation */}
+        <FlyingCoinAnimation 
+          trigger={showCoinAnimation}
+          amount={coinAnimationAmount}
+          onComplete={() => setShowCoinAnimation(false)}
         />
       </div>
     </Layout>

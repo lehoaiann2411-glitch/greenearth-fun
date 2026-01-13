@@ -373,6 +373,15 @@ export function useSendMessage() {
           reference_id: conversationId,
           reference_type: 'conversation',
         });
+
+        // 7. Record transaction in camly_transactions table
+        await supabase.from('camly_transactions').insert({
+          sender_id: user.id,
+          receiver_id: recipientId,
+          amount: camlyAmount,
+          transaction_type: 'gift',
+          description: `Gift via chat`,
+        });
       }
 
       // Create the message
