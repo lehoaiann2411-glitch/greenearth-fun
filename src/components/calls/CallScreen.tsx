@@ -16,12 +16,17 @@ import {
   Minimize2,
   Signal,
   SignalLow,
-  SignalZero
+  SignalZero,
+  Circle,
+  StopCircle,
+  ScreenShare,
+  ScreenShareOff,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { toggleAudio, toggleVideo, formatDuration, switchCamera, hasMultipleCameras } from '@/lib/webrtc';
 import type { Call } from '@/hooks/useCalls';
 import { cn } from '@/lib/utils';
+import { useCallRecording } from '@/hooks/useCallRecording';
 
 interface CallScreenProps {
   call: Call | null;
@@ -56,6 +61,15 @@ export function CallScreen({
   const [hasMultipleCams, setHasMultipleCams] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [audioPlaybackBlocked, setAudioPlaybackBlocked] = useState(false);
+  const [isScreenSharing, setIsScreenSharing] = useState(false);
+
+  const { 
+    isRecording, 
+    recordingDuration, 
+    startRecording, 
+    stopRecording, 
+    uploadRecording 
+  } = useCallRecording();
 
   const isVideoCall = call?.call_type === 'video';
 
@@ -167,6 +181,17 @@ export function CallScreen({
 
   const handleToggleFullscreen = () => {
     setIsFullscreen(!isFullscreen);
+  };
+
+  const handleToggleRecording = async () => {
+    if (isRecording) {
+      const result = await stopRecording();
+      if (result && call) {
+        await uploadRecording(call.id, result.blob);
+      }
+    } else if (localStream) {
+      startRecording(localStream, remoteStream);
+    }
   };
 
   if (!call) return null;
@@ -286,10 +311,15 @@ export function CallScreen({
             </div>
           )}
 
-          {/* Controls */}
-          <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
-            <div className="flex items-center justify-center gap-3 flex-wrap">
-              {/* Mute */}
+          {/* Recording indicator */}
+          {isRecording && (
+            <div className="absolute top-4 right-40 bg-red-500/90 px-3 py-1 rounded-full flex items-center gap-2 z-10">
+              <Circle className="h-3 w-3 fill-white text-white animate-pulse" />
+              <span className="text-white text-sm font-medium">
+                REC {formatDuration(recordingDuration)}
+              </span>
+            </div>
+          )}
               <Button
                 size="lg"
                 variant={isMuted ? 'destructive' : 'secondary'}

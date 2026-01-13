@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -5,6 +6,7 @@ import { Phone, PhoneOff, Video } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import type { Call } from '@/hooks/useCalls';
+import { useCallSounds } from '@/hooks/useCallSounds';
 
 interface IncomingCallModalProps {
   call: Call | null;
@@ -14,6 +16,25 @@ interface IncomingCallModalProps {
 
 export function IncomingCallModal({ call, onAccept, onReject }: IncomingCallModalProps) {
   const { t } = useTranslation();
+  const { playRingtone, stopAllSounds } = useCallSounds();
+
+  // Play ringtone when call comes in
+  useEffect(() => {
+    if (call) {
+      playRingtone();
+    }
+    return () => stopAllSounds();
+  }, [call, playRingtone, stopAllSounds]);
+
+  const handleAccept = () => {
+    stopAllSounds();
+    onAccept();
+  };
+
+  const handleReject = () => {
+    stopAllSounds();
+    onReject();
+  };
 
   if (!call) return null;
 
@@ -85,14 +106,14 @@ export function IncomingCallModal({ call, onAccept, onReject }: IncomingCallModa
               size="lg"
               variant="destructive"
               className="h-16 w-16 rounded-full"
-              onClick={onReject}
+              onClick={handleReject}
             >
               <PhoneOff className="h-6 w-6" />
             </Button>
             <Button
               size="lg"
               className="h-16 w-16 rounded-full bg-green-500 hover:bg-green-600"
-              onClick={onAccept}
+              onClick={handleAccept}
             >
               {isVideoCall ? <Video className="h-6 w-6" /> : <Phone className="h-6 w-6" />}
             </Button>
