@@ -151,6 +151,8 @@
     "sendFailed": "Không thể gửi tin nhắn",
     "createFailed": "Không thể tạo cuộc trò chuyện",
     "sentCamly": "Tặng {{amount}} Camly Coin",
+    "giftSuccess": "Đã tặng {{amount}} Camly thành công! 🎁",
+    "giftFailed": "Tặng Camly thất bại, vui lòng thử lại",
     "emoji": "Biểu tượng cảm xúc",
     "moreEmojis": "Thêm biểu tượng",
     "leafEmoji": "🌿",
