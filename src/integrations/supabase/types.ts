@@ -50,6 +50,61 @@ export type Database = {
         }
         Relationships: []
       }
+      call_recordings: {
+        Row: {
+          call_id: string | null
+          created_at: string | null
+          duration_seconds: number | null
+          file_size_bytes: number | null
+          file_url: string
+          group_call_id: string | null
+          id: string
+          recorded_by: string
+        }
+        Insert: {
+          call_id?: string | null
+          created_at?: string | null
+          duration_seconds?: number | null
+          file_size_bytes?: number | null
+          file_url: string
+          group_call_id?: string | null
+          id?: string
+          recorded_by: string
+        }
+        Update: {
+          call_id?: string | null
+          created_at?: string | null
+          duration_seconds?: number | null
+          file_size_bytes?: number | null
+          file_url?: string
+          group_call_id?: string | null
+          id?: string
+          recorded_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "call_recordings_call_id_fkey"
+            columns: ["call_id"]
+            isOneToOne: false
+            referencedRelation: "calls"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "call_recordings_group_call_id_fkey"
+            columns: ["group_call_id"]
+            isOneToOne: false
+            referencedRelation: "group_calls"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "call_recordings_recorded_by_fkey"
+            columns: ["recorded_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       calls: {
         Row: {
           call_type: string
