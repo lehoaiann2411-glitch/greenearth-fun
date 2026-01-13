@@ -11,6 +11,7 @@ import { ProfileTabs } from '@/components/profile/ProfileTabs';
 import { ProfileTimeline } from '@/components/profile/ProfileTimeline';
 import { ProfileAbout } from '@/components/profile/ProfileAbout';
 import { ProfileFriends } from '@/components/profile/ProfileFriends';
+import { ProfilePhotos } from '@/components/profile/ProfilePhotos';
 import { ClaimModal } from '@/components/rewards/ClaimModal';
 
 export default function Profile() {
@@ -96,11 +97,7 @@ export default function Profile() {
             )}
 
             {activeTab === 'photos' && (
-              <Card>
-                <CardContent className="p-8 text-center text-muted-foreground">
-                  <p>Photos feature coming soon!</p>
-                </CardContent>
-              </Card>
+              <ProfilePhotos userId={profile.id} isOwnProfile={isOwnProfile} />
             )}
 
             {activeTab === 'campaigns' && (

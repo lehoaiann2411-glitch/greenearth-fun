@@ -904,6 +904,19 @@
       "updateError": "Không thể cập nhật hồ sơ",
       "onlyImages": "Chỉ chấp nhận file JPEG, PNG hoặc WebP",
       "fileTooLarge": "Kích thước file không được vượt quá"
+    },
+    "photos": {
+      "title": "Ảnh và Video",
+      "upload": "Tải lên",
+      "empty": "Chưa có ảnh hoặc video nào",
+      "uploadFirst": "Tải lên ảnh đầu tiên",
+      "filterAll": "Tất cả",
+      "filterPosts": "Bài viết",
+      "filterStories": "Tin",
+      "filterReels": "Reels",
+      "uploading": "Đang tải lên...",
+      "uploadSuccess": "Tải lên thành công!",
+      "uploadError": "Lỗi khi tải lên"
     }
   },
   "comment": {
