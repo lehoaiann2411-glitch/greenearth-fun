@@ -1,7 +1,9 @@
-import { Phone, PhoneIncoming, PhoneMissed, PhoneOff, Video, VideoOff } from 'lucide-react';
+import { Phone, PhoneIncoming, PhoneMissed, PhoneOff, Video, VideoOff, PhoneCall } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns';
 import { vi, enUS } from 'date-fns/locale';
+import { Button } from '@/components/ui/button';
+import { useCall } from '@/contexts/CallContext';
 
 interface CallLogPayload {
   call_id: string;
@@ -16,6 +18,9 @@ interface CallLogMessageProps {
   payload: CallLogPayload;
   timestamp: string;
   isCurrentUserCaller: boolean;
+  otherUserId?: string;
+  otherUserName?: string;
+  otherUserAvatar?: string;
 }
 
 const formatDuration = (seconds: number): string => {
@@ -29,8 +34,16 @@ const formatDuration = (seconds: number): string => {
   return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 };
 
-export const CallLogMessage = ({ payload, timestamp, isCurrentUserCaller }: CallLogMessageProps) => {
+export const CallLogMessage = ({ 
+  payload, 
+  timestamp, 
+  isCurrentUserCaller,
+  otherUserId,
+  otherUserName,
+  otherUserAvatar,
+}: CallLogMessageProps) => {
   const { t, i18n } = useTranslation();
+  const { startCall } = useCall();
   const isVietnamese = i18n.language === 'vi';
   const dateLocale = isVietnamese ? vi : enUS;
 
@@ -71,6 +84,12 @@ export const CallLogMessage = ({ payload, timestamp, isCurrentUserCaller }: Call
     return isVietnamese ? 'Cuộc gọi đến' : 'Incoming';
   };
 
+  const handleCallback = () => {
+    if (otherUserId) {
+      startCall(otherUserId, payload.call_type, otherUserName, otherUserAvatar);
+    }
+  };
+
   return (
     <div className="flex justify-center my-4">
       <div className={`flex items-center gap-3 px-4 py-3 rounded-2xl ${
@@ -108,6 +127,19 @@ export const CallLogMessage = ({ payload, timestamp, isCurrentUserCaller }: Call
             </span>
           </div>
         </div>
+
+        {/* Callback button for missed/rejected calls */}
+        {isMissedOrRejected && otherUserId && (
+          <Button
+            size="sm"
+            variant="ghost"
+            className="ml-2 text-primary hover:bg-primary/10"
+            onClick={handleCallback}
+          >
+            <PhoneCall className="h-4 w-4 mr-1" />
+            {isVietnamese ? 'Gọi lại' : 'Call back'}
+          </Button>
+        )}
       </div>
     </div>
   );
