@@ -1,4 +1,19 @@
 {
+  "calls": {
+    "screenShareStarted": "Screen sharing started",
+    "screenShareStopped": "Screen sharing stopped",
+    "screenShareError": "Failed to share screen",
+    "sharingScreen": "Sharing",
+    "startScreenShare": "Share screen",
+    "stopScreenShare": "Stop sharing",
+    "startRecording": "Start recording",
+    "stopRecording": "Stop recording",
+    "connecting": "Connecting...",
+    "ringing": "Ringing...",
+    "calling": "Calling...",
+    "callEnded": "Call ended",
+    "callback": "Call back"
+  },
   "common": {
     "loading": "Loading...",
     "error": "An error occurred",

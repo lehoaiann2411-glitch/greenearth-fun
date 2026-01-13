@@ -23,10 +23,19 @@ import {
   ScreenShareOff,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { toggleAudio, toggleVideo, formatDuration, switchCamera, hasMultipleCameras } from '@/lib/webrtc';
+import { 
+  toggleAudio, 
+  toggleVideo, 
+  formatDuration, 
+  switchCamera, 
+  hasMultipleCameras,
+  getScreenShareStream,
+  replaceVideoTrack,
+} from '@/lib/webrtc';
 import type { Call } from '@/hooks/useCalls';
 import { cn } from '@/lib/utils';
 import { useCallRecording } from '@/hooks/useCallRecording';
+import { toast } from 'sonner';
 
 interface CallScreenProps {
   call: Call | null;
@@ -62,6 +71,9 @@ export function CallScreen({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [audioPlaybackBlocked, setAudioPlaybackBlocked] = useState(false);
   const [isScreenSharing, setIsScreenSharing] = useState(false);
+  const [screenStream, setScreenStream] = useState<MediaStream | null>(null);
+
+  const originalVideoTrackRef = useRef<MediaStreamTrack | null>(null);
 
   const { 
     isRecording, 
@@ -135,6 +147,15 @@ export function CallScreen({
     return () => clearInterval(interval);
   }, [call?.status]);
 
+  // Cleanup screen share on unmount
+  useEffect(() => {
+    return () => {
+      if (screenStream) {
+        screenStream.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, [screenStream]);
+
   const handleToggleMute = () => {
     if (localStream) {
       toggleAudio(localStream, isMuted);
@@ -192,6 +213,51 @@ export function CallScreen({
     } else if (localStream) {
       startRecording(localStream, remoteStream);
     }
+  };
+
+  const handleToggleScreenShare = async () => {
+    if (!isScreenSharing) {
+      try {
+        const screen = await getScreenShareStream();
+        const screenTrack = screen.getVideoTracks()[0];
+        
+        // Save original video track
+        originalVideoTrackRef.current = localStream?.getVideoTracks()[0] || null;
+        
+        // Replace with screen track
+        if (peerConnection) {
+          await replaceVideoTrack(peerConnection, screenTrack);
+        }
+        
+        setScreenStream(screen);
+        setIsScreenSharing(true);
+        
+        // Auto-stop when user stops share from browser
+        screenTrack.onended = () => handleStopScreenShare();
+        
+        toast.success(t('calls.screenShareStarted'));
+      } catch (error) {
+        console.error('Screen share failed:', error);
+        toast.error(t('calls.screenShareError'));
+      }
+    } else {
+      handleStopScreenShare();
+    }
+  };
+
+  const handleStopScreenShare = async () => {
+    if (screenStream) {
+      screenStream.getTracks().forEach(track => track.stop());
+    }
+    
+    // Restore camera
+    if (originalVideoTrackRef.current && peerConnection) {
+      await replaceVideoTrack(peerConnection, originalVideoTrackRef.current);
+    }
+    
+    setIsScreenSharing(false);
+    setScreenStream(null);
+    toast.info(t('calls.screenShareStopped'));
   };
 
   if (!call) return null;
@@ -291,6 +357,11 @@ export function CallScreen({
                 muted
                 className="w-full h-full object-cover scale-x-[-1]"
               />
+              {isScreenSharing && (
+                <div className="absolute bottom-1 left-1 right-1 bg-primary/80 text-white text-xs text-center py-0.5 rounded">
+                  {t('calls.sharingScreen')}
+                </div>
+              )}
             </div>
           )}
 
@@ -320,6 +391,43 @@ export function CallScreen({
               </span>
             </div>
           )}
+
+          {/* Controls */}
+          <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
+            <div className="flex justify-center items-center gap-3 flex-wrap">
+              {/* Recording button */}
+              <Button
+                size="lg"
+                variant={isRecording ? 'destructive' : 'secondary'}
+                className="h-14 w-14 rounded-full relative"
+                onClick={handleToggleRecording}
+                title={isRecording ? t('calls.stopRecording') : t('calls.startRecording')}
+              >
+                {isRecording ? (
+                  <StopCircle className="h-6 w-6" />
+                ) : (
+                  <Circle className="h-6 w-6 text-red-500" />
+                )}
+              </Button>
+
+              {/* Screen Share button (only for video calls) */}
+              {isVideoCall && (
+                <Button
+                  size="lg"
+                  variant={isScreenSharing ? 'default' : 'secondary'}
+                  className="h-14 w-14 rounded-full"
+                  onClick={handleToggleScreenShare}
+                  title={isScreenSharing ? t('calls.stopScreenShare') : t('calls.startScreenShare')}
+                >
+                  {isScreenSharing ? (
+                    <ScreenShareOff className="h-6 w-6" />
+                  ) : (
+                    <ScreenShare className="h-6 w-6" />
+                  )}
+                </Button>
+              )}
+
+              {/* Mute button */}
               <Button
                 size="lg"
                 variant={isMuted ? 'destructive' : 'secondary'}

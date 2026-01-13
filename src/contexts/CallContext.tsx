@@ -13,6 +13,7 @@ import {
 import { IncomingCallModal } from '@/components/calls/IncomingCallModal';
 import { CallScreen } from '@/components/calls/CallScreen';
 import { supabase } from '@/integrations/supabase/client';
+import { useCallSounds } from '@/hooks/useCallSounds';
 
 interface CallContextType {
   activeCall: Call | null;
@@ -51,6 +52,8 @@ export function CallProvider({ children }: CallProviderProps) {
   const webrtcStartedRef = useRef(false);
   const currentCallIdRef = useRef<string | null>(null);
 
+  const { playDialTone, stopAllSounds } = useCallSounds();
+
   const { data: incomingCall } = useIncomingCalls();
   const startCallMutation = useStartCall();
   const answerCallMutation = useAnswerCall();
@@ -66,6 +69,17 @@ export function CallProvider({ children }: CallProviderProps) {
     cleanup,
     peerConnection,
   } = useCallSignaling(activeCall?.id || null);
+
+  // Play dial tone when making outgoing call
+  useEffect(() => {
+    if (activeCall?.status === 'calling' && isInitiator) {
+      playDialTone();
+    } else {
+      stopAllSounds();
+    }
+    
+    return () => stopAllSounds();
+  }, [activeCall?.status, isInitiator, playDialTone, stopAllSounds]);
 
   // Reset WebRTC tracking when call changes or ends
   useEffect(() => {

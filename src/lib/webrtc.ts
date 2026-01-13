@@ -171,3 +171,24 @@ export const formatDuration = (seconds: number): string => {
   const secs = seconds % 60;
   return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 };
+
+// Get screen share stream
+export const getScreenShareStream = async (): Promise<MediaStream> => {
+  return navigator.mediaDevices.getDisplayMedia({
+    video: true,
+    audio: true,
+  });
+};
+
+// Replace video track in peer connection (for screen share)
+export const replaceVideoTrack = async (
+  peerConnection: RTCPeerConnection | null,
+  newTrack: MediaStreamTrack
+): Promise<void> => {
+  if (peerConnection) {
+    const sender = peerConnection.getSenders().find(s => s.track?.kind === 'video');
+    if (sender) {
+      await sender.replaceTrack(newTrack);
+    }
+  }
+};
