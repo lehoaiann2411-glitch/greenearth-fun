@@ -52,8 +52,15 @@ export default function Feed() {
 
   return (
     <Layout>
-      <div className="max-w-4xl mx-auto px-4 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="max-w-7xl mx-auto px-4 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Left Sidebar - Top Ranking */}
+          <div className="hidden lg:block">
+            <div className="sticky top-24">
+              <TopRankingWidget />
+            </div>
+          </div>
+
           {/* Main Feed */}
           <div className="lg:col-span-2 space-y-4">
             {/* Stories Bar */}
@@ -117,10 +124,11 @@ export default function Feed() {
             )}
           </div>
 
-          {/* Sidebar */}
-          <div className="hidden lg:block space-y-4">
-            <SuggestedUsers />
-            <TopRankingWidget />
+          {/* Right Sidebar */}
+          <div className="hidden lg:block">
+            <div className="sticky top-24">
+              <SuggestedUsers />
+            </div>
           </div>
         </div>
       </div>
