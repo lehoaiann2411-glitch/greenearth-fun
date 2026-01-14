@@ -26,8 +26,8 @@ function isNearWhite(r: number, g: number, b: number) {
   // saturation proxy 0..1 (lower = closer to gray/white)
   const saturation = max === 0 ? 0 : delta / max;
 
-  // A bit more tolerant than before (JPEG compression / lighting)
-  return brightness > 0.82 && saturation < 0.22;
+  // Only remove very bright, very unsaturated pixels (pure background white)
+  return brightness > 0.92 && saturation < 0.12;
 }
 
 function downscaleDimensions(
