@@ -8,6 +8,7 @@ import { CreatePostEnhanced } from '@/components/social/CreatePostEnhanced';
 import { PostCardEnhanced } from '@/components/social/PostCardEnhanced';
 import { FeedFilters } from '@/components/feed/FeedFilters';
 import { SuggestedUsers } from '@/components/feed/SuggestedUsers';
+import { TopRankingWidget } from '@/components/feed/TopRankingWidget';
 import { useFeed } from '@/hooks/useFeed';
 import { useAuth } from '@/contexts/AuthContext';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -119,6 +120,7 @@ export default function Feed() {
           {/* Sidebar */}
           <div className="hidden lg:block space-y-4">
             <SuggestedUsers />
+            <TopRankingWidget />
           </div>
         </div>
       </div>
