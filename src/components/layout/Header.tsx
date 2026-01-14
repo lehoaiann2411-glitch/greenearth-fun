@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { Leaf, Menu, X, User, LogOut, LayoutDashboard, Coins, Users, MessageCircle, UserPlus, PlayCircle, Sun, Moon, BookOpen, Camera, Bookmark } from 'lucide-react';
-import greenEarthLogo from '@/assets/green-earth-logo-clear.png';
+import { GreenEarthLogo } from '@/components/brand/GreenEarthLogo';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -82,10 +82,8 @@ export function Header() {
       <div className="container relative flex h-28 items-center justify-between">
         <Link to="/" className="flex items-center group relative">
           <div className="absolute inset-0 bg-[radial-gradient(circle,_rgba(255,255,255,0.5)_0%,_rgba(74,222,128,0.4)_40%,_transparent_70%)] blur-2xl scale-[2.5] animate-glow-pulse pointer-events-none" />
-          <img 
-            src={greenEarthLogo} 
-            alt="Green Earth" 
-            className="relative z-10 h-36 w-auto transition-transform duration-300 group-hover:scale-110 drop-shadow-[0_0_30px_rgba(255,255,255,0.5)]"
+          <GreenEarthLogo
+            className="relative z-10 h-36 w-auto transition-transform duration-300 group-hover:scale-110"
           />
         </Link>
 

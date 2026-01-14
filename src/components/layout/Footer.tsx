@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Leaf, Mail, Phone, MapPin, Facebook, Youtube, Globe, Heart } from 'lucide-react';
-import greenEarthLogo from '@/assets/green-earth-logo-clear.png';
+import { GreenEarthLogo } from '@/components/brand/GreenEarthLogo';
 import { useTranslation } from 'react-i18next';
 
 export function Footer() {
@@ -36,7 +36,7 @@ export function Footer() {
           <div className="space-y-4">
             <Link to="/" className="flex items-center group relative">
               <div className="absolute inset-0 bg-[radial-gradient(circle,_rgba(255,255,255,0.4)_0%,_rgba(74,222,128,0.3)_40%,_transparent_70%)] blur-2xl scale-[2.5] animate-glow-pulse pointer-events-none" />
-              <img src={greenEarthLogo} alt="Green Earth" className="relative z-10 h-40 w-auto drop-shadow-[0_0_25px_rgba(255,255,255,0.4)]" />
+              <GreenEarthLogo className="relative z-10 h-40 w-auto" />
             </Link>
             <p className="text-white/70 text-sm leading-relaxed">{t('footer.description')}</p>
             <div className="flex items-center gap-3">
