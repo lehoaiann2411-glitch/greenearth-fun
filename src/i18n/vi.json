@@ -18,7 +18,11 @@
     "noAnswer": "Không trả lời",
     "minute": "phút",
     "second": "giây",
-    "callDuration": "Thời lượng cuộc gọi"
+    "callDuration": "Thời lượng cuộc gọi",
+    "screenshot": "Chụp màn hình",
+    "screenshotSuccess": "Đã chụp ảnh màn hình!",
+    "screenshotError": "Không thể chụp màn hình",
+    "cameraOff": "Camera đã tắt"
   },
   "common": {
     "loading": "Đang tải...",

@@ -21,7 +21,10 @@ import {
   StopCircle,
   ScreenShare,
   ScreenShareOff,
+  Camera,
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 import { 
   toggleAudio, 
@@ -59,6 +62,7 @@ export function CallScreen({
   peerConnection,
 }: CallScreenProps) {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
   const remoteAudioRef = useRef<HTMLAudioElement>(null);
@@ -272,6 +276,77 @@ export function CallScreen({
     toast.info(t('calls.screenShareStopped'));
   };
 
+  // Screenshot handler
+  const handleTakeScreenshot = () => {
+    const remoteVideo = remoteVideoRef.current;
+    const localVideo = localVideoRef.current;
+    
+    if (!remoteVideo && !localVideo) {
+      toast.error(t('calls.screenshotError'));
+      return;
+    }
+
+    try {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      // Use remote video dimensions if available, otherwise local
+      const mainVideo = remoteVideo?.videoWidth ? remoteVideo : localVideo;
+      if (!mainVideo) return;
+
+      canvas.width = mainVideo.videoWidth || 1280;
+      canvas.height = mainVideo.videoHeight || 720;
+
+      // Draw remote video as main background
+      if (remoteVideo?.videoWidth) {
+        ctx.drawImage(remoteVideo, 0, 0, canvas.width, canvas.height);
+      } else {
+        // Fill with dark background if no remote video
+        ctx.fillStyle = '#1f2937';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+
+      // Draw local video as PiP in corner (if camera is on)
+      if (localVideo?.videoWidth && !isVideoOff) {
+        const pipWidth = canvas.width * 0.2;
+        const pipHeight = canvas.height * 0.25;
+        const pipX = canvas.width - pipWidth - 20;
+        const pipY = 20;
+        
+        // Draw border
+        ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(pipX - 2, pipY - 2, pipWidth + 4, pipHeight + 4);
+        
+        // Draw local video (flipped horizontally)
+        ctx.save();
+        ctx.translate(pipX + pipWidth, pipY);
+        ctx.scale(-1, 1);
+        ctx.drawImage(localVideo, 0, 0, pipWidth, pipHeight);
+        ctx.restore();
+      }
+
+      // Add timestamp
+      ctx.fillStyle = 'rgba(0,0,0,0.5)';
+      ctx.fillRect(10, canvas.height - 40, 200, 30);
+      ctx.fillStyle = '#fff';
+      ctx.font = '14px sans-serif';
+      ctx.fillText(new Date().toLocaleString(), 20, canvas.height - 18);
+
+      // Download
+      const link = document.createElement('a');
+      link.download = `call-screenshot-${Date.now()}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+
+      toast.success(t('calls.screenshotSuccess'));
+    } catch (error) {
+      console.error('Screenshot failed:', error);
+      toast.error(t('calls.screenshotError'));
+    }
+  };
+
   if (!call) return null;
 
   const getStatusText = () => {
@@ -359,17 +434,43 @@ export function CallScreen({
             </div>
           )}
 
-          {/* Local video (picture-in-picture) */}
-          {isVideoCall && localStream && !isVideoOff && (
-            <div className="absolute top-4 right-4 w-32 h-48 rounded-lg overflow-hidden border-2 border-white/20 shadow-lg">
-              <video
-                ref={localVideoRef}
-                autoPlay
-                playsInline
-                muted
-                className="w-full h-full object-cover scale-x-[-1]"
-              />
-              {isScreenSharing && (
+          {/* Local video (picture-in-picture) with avatar placeholder */}
+          {isVideoCall && localStream && (
+            <div className="absolute top-4 right-4 w-32 h-48 rounded-lg overflow-hidden border-2 border-white/20 shadow-lg bg-gray-800">
+              <AnimatePresence mode="wait">
+                {isVideoOff ? (
+                  <motion.div
+                    key="avatar"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.3, ease: "easeOut" }}
+                    className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-b from-gray-700 to-gray-800"
+                  >
+                    <Avatar className="h-16 w-16 mb-2 ring-2 ring-white/20">
+                      <AvatarImage src={user?.user_metadata?.avatar_url} />
+                      <AvatarFallback className="bg-primary/30 text-white text-xl">
+                        {user?.user_metadata?.full_name?.charAt(0) || user?.email?.charAt(0)?.toUpperCase() || 'Me'}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="text-white/70 text-xs">{t('calls.cameraOff')}</span>
+                  </motion.div>
+                ) : (
+                  <motion.video
+                    key="video"
+                    ref={localVideoRef}
+                    autoPlay
+                    playsInline
+                    muted
+                    initial={{ opacity: 0, scale: 1.05 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3, ease: "easeOut" }}
+                    className="w-full h-full object-cover scale-x-[-1]"
+                  />
+                )}
+              </AnimatePresence>
+              {isScreenSharing && !isVideoOff && (
                 <div className="absolute bottom-1 left-1 right-1 bg-primary/80 text-white text-xs text-center py-0.5 rounded">
                   {t('calls.sharingScreen')}
                 </div>
@@ -422,6 +523,19 @@ export function CallScreen({
                 )}
               </Button>
 
+              {/* Screenshot button (only for video calls) */}
+              {isVideoCall && (
+                <Button
+                  size="lg"
+                  variant="secondary"
+                  className="h-14 w-14 rounded-full"
+                  onClick={handleTakeScreenshot}
+                  title={t('calls.screenshot')}
+                >
+                  <Camera className="h-6 w-6" />
+                </Button>
+              )}
+
               {/* Screen Share button (only for video calls) */}
               {isVideoCall && (
                 <Button
@@ -459,16 +573,26 @@ export function CallScreen({
                 {isSpeakerOff ? <VolumeX className="h-6 w-6" /> : <Volume2 className="h-6 w-6" />}
               </Button>
 
-              {/* Video toggle (only for video calls) */}
+              {/* Video toggle (only for video calls) with animation */}
               {isVideoCall && (
-                <Button
-                  size="lg"
-                  variant={isVideoOff ? 'destructive' : 'secondary'}
-                  className="h-14 w-14 rounded-full"
-                  onClick={handleToggleVideo}
+                <motion.div
+                  animate={{ 
+                    scale: isVideoOff ? [1, 1.1, 1] : 1,
+                  }}
+                  transition={{ duration: 0.2 }}
                 >
-                  {isVideoOff ? <VideoOff className="h-6 w-6" /> : <Video className="h-6 w-6" />}
-                </Button>
+                  <Button
+                    size="lg"
+                    variant={isVideoOff ? 'destructive' : 'secondary'}
+                    className={cn(
+                      "h-14 w-14 rounded-full transition-all duration-300",
+                      isVideoOff && "ring-2 ring-red-500/50 ring-offset-2 ring-offset-gray-900"
+                    )}
+                    onClick={handleToggleVideo}
+                  >
+                    {isVideoOff ? <VideoOff className="h-6 w-6" /> : <Video className="h-6 w-6" />}
+                  </Button>
+                </motion.div>
               )}
 
               {/* Switch camera (only for video calls on devices with multiple cameras) */}
