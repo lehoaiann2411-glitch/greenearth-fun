@@ -69,7 +69,6 @@ export function Header() {
     { href: '/reels', label: t('nav.reels'), icon: PlayCircle },
     { href: '/campaigns', label: t('nav.campaigns') },
     { href: '/groups', label: t('nav.groups'), icon: Users },
-    { href: '/learn', label: t('nav.learn', 'Learn'), icon: BookOpen },
     { href: '/impact', label: t('nav.impact') },
     { href: '/rewards', label: t('nav.rewards'), icon: Coins },
     { href: '/leaderboard', label: t('nav.leaderboard') },
