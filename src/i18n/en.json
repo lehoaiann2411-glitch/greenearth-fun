@@ -18,7 +18,11 @@
     "noAnswer": "No answer",
     "minute": "min",
     "second": "sec",
-    "callDuration": "Call duration"
+    "callDuration": "Call duration",
+    "screenshot": "Take screenshot",
+    "screenshotSuccess": "Screenshot captured!",
+    "screenshotError": "Failed to capture screenshot",
+    "cameraOff": "Camera off"
   },
   "common": {
     "loading": "Loading...",
