@@ -471,6 +471,8 @@ export type Database = {
           is_muted: boolean | null
           joined_at: string | null
           last_read_at: string | null
+          nickname: string | null
+          role: string | null
           user_id: string
         }
         Insert: {
@@ -479,6 +481,8 @@ export type Database = {
           is_muted?: boolean | null
           joined_at?: string | null
           last_read_at?: string | null
+          nickname?: string | null
+          role?: string | null
           user_id: string
         }
         Update: {
@@ -487,6 +491,8 @@ export type Database = {
           is_muted?: boolean | null
           joined_at?: string | null
           last_read_at?: string | null
+          nickname?: string | null
+          role?: string | null
           user_id?: string
         }
         Relationships: [
@@ -508,7 +514,10 @@ export type Database = {
       }
       conversations: {
         Row: {
+          avatar_url: string | null
           created_at: string | null
+          created_by: string | null
+          description: string | null
           id: string
           last_message_at: string | null
           last_message_preview: string | null
@@ -517,7 +526,10 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          avatar_url?: string | null
           created_at?: string | null
+          created_by?: string | null
+          description?: string | null
           id?: string
           last_message_at?: string | null
           last_message_preview?: string | null
@@ -526,7 +538,10 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          avatar_url?: string | null
           created_at?: string | null
+          created_by?: string | null
+          description?: string | null
           id?: string
           last_message_at?: string | null
           last_message_preview?: string | null
@@ -534,7 +549,15 @@ export type Database = {
           type?: string
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "conversations_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       daily_habits: {
         Row: {
@@ -1505,6 +1528,45 @@ export type Database = {
         }
         Relationships: []
       }
+      message_reactions: {
+        Row: {
+          created_at: string | null
+          emoji: string
+          id: string
+          message_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          emoji: string
+          id?: string
+          message_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          emoji?: string
+          id?: string
+          message_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_reactions_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "message_reactions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       messages: {
         Row: {
           camly_amount: number | null
@@ -1512,11 +1574,15 @@ export type Database = {
           conversation_id: string
           created_at: string | null
           delivered_at: string | null
+          file_name: string | null
+          file_size: number | null
+          file_type: string | null
           id: string
           is_read: boolean | null
           media_url: string | null
           message_type: string | null
           payload: Json | null
+          reply_to_id: string | null
           seen_at: string | null
           sender_id: string
           status: string | null
@@ -1528,11 +1594,15 @@ export type Database = {
           conversation_id: string
           created_at?: string | null
           delivered_at?: string | null
+          file_name?: string | null
+          file_size?: number | null
+          file_type?: string | null
           id?: string
           is_read?: boolean | null
           media_url?: string | null
           message_type?: string | null
           payload?: Json | null
+          reply_to_id?: string | null
           seen_at?: string | null
           sender_id: string
           status?: string | null
@@ -1544,11 +1614,15 @@ export type Database = {
           conversation_id?: string
           created_at?: string | null
           delivered_at?: string | null
+          file_name?: string | null
+          file_size?: number | null
+          file_type?: string | null
           id?: string
           is_read?: boolean | null
           media_url?: string | null
           message_type?: string | null
           payload?: Json | null
+          reply_to_id?: string | null
           seen_at?: string | null
           sender_id?: string
           status?: string | null
@@ -1560,6 +1634,13 @@ export type Database = {
             columns: ["conversation_id"]
             isOneToOne: false
             referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_reply_to_id_fkey"
+            columns: ["reply_to_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
             referencedColumns: ["id"]
           },
           {
@@ -3074,9 +3155,22 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      add_group_member: {
+        Args: { p_conversation_id: string; p_user_id: string }
+        Returns: boolean
+      }
       are_friends: { Args: { user1: string; user2: string }; Returns: boolean }
       create_direct_conversation: {
         Args: { target_user_id: string }
+        Returns: string
+      }
+      create_group_conversation: {
+        Args: {
+          p_avatar_url?: string
+          p_description?: string
+          p_member_ids: string[]
+          p_name: string
+        }
         Returns: string
       }
       get_conversation_other_user: {
@@ -3104,6 +3198,10 @@ export type Database = {
       is_blocked: { Args: { user1: string; user2: string }; Returns: boolean }
       is_conversation_participant: {
         Args: { conv_id: string; u_id: string }
+        Returns: boolean
+      }
+      remove_group_member: {
+        Args: { p_conversation_id: string; p_user_id: string }
         Returns: boolean
       }
       transfer_camly_coins: {
