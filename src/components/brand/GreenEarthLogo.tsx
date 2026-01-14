@@ -9,19 +9,47 @@ type Props = Omit<React.ImgHTMLAttributes<HTMLImageElement>, "src"> & {
    * Default: false (safer; keeps internal highlights/clouds).
    */
   removeAllNearWhite?: boolean;
+  /**
+   * Downscale the source image before processing to avoid memory spikes.
+   * Default: 1024.
+   */
+  maxSize?: number;
 };
 
 function isNearWhite(r: number, g: number, b: number) {
   const max = Math.max(r, g, b);
   const min = Math.min(r, g, b);
-  // bright + low chroma (white/gray)
-  return max > 235 && max - min < 28;
+  const delta = max - min;
+
+  // brightness 0..1
+  const brightness = max / 255;
+  // saturation proxy 0..1 (lower = closer to gray/white)
+  const saturation = max === 0 ? 0 : delta / max;
+
+  // A bit more tolerant than before (JPEG compression / lighting)
+  return brightness > 0.82 && saturation < 0.22;
+}
+
+function downscaleDimensions(
+  width: number,
+  height: number,
+  maxSize: number
+): { width: number; height: number } {
+  const maxSide = Math.max(width, height);
+  if (maxSide <= maxSize) return { width, height };
+
+  const scale = maxSize / maxSide;
+  return {
+    width: Math.max(1, Math.round(width * scale)),
+    height: Math.max(1, Math.round(height * scale)),
+  };
 }
 
 export function GreenEarthLogo({
   className,
   alt = "Green Earth",
   removeAllNearWhite = false,
+  maxSize = 1024,
   ...imgProps
 }: Props) {
   const [src, setSrc] = React.useState<string>(sourceLogo);
@@ -32,6 +60,8 @@ export function GreenEarthLogo({
     const run = async () => {
       const img = new Image();
       img.decoding = "async";
+      // Helps prevent canvas tainting in edge cases.
+      img.crossOrigin = "anonymous";
       img.src = sourceLogo;
 
       await new Promise<void>((resolve, reject) => {
@@ -39,54 +69,57 @@ export function GreenEarthLogo({
         img.onerror = () => reject(new Error("Failed to load logo source"));
       });
 
-      const canvas = document.createElement("canvas");
-      canvas.width = img.naturalWidth || img.width;
-      canvas.height = img.naturalHeight || img.height;
+      const naturalW = img.naturalWidth || img.width;
+      const naturalH = img.naturalHeight || img.height;
+      const { width, height } = downscaleDimensions(naturalW, naturalH, maxSize);
 
-      const ctx = canvas.getContext("2d");
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
       if (!ctx) return;
 
-      ctx.drawImage(img, 0, 0);
-      const { width, height } = canvas;
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
+      ctx.clearRect(0, 0, width, height);
+      ctx.drawImage(img, 0, 0, width, height);
+
       const imageData = ctx.getImageData(0, 0, width, height);
       const data = imageData.data;
+      const n = width * height;
 
-      const visited = new Uint8Array(width * height);
-      const queueX = new Int32Array(width * height);
-      const queueY = new Int32Array(width * height);
+      // Flood fill from edges to remove background (and any white border connected to it)
+      const visited = new Uint8Array(n);
+      const queue = new Int32Array(n);
       let qh = 0;
       let qt = 0;
 
-      const enqueue = (x: number, y: number) => {
-        queueX[qt] = x;
-        queueY[qt] = y;
+      const enqueue = (i: number) => {
+        queue[qt] = i;
         qt++;
       };
 
-      const idx = (x: number, y: number) => y * width + x;
-      const p = (x: number, y: number) => (y * width + x) * 4;
-
       // Seed with all edge pixels
       for (let x = 0; x < width; x++) {
-        enqueue(x, 0);
-        enqueue(x, height - 1);
+        enqueue(x);
+        enqueue((height - 1) * width + x);
       }
       for (let y = 1; y < height - 1; y++) {
-        enqueue(0, y);
-        enqueue(width - 1, y);
+        enqueue(y * width);
+        enqueue(y * width + (width - 1));
       }
 
-      // Flood fill: remove background + white sticker border that touches the outside
+      const p = (i: number) => i * 4;
+
       while (qh < qt) {
-        const x = queueX[qh];
-        const y = queueY[qh];
+        const i = queue[qh];
         qh++;
 
-        const vi = idx(x, y);
-        if (visited[vi]) continue;
-        visited[vi] = 1;
+        if (visited[i]) continue;
+        visited[i] = 1;
 
-        const pi = p(x, y);
+        const pi = p(i);
         const r = data[pi];
         const g = data[pi + 1];
         const b = data[pi + 2];
@@ -96,23 +129,24 @@ export function GreenEarthLogo({
         // make transparent
         data[pi + 3] = 0;
 
+        const x = i % width;
+        const y = (i / width) | 0;
+
         // 4-neighbors
-        if (x > 0) enqueue(x - 1, y);
-        if (x < width - 1) enqueue(x + 1, y);
-        if (y > 0) enqueue(x, y - 1);
-        if (y < height - 1) enqueue(x, y + 1);
+        if (x > 0) enqueue(i - 1);
+        if (x < width - 1) enqueue(i + 1);
+        if (y > 0) enqueue(i - width);
+        if (y < height - 1) enqueue(i + width);
       }
 
       if (removeAllNearWhite) {
-        for (let y = 0; y < height; y++) {
-          for (let x = 0; x < width; x++) {
-            const pi = p(x, y);
-            if (data[pi + 3] === 0) continue;
-            const r = data[pi];
-            const g = data[pi + 1];
-            const b = data[pi + 2];
-            if (isNearWhite(r, g, b)) data[pi + 3] = 0;
-          }
+        for (let i = 0; i < n; i++) {
+          const pi = p(i);
+          if (data[pi + 3] === 0) continue;
+          const r = data[pi];
+          const g = data[pi + 1];
+          const b = data[pi + 2];
+          if (isNearWhite(r, g, b)) data[pi + 3] = 0;
         }
       }
 
@@ -122,15 +156,16 @@ export function GreenEarthLogo({
       if (!cancelled) setSrc(out);
     };
 
-    run().catch(() => {
+    run().catch((err) => {
       // fallback to sourceLogo if processing fails
+      console.warn("[GreenEarthLogo] processing failed", err);
       if (!cancelled) setSrc(sourceLogo);
     });
 
     return () => {
       cancelled = true;
     };
-  }, [removeAllNearWhite]);
+  }, [removeAllNearWhite, maxSize]);
 
   return (
     <img
