@@ -5,9 +5,10 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search, Plus, MessageCircle, Leaf } from 'lucide-react';
+import { Search, Plus, MessageCircle } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { OnlineIndicator } from './OnlineIndicator';
+import { GreenEarthLogo } from '@/components/brand/GreenEarthLogo';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import { Conversation } from '@/hooks/useMessages';
@@ -40,9 +41,7 @@ export function ConversationList({
       <div className="p-4 border-b bg-gradient-to-r from-primary/5 to-accent/5">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-full bg-primary/10">
-              <Leaf className="h-5 w-5 text-primary" />
-            </div>
+            <GreenEarthLogo className="h-10 w-10" />
             <h2 className="font-display text-xl font-bold">{t('messages.title')}</h2>
           </div>
           {onNewMessage && (
