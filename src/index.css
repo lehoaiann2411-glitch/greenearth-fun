@@ -271,6 +271,7 @@
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
+    filter: brightness(1.08) contrast(1.08) saturate(1.06);
   }
 
   @media (max-width: 768px) {
@@ -282,9 +283,9 @@
   .nature-overlay {
     background: linear-gradient(
       to bottom,
-      hsl(120 61% 34% / 0.35),
-      hsl(120 40% 20% / 0.5) 50%,
-      hsl(120 30% 15% / 0.6)
+      hsl(120 61% 34% / 0.22),
+      hsl(120 40% 20% / 0.32) 50%,
+      hsl(120 30% 15% / 0.38)
     );
   }
 
