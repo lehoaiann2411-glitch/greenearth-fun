@@ -79,13 +79,10 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full">
       <div className="absolute inset-0 bg-black/10 backdrop-blur-sm border-b border-white/10" />
       
-      <div className="container relative flex h-28 items-center justify-between">
+      <div className="container relative flex h-32 items-center justify-between">
         <Link to="/" className="flex items-center group relative">
-          <div className="absolute inset-0 bg-[radial-gradient(circle,_rgba(255,255,255,0.5)_0%,_rgba(74,222,128,0.4)_40%,_transparent_70%)] blur-2xl scale-[2.5] animate-glow-pulse pointer-events-none" />
-          <GreenEarthLogo
-            removeAllNearWhite
-            className="relative z-10 h-36 w-auto transition-transform duration-300 group-hover:scale-110"
-          />
+          <div className="absolute inset-0 bg-[radial-gradient(circle,_rgba(255,255,255,0.5)_0%,_rgba(74,222,128,0.4)_40%,_transparent_70%)] blur-xl scale-[2] animate-glow-pulse pointer-events-none" />
+          <GreenEarthLogo className="relative z-10 h-24 w-auto transition-transform duration-300 group-hover:scale-105 drop-shadow-lg" />
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
