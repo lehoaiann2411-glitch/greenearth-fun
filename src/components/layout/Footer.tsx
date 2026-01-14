@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Leaf, Mail, Phone, MapPin, Facebook, Youtube, Globe, Heart } from 'lucide-react';
-import greenEarthLogo from '@/assets/green-earth-logo.png';
+import greenEarthLogo from '@/assets/green-earth-logo-clear.png';
 import { useTranslation } from 'react-i18next';
 
 export function Footer() {

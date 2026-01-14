@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { Leaf, Menu, X, User, LogOut, LayoutDashboard, Coins, Users, MessageCircle, UserPlus, PlayCircle, Sun, Moon, BookOpen, Camera, Bookmark } from 'lucide-react';
-import greenEarthLogo from '@/assets/green-earth-logo.png';
+import greenEarthLogo from '@/assets/green-earth-logo-clear.png';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
