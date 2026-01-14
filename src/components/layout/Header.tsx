@@ -77,7 +77,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full">
-      <div className="absolute inset-0 bg-white/10 backdrop-blur-lg border-b border-white/20" />
+      <div className="absolute inset-0 bg-black/10 backdrop-blur-sm border-b border-white/10" />
       
       <div className="container relative flex h-28 items-center justify-between">
         <Link to="/" className="flex items-center group relative">
@@ -93,7 +93,7 @@ export function Header() {
             <Link
               key={link.href}
               to={link.href}
-              className="relative px-4 py-2 text-sm font-medium transition-all duration-300 rounded-lg text-white/80 hover:text-white hover:bg-white/10 flex items-center gap-1"
+              className="relative px-4 py-2 text-sm font-medium transition-all duration-300 rounded-lg text-white/90 text-shadow-sm hover:text-white hover:bg-white/10 flex items-center gap-1"
             >
               {link.icon && <link.icon className="h-4 w-4" />}
               {link.label}

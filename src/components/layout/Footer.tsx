@@ -29,7 +29,7 @@ export function Footer() {
 
   return (
     <footer className="relative mt-auto">
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-lg" />
+      <div className="absolute inset-0 bg-black/25 backdrop-blur-sm backdrop-saturate-150" />
       
       <div className="relative container py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -38,7 +38,7 @@ export function Footer() {
               <div className="absolute inset-0 bg-[radial-gradient(circle,_rgba(255,255,255,0.4)_0%,_rgba(74,222,128,0.3)_40%,_transparent_70%)] blur-2xl scale-[2.5] animate-glow-pulse pointer-events-none" />
               <GreenEarthLogo removeAllNearWhite className="relative z-10 h-40 w-auto" />
             </Link>
-            <p className="text-white/70 text-sm leading-relaxed">{t('footer.description')}</p>
+            <p className="text-white/80 text-sm leading-relaxed text-shadow-sm">{t('footer.description')}</p>
             <div className="flex items-center gap-3">
               {socialLinks.map((social) => (
                 <a
@@ -61,7 +61,7 @@ export function Footer() {
             <ul className="space-y-2">
               {footerLinks.platform.map((link) => (
                 <li key={link.href}>
-                  <Link to={link.href} className="text-white/70 hover:text-accent transition-colors text-sm">{link.label}</Link>
+                   <Link to={link.href} className="text-white/80 text-shadow-sm hover:text-accent transition-colors text-sm">{link.label}</Link>
                 </li>
               ))}
             </ul>
@@ -75,7 +75,7 @@ export function Footer() {
             <ul className="space-y-2">
               {footerLinks.about.map((link) => (
                 <li key={link.href}>
-                  <Link to={link.href} className="text-white/70 hover:text-accent transition-colors text-sm">{link.label}</Link>
+                  <Link to={link.href} className="text-white/80 text-shadow-sm hover:text-accent transition-colors text-sm">{link.label}</Link>
                 </li>
               ))}
             </ul>
