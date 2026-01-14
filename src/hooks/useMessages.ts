@@ -13,6 +13,10 @@ export interface Message {
   camly_amount: number | null;
   is_read: boolean;
   created_at: string;
+  reply_to_id?: string | null;
+  file_name?: string | null;
+  file_size?: number | null;
+  file_type?: string | null;
   payload?: {
     call_id?: string;
     call_type?: 'voice' | 'video';
@@ -26,12 +30,16 @@ export interface Message {
     full_name: string | null;
     avatar_url: string | null;
   };
+  reply_to?: Message | null;
 }
 
 export interface Conversation {
   id: string;
   type: string;
   name: string | null;
+  avatar_url?: string | null;
+  description?: string | null;
+  created_by?: string | null;
   last_message_at: string | null;
   last_message_preview: string | null;
   created_at: string;
@@ -39,6 +47,7 @@ export interface Conversation {
     id: string;
     full_name: string | null;
     avatar_url: string | null;
+    role?: string;
   }[];
   unread_count?: number;
 }
@@ -74,7 +83,7 @@ export function useConversations() {
       // Get all participants for these conversations
       const { data: allParticipants } = await supabase
         .from('conversation_participants')
-        .select('conversation_id, user_id')
+        .select('conversation_id, user_id, role')
         .in('conversation_id', conversationIds);
 
       // Get participant profiles
@@ -100,7 +109,11 @@ export function useConversations() {
       return (conversations || []).map(conv => {
         const convParticipants = allParticipants
           ?.filter(p => p.conversation_id === conv.id && p.user_id !== user.id)
-          .map(p => profiles?.find(pr => pr.id === p.user_id))
+          .map(p => {
+            const profile = profiles?.find(pr => pr.id === p.user_id);
+            const participant = allParticipants?.find(ap => ap.conversation_id === conv.id && ap.user_id === p.user_id);
+            return profile ? { ...profile, role: participant?.role } : null;
+          })
           .filter(Boolean);
 
         return {
@@ -131,10 +144,10 @@ export function useConversation(conversationId: string) {
 
       if (error) throw error;
 
-      // Get participants
+      // Get participants with roles
       const { data: participants } = await supabase
         .from('conversation_participants')
-        .select('user_id')
+        .select('user_id, role')
         .eq('conversation_id', conversationId);
 
       const participantIds = participants?.map(p => p.user_id) || [];
@@ -144,9 +157,14 @@ export function useConversation(conversationId: string) {
         .select('id, full_name, avatar_url')
         .in('id', participantIds);
 
+      const participantsWithRoles = profiles?.filter(p => p.id !== user.id).map(profile => ({
+        ...profile,
+        role: participants?.find(part => part.user_id === profile.id)?.role,
+      })) || [];
+
       return {
         ...conversation,
-        participants: profiles?.filter(p => p.id !== user.id) || [],
+        participants: participantsWithRoles,
       } as Conversation;
     },
     enabled: !!user && !!conversationId,
@@ -203,10 +221,28 @@ export function useMessages(conversationId: string) {
         .select('id, full_name, avatar_url')
         .in('id', senderIds);
 
-      return (messages || []).map(msg => ({
-        ...msg,
-        sender: profiles?.find(p => p.id === msg.sender_id),
-      })) as Message[];
+      // Get reply_to messages
+      const replyToIds = messages?.filter(m => m.reply_to_id).map(m => m.reply_to_id) || [];
+      const { data: replyMessages } = replyToIds.length > 0 
+        ? await supabase
+            .from('messages')
+            .select('*')
+            .in('id', replyToIds)
+        : { data: [] };
+
+      return (messages || []).map(msg => {
+        const replyTo = msg.reply_to_id 
+          ? replyMessages?.find(rm => rm.id === msg.reply_to_id)
+          : null;
+        return {
+          ...msg,
+          sender: profiles?.find(p => p.id === msg.sender_id),
+          reply_to: replyTo ? {
+            ...replyTo,
+            sender: profiles?.find(p => p.id === replyTo.sender_id),
+          } : null,
+        };
+      }) as Message[];
     },
     enabled: !!conversationId,
   });
@@ -404,6 +440,122 @@ export function useMarkMessagesAsRead() {
     onSuccess: (_, conversationId) => {
       queryClient.invalidateQueries({ queryKey: ['conversations'] });
       queryClient.invalidateQueries({ queryKey: ['unread-messages-count'] });
+    },
+  });
+}
+
+// Group conversation hooks
+export function useCreateGroupConversation() {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      name,
+      memberIds,
+      avatarUrl,
+      description,
+    }: {
+      name: string;
+      memberIds: string[];
+      avatarUrl?: string;
+      description?: string;
+    }) => {
+      if (!user) throw new Error('Must be logged in');
+
+      const { data: conversationId, error } = await supabase
+        .rpc('create_group_conversation', {
+          p_name: name,
+          p_member_ids: memberIds,
+          p_avatar_url: avatarUrl || null,
+          p_description: description || null,
+        });
+
+      if (error) throw error;
+      return conversationId as string;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['conversations'] });
+    },
+  });
+}
+
+export function useAddGroupMember() {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      conversationId,
+      userId,
+    }: {
+      conversationId: string;
+      userId: string;
+    }) => {
+      if (!user) throw new Error('Must be logged in');
+
+      const { error } = await supabase
+        .rpc('add_group_member', {
+          p_conversation_id: conversationId,
+          p_user_id: userId,
+        });
+
+      if (error) throw error;
+    },
+    onSuccess: (_, { conversationId }) => {
+      queryClient.invalidateQueries({ queryKey: ['conversation', conversationId] });
+      queryClient.invalidateQueries({ queryKey: ['conversations'] });
+    },
+  });
+}
+
+export function useRemoveGroupMember() {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      conversationId,
+      userId,
+    }: {
+      conversationId: string;
+      userId: string;
+    }) => {
+      if (!user) throw new Error('Must be logged in');
+
+      const { error } = await supabase
+        .rpc('remove_group_member', {
+          p_conversation_id: conversationId,
+          p_user_id: userId,
+        });
+
+      if (error) throw error;
+    },
+    onSuccess: (_, { conversationId }) => {
+      queryClient.invalidateQueries({ queryKey: ['conversation', conversationId] });
+      queryClient.invalidateQueries({ queryKey: ['conversations'] });
+    },
+  });
+}
+
+export function useLeaveGroup() {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (conversationId: string) => {
+      if (!user) throw new Error('Must be logged in');
+
+      const { error } = await supabase
+        .rpc('remove_group_member', {
+          p_conversation_id: conversationId,
+          p_user_id: user.id,
+        });
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['conversations'] });
     },
   });
 }
