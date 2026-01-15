@@ -14,7 +14,17 @@ import {
   Heart,
   Target,
   TrendingUp,
+  Sparkles,
 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import {
+  ProblemSection,
+  SolutionPillars,
+  LightEconomyFlow,
+  AngelAIIntro,
+  TargetAudienceSection,
+  FatherMessage,
+} from '@/components/vision';
 
 export default function Index() {
   const { t } = useTranslation();
@@ -26,40 +36,6 @@ export default function Index() {
     { icon: Award, value: '1M+', labelKey: 'home.stats.greenPoints', delay: 'animation-delay-400' },
   ];
 
-  const features = [
-    {
-      icon: Award,
-      titleKey: 'home.features.greenPoints.title',
-      descriptionKey: 'home.features.greenPoints.description',
-      delay: 'animation-delay-100',
-    },
-    {
-      icon: Leaf,
-      titleKey: 'home.features.camlyCoin.title',
-      descriptionKey: 'home.features.camlyCoin.description',
-      delay: 'animation-delay-200',
-    },
-    {
-      icon: Users,
-      titleKey: 'home.features.community.title',
-      descriptionKey: 'home.features.community.description',
-      delay: 'animation-delay-300',
-    },
-    {
-      icon: Shield,
-      titleKey: 'home.features.reputation.title',
-      descriptionKey: 'home.features.reputation.description',
-      delay: 'animation-delay-400',
-    },
-  ];
-
-  const steps = [
-    { step: 1, titleKey: 'home.steps.register.title', descriptionKey: 'home.steps.register.description' },
-    { step: 2, titleKey: 'home.steps.join.title', descriptionKey: 'home.steps.join.description' },
-    { step: 3, titleKey: 'home.steps.action.title', descriptionKey: 'home.steps.action.description' },
-    { step: 4, titleKey: 'home.steps.reward.title', descriptionKey: 'home.steps.reward.description' },
-  ];
-
   const trustItems = [
     { icon: Shield, titleKey: 'home.trust.security.title', descriptionKey: 'home.trust.security.description' },
     { icon: Globe, titleKey: 'home.trust.transparency.title', descriptionKey: 'home.trust.transparency.description' },
@@ -68,32 +44,59 @@ export default function Index() {
 
   return (
     <Layout>
-      {/* Hero Section */}
-      <section className="relative py-20 md:py-32 overflow-hidden">
+      {/* NEW Hero Section - 5D Vision */}
+      <section className="relative py-24 md:py-36 overflow-hidden">
         <div className="container relative">
-          <div className="max-w-3xl mx-auto text-center">
+          <div className="max-w-4xl mx-auto text-center">
+            {/* Badge */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/20 text-primary text-sm font-medium mb-6"
+            >
+              <Sparkles className="h-4 w-4" />
+              {t('vision.hero.badge')}
+            </motion.div>
 
             {/* Heading */}
-            <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 animate-fade-in-up animation-delay-100 text-shadow-lg">
-              {t('home.hero.titleLine1')}
-              <span className="block text-accent drop-shadow-[0_2px_8px_rgba(144,238,144,0.7)] text-shadow-md">{t('home.hero.titleLine2')}</span>
-            </h1>
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="font-display text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 text-shadow-lg"
+            >
+              {t('vision.hero.title')}
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-green-400 to-emerald-300 drop-shadow-[0_2px_8px_rgba(144,238,144,0.7)]">
+                {t('vision.hero.titleHighlight')}
+              </span>
+            </motion.h1>
 
             {/* Description */}
-            <p className="text-lg md:text-xl text-white mb-10 max-w-2xl mx-auto animate-fade-in-up animation-delay-200 text-shadow font-medium">
-              {t('home.hero.description')}
-            </p>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="text-lg md:text-xl text-white/80 mb-10 max-w-3xl mx-auto text-shadow font-medium"
+            >
+              {t('vision.hero.subtitle')}
+            </motion.p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up animation-delay-300">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="flex flex-col sm:flex-row gap-4 justify-center"
+            >
               <Button 
                 size="lg" 
                 asChild
                 className="btn-glow bg-white text-primary hover:bg-white/90 text-lg px-8 py-6 font-semibold"
               >
                 <Link to="/auth?mode=signup">
-                  <Leaf className="h-5 w-5 mr-2" />
-                  {t('home.hero.joinNow')}
+                  <Heart className="h-5 w-5 mr-2" />
+                  {t('vision.hero.cta1')}
                   <ArrowRight className="h-5 w-5 ml-2" />
                 </Link>
               </Button>
@@ -102,12 +105,12 @@ export default function Index() {
                 asChild
                 className="btn-outline-visible text-lg px-8 py-6 hover:scale-105 transition-all duration-300"
               >
-                <Link to="/campaigns">
+                <Link to="/impact">
                   <Globe className="h-5 w-5 mr-2" />
-                  {t('home.hero.exploreCampaigns')}
+                  {t('vision.hero.cta2')}
                 </Link>
               </Button>
-            </div>
+            </motion.div>
 
             {/* Floating decorative elements */}
             <div className="absolute top-10 left-10 animate-leaf-float opacity-60 hidden md:block">
@@ -144,121 +147,23 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-20 relative">
-        <div className="container">
-          <div className="text-center mb-12">
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-4 drop-shadow-lg animate-fade-in-up">
-              {t('home.features.title')}
-            </h2>
-            <p className="text-white/70 max-w-2xl mx-auto animate-fade-in-up animation-delay-100">
-              {t('home.features.subtitle')}
-            </p>
-          </div>
+      {/* Problem Section */}
+      <ProblemSection />
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {features.map((feature) => (
-              <Card 
-                key={feature.titleKey}
-                className={`glass-card border-white/20 hover:scale-105 hover-glow transition-all duration-300 group animate-fade-in-up ${feature.delay}`}
-              >
-                <CardContent className="p-6">
-                  <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-primary/20 mb-4 group-hover:bg-primary/30 transition-colors">
-                    <feature.icon className="h-7 w-7 text-primary" />
-                  </div>
-                  <h3 className="font-display text-lg font-semibold text-foreground mb-2">
-                    {t(feature.titleKey)}
-                  </h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {t(feature.descriptionKey)}
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* Solution Pillars */}
+      <SolutionPillars />
 
-      {/* How It Works Section */}
-      <section className="py-20 relative">
-        <div className="container">
-          <div className="text-center mb-12">
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-4 drop-shadow-lg animate-fade-in-up">
-              {t('home.howItWorks.title')}
-            </h2>
-            <p className="text-white/70 max-w-2xl mx-auto animate-fade-in-up animation-delay-100">
-              {t('home.howItWorks.subtitle')}
-            </p>
-          </div>
+      {/* Light Economy Flow */}
+      <LightEconomyFlow />
 
-          <div className="grid md:grid-cols-4 gap-6">
-            {steps.map((item, index) => (
-              <div 
-                key={item.step} 
-                className="relative animate-fade-in-up"
-                style={{ animationDelay: `${(index + 1) * 100}ms` }}
-              >
-                {/* Connector line */}
-                {index < steps.length - 1 && (
-                  <div className="hidden md:block absolute top-8 left-1/2 w-full h-0.5 bg-gradient-to-r from-accent/50 to-transparent" />
-                )}
-                
-                <Card className="glass-card border-white/20 hover:scale-105 transition-all duration-300 relative">
-                  <CardContent className="p-6 text-center">
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary text-primary-foreground font-display text-2xl font-bold mb-4 glow-green-sm">
-                      {item.step}
-                    </div>
-                    <h3 className="font-display text-lg font-semibold text-foreground mb-2">
-                      {t(item.titleKey)}
-                    </h3>
-                    <p className="text-sm text-muted-foreground">
-                      {t(item.descriptionKey)}
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* Angel AI Section */}
+      <AngelAIIntro />
 
-      {/* CTA Section */}
-      <section className="py-20 relative">
-        <div className="container">
-          <Card className="glass-card border-accent/30 overflow-hidden">
-            <CardContent className="p-8 md:p-12 text-center relative">
-              {/* Background decoration */}
-              <div className="absolute top-0 right-0 w-32 h-32 bg-accent/20 rounded-full blur-3xl" />
-              <div className="absolute bottom-0 left-0 w-40 h-40 bg-primary/20 rounded-full blur-3xl" />
-              
-              <div className="relative">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/20 mb-6 animate-glow-pulse">
-                  <Heart className="h-8 w-8 text-primary" />
-                </div>
-                
-                <h2 className="font-display text-2xl md:text-4xl font-bold text-foreground mb-4">
-                  {t('home.cta.title')}
-                </h2>
-                <p className="text-muted-foreground max-w-xl mx-auto mb-8">
-                  {t('home.cta.description')}
-                </p>
-                
-                <Button 
-                  size="lg" 
-                  asChild
-                  className="btn-glow text-lg px-8 py-6"
-                >
-                  <Link to="/auth?mode=signup">
-                    <Leaf className="h-5 w-5 mr-2" />
-                    {t('home.cta.button')}
-                    <ArrowRight className="h-5 w-5 ml-2" />
-                  </Link>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
+      {/* Target Audience */}
+      <TargetAudienceSection />
+
+      {/* Father Message */}
+      <FatherMessage />
 
       {/* Trust Section */}
       <section className="py-16 relative">
