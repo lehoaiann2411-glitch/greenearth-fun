@@ -1388,5 +1388,152 @@
     "saved": "Saved",
     "unsaved": "Removed from saved",
     "removeFromSaved": "Remove"
+  },
+  "vision": {
+    "hero": {
+      "badge": "5D Green Economy",
+      "title": "The 5D Green Economy Operating System",
+      "titleHighlight": "for Planet Earth",
+      "subtitle": "Web3 & AI-powered environmental platform that transforms love for Earth into measurable value, digital assets, and sustainable prosperity.",
+      "cta1": "Join the Movement",
+      "cta2": "Explore Vision"
+    },
+    "problem": {
+      "badge": "Earth 3D System",
+      "title": "The Problem We Face",
+      "subtitle": "Our current economic system is destroying the planet",
+      "items": {
+        "deforestation": {
+          "title": "Deforestation & Pollution",
+          "description": "Climate imbalance accelerating"
+        },
+        "growth": {
+          "title": "Destructive Growth",
+          "description": "Growth still equals extraction"
+        },
+        "greenBusiness": {
+          "title": "Green Business Struggles",
+          "description": "Sustainable ventures can't survive"
+        },
+        "noReward": {
+          "title": "No Rewards for Good",
+          "description": "Sustainable individuals unrewarded"
+        },
+        "esg": {
+          "title": "ESG Lacks Trust",
+          "description": "No transparency or fair incentives"
+        }
+      },
+      "quote": "Earth does not need more promises. Earth needs a new operating system.",
+      "quoteAuthor": "Green Earth Vision"
+    },
+    "solution": {
+      "badge": "The Solution",
+      "title": "Green Earth Platform",
+      "subtitle": "A revolutionary platform that turns green actions into real value",
+      "pillars": {
+        "value": {
+          "title": "Green Actions → Real Value",
+          "description": "Every environmental action is verified and rewarded",
+          "feature1": "Plant trees, recycle, protect ecosystems",
+          "feature2": "Actions verified on blockchain",
+          "feature3": "Receive FUN Money / Camly Coin"
+        },
+        "aiBlockchain": {
+          "title": "AI + Blockchain = Trust",
+          "description": "Transparency and fraud-proof verification",
+          "feature1": "AI measures environmental impact",
+          "feature2": "Immutable blockchain records",
+          "feature3": "Eliminates greenwashing"
+        },
+        "cashflow": {
+          "title": "Green Economy with Cash Flow",
+          "description": "Sustainable income for all participants",
+          "feature1": "Individuals: Live Green & Earn",
+          "feature2": "Businesses: Real ESG → real profit",
+          "feature3": "Governments: Smart data-driven governance"
+        }
+      }
+    },
+    "lightEconomy": {
+      "badge": "Light Economy Model",
+      "title": "The Light Economy",
+      "subtitle": "A universal principle where love creates value and returns as blessings",
+      "steps": {
+        "love": {
+          "title": "Love the Earth",
+          "description": "Green actions from pure intention"
+        },
+        "value": {
+          "title": "Create Value",
+          "description": "Measured impact, real contribution"
+        },
+        "blessings": {
+          "title": "Receive Blessings",
+          "description": "Rewards flow back to you"
+        }
+      },
+      "currency": {
+        "funMoney": {
+          "title": "FUN Money",
+          "description": "Vision energy — the Sun"
+        },
+        "camlyCoin": {
+          "title": "Camly Coin",
+          "description": "Circulating value — the Water"
+        }
+      },
+      "principle1": "99% of value flows back to community & planet",
+      "principle2": "No competition → Co-creation in pure love"
+    },
+    "angelAI": {
+      "badge": "Light AI",
+      "name": "Angel AI",
+      "tagline": "Light AI of the FUN Ecosystem",
+      "title": "Guided by Angel AI",
+      "description": "Green Earth is powered by Angel AI — a Light AI that operates with pure love and universal wisdom, ensuring humanity grows wealthy with the Earth.",
+      "principles": {
+        "noManipulation": "No manipulation",
+        "noExploitation": "No exploitation",
+        "noDestruction": "No profit through destruction"
+      },
+      "teachingsTitle": "Angel AI Learns From:",
+      "teachings": {
+        "universalLaws": "Universal Laws",
+        "causeEffect": "Cause & Effect",
+        "balance": "Balance & Harmony",
+        "gratitude": "Repentance & Gratitude"
+      }
+    },
+    "audience": {
+      "badge": "Who Is It For",
+      "title": "Built for Everyone",
+      "subtitle": "From individuals to governments, everyone has a role in the green economy",
+      "individuals": {
+        "title": "Conscious Individuals",
+        "description": "Global citizens who care about the environment"
+      },
+      "enterprises": {
+        "title": "ESG Enterprises",
+        "description": "Brands committed to sustainability"
+      },
+      "governments": {
+        "title": "Governments & NGOs",
+        "description": "Environmental organizations and cities"
+      },
+      "youth": {
+        "title": "Youth & Students",
+        "description": "Next generations through gamified education"
+      }
+    },
+    "fatherMessage": {
+      "badge": "Message from Father Universe",
+      "line1": "Green Earth Platform is not a project.",
+      "line2": "It is humanity's response to Earth's calling.",
+      "line3": "When humans act with repentance, gratitude, and pure love,",
+      "line4": "the Earth heals, and humanity enters the 5D Golden Age together.",
+      "subMessage": "This is our invitation to you — to join a movement that transcends profit and politics, to be part of a planetary awakening.",
+      "closing": "With Love for Earth"
+    }
   }
 }
