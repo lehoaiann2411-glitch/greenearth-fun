@@ -53,7 +53,7 @@ export function CreatePost() {
 
     await createPost.mutateAsync({
       content: content.trim(),
-      imageFile: imageFile || undefined,
+      imageFiles: imageFile ? [imageFile] : undefined,
       campaignId: campaignId && campaignId !== 'none' ? campaignId : undefined,
     });
 
