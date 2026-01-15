@@ -146,32 +146,38 @@ export function useCreatePost() {
   return useMutation({
     mutationFn: async ({ 
       content, 
-      imageFile, 
+      imageFiles, 
       campaignId 
     }: { 
       content: string; 
-      imageFile?: File; 
+      imageFiles?: File[]; 
       campaignId?: string;
     }) => {
       if (!user) throw new Error('Bạn cần đăng nhập');
 
-      let imageUrl: string | null = null;
+      // Upload all images
+      const uploadedUrls: string[] = [];
 
-      if (imageFile) {
-        const fileExt = imageFile.name.split('.').pop();
-        const fileName = `${user.id}/${Date.now()}.${fileExt}`;
-        
-        const { error: uploadError } = await supabase.storage
-          .from('post-images')
-          .upload(fileName, imageFile);
+      if (imageFiles && imageFiles.length > 0) {
+        for (const file of imageFiles) {
+          const fileExt = file.name.split('.').pop();
+          const fileName = `${user.id}/${Date.now()}-${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
+          
+          const { error: uploadError } = await supabase.storage
+            .from('post-images')
+            .upload(fileName, file);
 
-        if (uploadError) throw uploadError;
+          if (uploadError) {
+            console.error('Upload error:', uploadError);
+            continue; // Skip failed uploads but continue with others
+          }
 
-        const { data: urlData } = supabase.storage
-          .from('post-images')
-          .getPublicUrl(fileName);
+          const { data: urlData } = supabase.storage
+            .from('post-images')
+            .getPublicUrl(fileName);
 
-        imageUrl = urlData.publicUrl;
+          uploadedUrls.push(urlData.publicUrl);
+        }
       }
 
       const { data, error } = await supabase
@@ -179,7 +185,9 @@ export function useCreatePost() {
         .insert({
           user_id: user.id,
           content,
-          image_url: imageUrl,
+          // For backward compatibility: use image_url for single image, media_urls for multiple
+          image_url: uploadedUrls.length === 1 ? uploadedUrls[0] : null,
+          media_urls: uploadedUrls.length > 0 ? uploadedUrls : null,
           campaign_id: campaignId || null,
         })
         .select()
@@ -220,6 +228,7 @@ export function useCreatePost() {
       queryClient.invalidateQueries({ queryKey: ['posts'] });
       queryClient.invalidateQueries({ queryKey: ['profile'] });
       queryClient.invalidateQueries({ queryKey: ['points-history'] });
+      queryClient.invalidateQueries({ queryKey: ['feed'] });
       showReward(CAMLY_REWARDS.CREATE_POST, ACTION_TYPES.CREATE_POST, { showConfetti: true });
     },
     onError: (error: Error) => {

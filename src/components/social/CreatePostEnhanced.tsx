@@ -151,7 +151,7 @@ export function CreatePostEnhanced() {
     try {
       await createPost.mutateAsync({
         content: content.trim(),
-        imageFile: selectedImages[0], // For now, using first image
+        imageFiles: selectedImages, // Upload all selected images
         campaignId: selectedCampaign && selectedCampaign !== 'none' ? selectedCampaign : undefined,
       });
 
