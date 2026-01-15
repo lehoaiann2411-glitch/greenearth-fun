@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { 
   ImagePlus, MapPin, Users, TreePine, X, Loader2, 
-  Bold, Italic, List, Camera, Globe, BarChart3
+  Bold, Italic, List, Camera, Globe, BarChart3, Pencil
 } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -21,6 +21,7 @@ import { FeelingPicker, FeelingBadge } from './FeelingPicker';
 import { PrivacySelector, PrivacyOption } from './PrivacySelector';
 import { TagFriends } from './TagFriends';
 import { PollCreator } from './PollCreator';
+import { ImageEditor } from './ImageEditor';
 import { CamlyCoinIcon } from '@/components/rewards/CamlyCoinIcon';
 import { CAMLY_REWARDS } from '@/lib/camlyCoin';
 import { toast } from 'sonner';
@@ -58,9 +59,23 @@ export function CreatePostEnhanced() {
   const [feeling, setFeeling] = useState<{ id: string; emoji: string; label: string } | null>(null);
   const [taggedUsers, setTaggedUsers] = useState<TaggedUser[]>([]);
   const [pollData, setPollData] = useState<PollData | null>(null);
+  const [editingImageIndex, setEditingImageIndex] = useState<number | null>(null);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Handle edited image from ImageEditor
+  const handleImageEdited = (editedFile: File, editedPreview: string) => {
+    if (editingImageIndex !== null) {
+      setSelectedImages(prev => prev.map((f, i) => 
+        i === editingImageIndex ? editedFile : f
+      ));
+      setImagePreviews(prev => prev.map((p, i) => 
+        i === editingImageIndex ? editedPreview : p
+      ));
+      setEditingImageIndex(null);
+    }
+  };
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -310,21 +325,36 @@ export function CreatePostEnhanced() {
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.8 }}
-                      className="relative aspect-square rounded-lg overflow-hidden bg-muted"
+                      className="relative aspect-square rounded-lg overflow-hidden bg-muted group cursor-pointer"
+                      onClick={() => setEditingImageIndex(index)}
                     >
                       <img
                         src={preview}
                         alt={`Preview ${index + 1}`}
                         className="w-full h-full object-cover"
                       />
+                      {/* Edit overlay */}
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                        <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 rounded-full p-2">
+                          <Pencil className="w-4 h-4 text-white" />
+                        </div>
+                      </div>
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="absolute top-1 right-1 h-6 w-6 bg-black/50 hover:bg-black/70 text-white"
-                        onClick={() => removeImage(index)}
+                        className="absolute top-1 right-1 h-6 w-6 bg-black/50 hover:bg-black/70 text-white z-10"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeImage(index);
+                        }}
                       >
                         <X className="w-3 h-3" />
                       </Button>
+                      {/* Edit hint badge */}
+                      <div className="absolute bottom-1 left-1 bg-black/60 rounded-full px-1.5 py-0.5 text-[10px] text-white flex items-center gap-0.5">
+                        <Pencil className="w-2.5 h-2.5" />
+                        <span>Edit</span>
+                      </div>
                     </motion.div>
                   ))}
                   {imagePreviews.length < 10 && (
@@ -440,6 +470,17 @@ export function CreatePostEnhanced() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Image Editor Modal */}
+      <AnimatePresence>
+        {editingImageIndex !== null && imagePreviews[editingImageIndex] && (
+          <ImageEditor
+            image={imagePreviews[editingImageIndex]}
+            onApply={handleImageEdited}
+            onClose={() => setEditingImageIndex(null)}
+          />
+        )}
+      </AnimatePresence>
     </Card>
   );
 }
