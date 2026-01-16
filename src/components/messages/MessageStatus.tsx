@@ -11,6 +11,7 @@ export interface MessageStatusProps {
   seenAt?: string | null;
   isOwn: boolean;
   className?: string;
+  showLabel?: boolean;
 }
 
 export function MessageStatus({ 
@@ -19,7 +20,8 @@ export function MessageStatus({
   deliveredAt, 
   seenAt, 
   isOwn,
-  className 
+  className,
+  showLabel = true
 }: MessageStatusProps) {
   const { t } = useTranslation();
 
@@ -40,11 +42,24 @@ export function MessageStatus({
     return lines.join('\n');
   };
 
+  const getStatusLabel = () => {
+    switch (status) {
+      case 'sent':
+        return t('messages.sent', 'Đã gửi');
+      case 'delivered':
+        return t('messages.delivered', 'Đã nhận');
+      case 'seen':
+        return t('messages.seen', 'Đã xem');
+      default:
+        return '';
+    }
+  };
+
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <span className={cn("inline-flex items-center ml-1", className)}>
+          <span className={cn("inline-flex items-center gap-0.5 ml-1", className)}>
             {status === 'sent' && (
               <Check className={cn("h-3 w-3", className ? "" : "text-primary-foreground/60")} />
             )}
@@ -53,6 +68,16 @@ export function MessageStatus({
             )}
             {status === 'seen' && (
               <CheckCheck className="h-3 w-3 text-blue-400" />
+            )}
+            {showLabel && (
+              <span className={cn(
+                "text-[10px] font-medium",
+                status === 'seen' 
+                  ? "text-blue-400" 
+                  : className ? "" : "text-primary-foreground/60"
+              )}>
+                {getStatusLabel()}
+              </span>
             )}
           </span>
         </TooltipTrigger>
