@@ -9,6 +9,7 @@ import { PostCardEnhanced } from '@/components/social/PostCardEnhanced';
 import { FeedFilters } from '@/components/feed/FeedFilters';
 import { SuggestedUsers } from '@/components/feed/SuggestedUsers';
 import { TopRankingWidget } from '@/components/feed/TopRankingWidget';
+import { FeedSearchBar } from '@/components/feed/FeedSearchBar';
 import { useFeed } from '@/hooks/useFeed';
 import { useAuth } from '@/contexts/AuthContext';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -126,7 +127,8 @@ export default function Feed() {
 
           {/* Right Sidebar */}
           <div className="hidden lg:block">
-            <div className="sticky top-24">
+            <div className="sticky top-24 space-y-4">
+              <FeedSearchBar />
               <SuggestedUsers />
             </div>
           </div>

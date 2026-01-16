@@ -5,10 +5,10 @@ import { UserPlus, Check, TreePine, Users, Sparkles, Leaf, ChevronRight } from '
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { useSuggestedUsers, useFollowUser, useIsFollowing } from '@/hooks/useFollow';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useConfetti } from '@/hooks/useConfetti';
-
 interface SuggestedUserCardProps {
   user: {
     id: string;
@@ -301,15 +301,20 @@ export function SuggestedUsers() {
       
       <CardContent className="relative p-4 space-y-3">
         {/* Background pattern */}
-        <div className="absolute inset-0 opacity-5">
+        <div className="absolute inset-0 opacity-5 pointer-events-none">
           <div className="absolute top-4 left-8 w-2 h-2 rounded-full bg-emerald-500" />
           <div className="absolute top-12 right-12 w-1.5 h-1.5 rounded-full bg-yellow-500" />
           <div className="absolute bottom-20 left-16 w-1 h-1 rounded-full bg-green-500" />
         </div>
         
-        {users.map((user, index) => (
-          <SuggestedUserCard key={user.id} user={user} index={index} />
-        ))}
+        {/* Scrollable user list */}
+        <ScrollArea className="max-h-[280px] pr-1">
+          <div className="space-y-3">
+            {users.map((user, index) => (
+              <SuggestedUserCard key={user.id} user={user} index={index} />
+            ))}
+          </div>
+        </ScrollArea>
         
         {/* Divider */}
         <div className="relative flex items-center justify-center py-2">
