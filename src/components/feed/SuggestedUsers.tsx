@@ -164,7 +164,7 @@ export function SuggestedUsers() {
       
       {/* Animated background gradient */}
       <motion.div
-        className="absolute inset-0 bg-gradient-to-br from-emerald-100/30 via-yellow-50/20 to-emerald-100/30 dark:from-emerald-900/15 dark:via-yellow-900/10 dark:to-emerald-900/15"
+        className="absolute inset-0 pointer-events-none bg-gradient-to-br from-emerald-100/30 via-yellow-50/20 to-emerald-100/30 dark:from-emerald-900/15 dark:via-yellow-900/10 dark:to-emerald-900/15"
         animate={{
           background: [
             'linear-gradient(135deg, rgba(16,185,129,0.12) 0%, rgba(253,224,71,0.08) 50%, rgba(16,185,129,0.12) 100%)',
@@ -177,7 +177,7 @@ export function SuggestedUsers() {
 
       {/* Floating orbs */}
       <motion.div
-        className="absolute top-16 right-6 w-20 h-20 rounded-full bg-gradient-to-br from-emerald-400/15 to-green-300/10 blur-2xl"
+        className="absolute top-16 right-6 w-20 h-20 rounded-full pointer-events-none bg-gradient-to-br from-emerald-400/15 to-green-300/10 blur-2xl"
         animate={{ 
           x: [0, 10, 0], 
           y: [0, -8, 0],
@@ -186,7 +186,7 @@ export function SuggestedUsers() {
         transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.div
-        className="absolute bottom-24 left-4 w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400/15 to-amber-300/10 blur-2xl"
+        className="absolute bottom-24 left-4 w-16 h-16 rounded-full pointer-events-none bg-gradient-to-br from-yellow-400/15 to-amber-300/10 blur-2xl"
         animate={{ 
           x: [0, -8, 0], 
           y: [0, 10, 0],
@@ -195,7 +195,7 @@ export function SuggestedUsers() {
         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
       />
       <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 rounded-full bg-gradient-to-br from-emerald-300/10 to-teal-300/5 blur-2xl"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 rounded-full pointer-events-none bg-gradient-to-br from-emerald-300/10 to-teal-300/5 blur-2xl"
         animate={{ 
           scale: [1, 1.2, 1],
           opacity: [0.1, 0.3, 0.1]
