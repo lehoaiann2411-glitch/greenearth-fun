@@ -2,18 +2,57 @@ import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, X, TreePine, Sparkles, Leaf, Loader2 } from 'lucide-react';
+import { Search, X, TreePine, Sparkles, Leaf, Loader2, Users } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { useMutualFriends } from '@/hooks/useFriendships';
 
 interface SearchResult {
   id: string;
   full_name: string | null;
   avatar_url: string | null;
   trees_planted: number;
+}
+
+// Sub-component to display mutual friends
+function MutualFriendsDisplay({ targetUserId }: { targetUserId: string }) {
+  const { t } = useTranslation();
+  const { data: mutualFriends, isLoading } = useMutualFriends(targetUserId);
+
+  // Handle both array and object with profiles/total format
+  const profiles = Array.isArray(mutualFriends) 
+    ? mutualFriends 
+    : mutualFriends?.profiles || [];
+  const total = Array.isArray(mutualFriends) 
+    ? mutualFriends.length 
+    : mutualFriends?.total || 0;
+
+  if (isLoading || total === 0) {
+    return null;
+  }
+
+  return (
+    <div className="flex items-center gap-1.5 mt-0.5">
+      <Users className="w-3 h-3 text-blue-500" />
+      {/* Avatar stack */}
+      <div className="flex -space-x-1.5">
+        {profiles.slice(0, 3).map((friend) => (
+          <Avatar key={friend.id} className="w-4 h-4 border-[1.5px] border-white dark:border-gray-900">
+            <AvatarImage src={friend.avatar_url || undefined} />
+            <AvatarFallback className="text-[8px] bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300">
+              {friend.full_name?.[0] || '?'}
+            </AvatarFallback>
+          </Avatar>
+        ))}
+      </div>
+      <span className="text-[11px] text-blue-600 dark:text-blue-400 font-medium">
+        {total} {t('friends.mutual', 'bạn chung')}
+      </span>
+    </div>
+  );
 }
 
 export function FeedSearchBar() {
@@ -236,6 +275,7 @@ export function FeedSearchBar() {
                               <span className="font-medium">{user.trees_planted}</span>
                               {t('feed.treesPlanted')}
                             </p>
+                            <MutualFriendsDisplay targetUserId={user.id} />
                           </div>
                         </motion.button>
                       ))}
