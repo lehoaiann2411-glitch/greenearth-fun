@@ -66,7 +66,7 @@ export function TargetAudienceSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
-              <Card className="glass-card border-white/20 h-full hover:scale-105 transition-all duration-300 group">
+              <Card className="bg-gradient-to-br from-emerald-800/90 via-green-800/90 to-emerald-900/90 backdrop-blur-lg border border-emerald-600/30 shadow-xl h-full hover:scale-105 transition-all duration-300 group">
                 <CardContent className="p-6 text-center">
                   <div className={`inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br ${audience.gradient} mb-4 shadow-lg group-hover:scale-110 transition-transform`}>
                     <audience.icon className="h-7 w-7 text-white" />
