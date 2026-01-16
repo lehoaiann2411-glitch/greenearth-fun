@@ -146,7 +146,7 @@ export function AngelAIIntro() {
             </div>
 
             {/* Teachings */}
-            <Card className="glass-card border-white/20">
+            <Card className="bg-gradient-to-br from-emerald-800/90 via-green-800/90 to-emerald-900/90 backdrop-blur-lg border border-emerald-600/30 shadow-xl">
               <CardContent className="p-6">
                 <h4 className="font-display text-lg font-semibold text-white mb-4">
                   {t('vision.angelAI.teachingsTitle')}

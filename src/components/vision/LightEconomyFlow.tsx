@@ -90,7 +90,7 @@ export function LightEconomyFlow() {
               transition={{ duration: 0.5, delay: index * 0.15 }}
               className="flex items-center gap-4"
             >
-              <Card className="glass-card border-white/20 hover:scale-105 transition-all duration-300 w-full lg:w-72">
+              <Card className="bg-gradient-to-br from-emerald-800/90 via-green-800/90 to-emerald-900/90 backdrop-blur-lg border border-emerald-600/30 shadow-xl hover:scale-105 transition-all duration-300 w-full lg:w-72">
                 <CardContent className="p-6 text-center">
                   <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl ${step.bgColor} mb-4`}>
                     <step.icon className={`h-8 w-8 ${step.iconColor}`} />
@@ -129,7 +129,7 @@ export function LightEconomyFlow() {
           className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto mb-12"
         >
           {currencies.map((currency) => (
-            <Card key={currency.titleKey} className="glass-card border-white/20 overflow-hidden group hover:scale-[1.02] transition-all duration-300">
+            <Card key={currency.titleKey} className="bg-gradient-to-br from-emerald-800/90 via-green-800/90 to-emerald-900/90 backdrop-blur-lg border border-emerald-600/30 shadow-xl overflow-hidden group hover:scale-[1.02] transition-all duration-300">
               <CardContent className="p-6 flex items-center gap-4">
                 <div className={`shrink-0 w-14 h-14 rounded-xl bg-gradient-to-br ${currency.color} flex items-center justify-center shadow-lg`}>
                   <currency.icon className="h-7 w-7 text-white" />
