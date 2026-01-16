@@ -64,7 +64,7 @@ export default function Index() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="font-display text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 text-shadow-lg"
+              className="font-display text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] [text-shadow:_0_1px_0_rgb(0_0_0_/_40%),_0_2px_4px_rgb(0_0_0_/_30%),_0_4px_8px_rgb(0_0_0_/_20%)]"
             >
               {t('vision.hero.title')}
               <span className="block text-white drop-shadow-[0_2px_8px_rgba(255,255,255,0.5)]">
