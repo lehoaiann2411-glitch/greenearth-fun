@@ -106,10 +106,10 @@ export function StoriesBar() {
               whileTap={{ scale: 0.95 }}
             >
               <div className="relative">
-                {/* Animated green glowing ring for unviewed stories */}
+                {/* Green glowing ring for unviewed stories */}
                 <div className={`w-[68px] h-[68px] rounded-full p-[3px] transition-all duration-300 ${
                   group.hasUnviewed 
-                    ? 'bg-gradient-to-tr from-primary via-emerald-400 to-lime-400 shadow-[0_0_15px_rgba(34,197,94,0.5)] animate-pulse' 
+                    ? 'bg-gradient-to-tr from-primary via-emerald-400 to-lime-400 shadow-[0_0_15px_rgba(34,197,94,0.5)]' 
                     : 'bg-muted'
                 }`}>
                   <div className="w-full h-full rounded-full p-[2px] bg-background">
