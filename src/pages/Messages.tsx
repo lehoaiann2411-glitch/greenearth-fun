@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Layout } from '@/components/layout/Layout';
@@ -11,6 +11,7 @@ import { useMarkSeen, useMessageStatusSubscription } from '@/hooks/useMessageSta
 import { useIsBlocked } from '@/hooks/useBlocking';
 import { useProfile } from '@/hooks/useProfile';
 import { useUploadMessageMedia } from '@/hooks/useMediaUpload';
+import { useMessageReactions, useToggleReaction } from '@/hooks/useMessageReactions';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -23,6 +24,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { OnlineIndicator } from '@/components/messages/OnlineIndicator';
 import { TypingIndicator } from '@/components/messages/TypingIndicator';
 import { MessageStatus } from '@/components/messages/MessageStatus';
+import { MessageReactions } from '@/components/messages/MessageReactions';
 import { ConversationList } from '@/components/messages/ConversationList';
 import { EcoStickers } from '@/components/messages/EcoStickers';
 import { EmojiPickerFull } from '@/components/messages/EmojiPickerFull';
@@ -94,6 +96,22 @@ export default function Messages() {
   const typingUsers = useTypingIndicator(conversationId || null);
   const { startTyping, stopTyping } = useSendTypingStatus(conversationId || null);
   useMessageStatusSubscription(conversationId || null);
+
+  // Message reactions
+  const messageIds = useMemo(() => messages?.map(m => m.id) || [], [messages]);
+  const { data: reactionsData } = useMessageReactions(messageIds);
+  const toggleReaction = useToggleReaction();
+
+  const handleReactToMessage = useCallback((messageId: string, emoji: string) => {
+    const messageReactions = reactionsData?.[messageId] || [];
+    const existingReaction = messageReactions.find(r => r.emoji === emoji);
+    
+    toggleReaction.mutate({
+      messageId,
+      emoji,
+      hasReacted: existingReaction?.hasReacted || false,
+    });
+  }, [reactionsData, toggleReaction]);
 
   const otherParticipant = activeConversation?.participants?.[0];
   const { data: isBlocked } = useIsBlocked(otherParticipant?.id || '');
@@ -422,141 +440,181 @@ export default function Messages() {
                           }
 
                           return (
-                            <motion.div
-                              key={message.id}
-                              initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                              animate={{ opacity: 1, y: 0, scale: 1 }}
-                              transition={{ duration: 0.2 }}
-                              className={cn(
-                                'flex items-end gap-2 group',
-                                isOwn && 'flex-row-reverse'
-                              )}
-                            >
-                              {!isOwn && (
-                                <Avatar className={cn(
-                                  "h-7 w-7 transition-opacity",
-                                  showAvatar ? "opacity-100" : "opacity-0"
-                                )}>
-                                  <AvatarImage src={message.sender?.avatar_url || ''} />
-                                  <AvatarFallback className="text-xs bg-muted">
-                                    {message.sender?.full_name?.charAt(0) || '?'}
-                                  </AvatarFallback>
-                                </Avatar>
-                              )}
-                              <div
+                            <div key={message.id} className="space-y-1">
+                              <motion.div
+                                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                transition={{ duration: 0.2 }}
                                 className={cn(
-                                  'max-w-[70%] rounded-2xl shadow-sm transition-all overflow-hidden',
-                                  isOwn
-                                    ? 'bg-gradient-to-br from-primary to-primary/90 text-primary-foreground rounded-br-md'
-                                    : 'bg-muted/80 rounded-bl-md',
-                                  // Remove padding for media messages
-                                  (message.message_type === 'image' || message.message_type === 'video') 
-                                    ? '' 
-                                    : 'px-4 py-2.5'
+                                  'flex items-end gap-2 group',
+                                  isOwn && 'flex-row-reverse'
                                 )}
                               >
-                                {/* Image message */}
-                                {message.message_type === 'image' && message.media_url && (
-                                  <div className="relative">
-                                    <img 
-                                      src={message.media_url} 
-                                      alt="Shared image"
-                                      className="max-w-full max-h-60 object-cover cursor-pointer rounded-2xl"
-                                      onClick={() => window.open(message.media_url!, '_blank')}
-                                    />
-                                    <div className={cn(
-                                      'absolute bottom-2 right-2 flex items-center gap-1 bg-black/50 backdrop-blur-sm rounded-full px-2 py-0.5'
-                                    )}>
-                                      <span className="text-[10px] text-white">
-                                        {formatDistanceToNow(new Date(message.created_at), { addSuffix: false })}
-                                      </span>
-                                      {isOwn && (
-                                        <MessageStatus
-                                          status={(message as any).status || 'sent'}
-                                          sentAt={message.created_at}
-                                          deliveredAt={(message as any).delivered_at}
-                                          seenAt={(message as any).seen_at}
-                                          isOwn={isOwn}
-                                          className="text-white"
-                                        />
-                                      )}
-                                    </div>
-                                  </div>
+                                {!isOwn && (
+                                  <Avatar className={cn(
+                                    "h-7 w-7 transition-opacity",
+                                    showAvatar ? "opacity-100" : "opacity-0"
+                                  )}>
+                                    <AvatarImage src={message.sender?.avatar_url || ''} />
+                                    <AvatarFallback className="text-xs bg-muted">
+                                      {message.sender?.full_name?.charAt(0) || '?'}
+                                    </AvatarFallback>
+                                  </Avatar>
                                 )}
-
-                                {/* Video message */}
-                                {message.message_type === 'video' && message.media_url && (
-                                  <div className="relative">
-                                    <video 
-                                      src={message.media_url}
-                                      controls
-                                      className="max-w-full max-h-60 rounded-2xl"
-                                    />
-                                    <div className={cn(
-                                      'absolute bottom-2 right-2 flex items-center gap-1 bg-black/50 backdrop-blur-sm rounded-full px-2 py-0.5'
-                                    )}>
-                                      <span className="text-[10px] text-white">
-                                        {formatDistanceToNow(new Date(message.created_at), { addSuffix: false })}
-                                      </span>
-                                    </div>
-                                  </div>
-                                )}
-
-                                {/* Voice message */}
-                                {message.message_type === 'voice' && message.media_url && (
-                                  <div className="flex items-center gap-2 px-4 py-2.5">
-                                    <div className={cn(
-                                      'flex items-center gap-2 rounded-full px-3 py-1.5',
-                                      isOwn ? 'bg-primary-foreground/20' : 'bg-background/30'
-                                    )}>
-                                      <Mic className="h-4 w-4" />
-                                      <audio 
+                                <div
+                                  className={cn(
+                                    'max-w-[70%] rounded-2xl shadow-sm transition-all overflow-hidden',
+                                    isOwn
+                                      ? 'bg-gradient-to-br from-primary to-primary/90 text-primary-foreground rounded-br-md'
+                                      : 'bg-muted/80 rounded-bl-md',
+                                    // Remove padding for media messages
+                                    (message.message_type === 'image' || message.message_type === 'video') 
+                                      ? '' 
+                                      : 'px-4 py-2.5'
+                                  )}
+                                >
+                                  {/* Image message */}
+                                  {message.message_type === 'image' && message.media_url && (
+                                    <div className="relative">
+                                      <img 
                                         src={message.media_url} 
-                                        controls 
-                                        className="h-8 max-w-[180px]" 
+                                        alt="Shared image"
+                                        className="max-w-full max-h-60 object-cover cursor-pointer rounded-2xl"
+                                        onClick={() => window.open(message.media_url!, '_blank')}
                                       />
-                                    </div>
-                                  </div>
-                                )}
-
-                                {/* Camly gift message */}
-                                {message.message_type === 'camly_gift' && (
-                                  <CamlyGiftMessage 
-                                    amount={message.camly_amount || 0}
-                                    isSender={isOwn}
-                                    senderName={message.sender?.full_name || undefined}
-                                  />
-                                )}
-
-                                {/* Text message */}
-                                {(message.message_type === 'text' || !message.message_type || 
-                                  (message.message_type !== 'image' && message.message_type !== 'video' && message.message_type !== 'camly_gift')) && (
-                                  <>
-                                    <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
-                                    <div className={cn(
-                                      'flex items-center gap-1 mt-1',
-                                      isOwn ? 'justify-end' : ''
-                                    )}>
-                                      <span className={cn(
-                                        'text-[10px]',
-                                        isOwn ? 'text-primary-foreground/60' : 'text-muted-foreground'
+                                      <div className={cn(
+                                        'absolute bottom-2 right-2 flex items-center gap-1 bg-black/50 backdrop-blur-sm rounded-full px-2 py-0.5'
                                       )}>
-                                        {formatDistanceToNow(new Date(message.created_at), { addSuffix: false })}
-                                      </span>
-                                      {isOwn && (
-                                        <MessageStatus
-                                          status={(message as any).status || 'sent'}
-                                          sentAt={message.created_at}
-                                          deliveredAt={(message as any).delivered_at}
-                                          seenAt={(message as any).seen_at}
-                                          isOwn={isOwn}
-                                        />
-                                      )}
+                                        <span className="text-[10px] text-white">
+                                          {formatDistanceToNow(new Date(message.created_at), { addSuffix: false })}
+                                        </span>
+                                        {isOwn && (
+                                          <MessageStatus
+                                            status={(message as any).status || 'sent'}
+                                            sentAt={message.created_at}
+                                            deliveredAt={(message as any).delivered_at}
+                                            seenAt={(message as any).seen_at}
+                                            isOwn={isOwn}
+                                            className="text-white"
+                                          />
+                                        )}
+                                      </div>
                                     </div>
-                                  </>
-                                )}
-                              </div>
-                            </motion.div>
+                                  )}
+
+                                  {/* Video message */}
+                                  {message.message_type === 'video' && message.media_url && (
+                                    <div className="relative">
+                                      <video 
+                                        src={message.media_url}
+                                        controls
+                                        className="max-w-full max-h-60 rounded-2xl"
+                                      />
+                                      <div className={cn(
+                                        'absolute bottom-2 right-2 flex items-center gap-1 bg-black/50 backdrop-blur-sm rounded-full px-2 py-0.5'
+                                      )}>
+                                        <span className="text-[10px] text-white">
+                                          {formatDistanceToNow(new Date(message.created_at), { addSuffix: false })}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  )}
+
+                                  {/* Voice message */}
+                                  {message.message_type === 'voice' && message.media_url && (
+                                    <div className="flex items-center gap-2 px-4 py-2.5">
+                                      <div className={cn(
+                                        'flex items-center gap-2 rounded-full px-3 py-1.5',
+                                        isOwn ? 'bg-primary-foreground/20' : 'bg-background/30'
+                                      )}>
+                                        <Mic className="h-4 w-4" />
+                                        <audio 
+                                          src={message.media_url} 
+                                          controls 
+                                          className="h-8 max-w-[180px]" 
+                                        />
+                                      </div>
+                                    </div>
+                                  )}
+
+                                  {/* Camly gift message */}
+                                  {message.message_type === 'camly_gift' && (
+                                    <CamlyGiftMessage 
+                                      amount={message.camly_amount || 0}
+                                      isSender={isOwn}
+                                      senderName={message.sender?.full_name || undefined}
+                                    />
+                                  )}
+
+                                  {/* Text message */}
+                                  {(message.message_type === 'text' || !message.message_type || 
+                                    (message.message_type !== 'image' && message.message_type !== 'video' && message.message_type !== 'camly_gift')) && (
+                                    <>
+                                      <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
+                                      <div className={cn(
+                                        'flex items-center gap-1 mt-1',
+                                        isOwn ? 'justify-end' : ''
+                                      )}>
+                                        <span className={cn(
+                                          'text-[10px]',
+                                          isOwn ? 'text-primary-foreground/60' : 'text-muted-foreground'
+                                        )}>
+                                          {formatDistanceToNow(new Date(message.created_at), { addSuffix: false })}
+                                        </span>
+                                        {isOwn && (
+                                          <MessageStatus
+                                            status={(message as any).status || 'sent'}
+                                            sentAt={message.created_at}
+                                            deliveredAt={(message as any).delivered_at}
+                                            seenAt={(message as any).seen_at}
+                                            isOwn={isOwn}
+                                          />
+                                        )}
+                                      </div>
+                                    </>
+                                  )}
+                                </div>
+                                
+                                {/* Reaction button - appears on hover */}
+                                <MessageReactions
+                                  messageId={message.id}
+                                  reactions={reactionsData?.[message.id] || []}
+                                  onReact={handleReactToMessage}
+                                  compact
+                                />
+                              </motion.div>
+                              
+                              {/* Display existing reactions below message */}
+                              {reactionsData?.[message.id] && reactionsData[message.id].length > 0 && (
+                                <motion.div
+                                  initial={{ opacity: 0, scale: 0.9 }}
+                                  animate={{ opacity: 1, scale: 1 }}
+                                  className={cn(
+                                    "flex",
+                                    isOwn ? "justify-end mr-2" : "ml-9"
+                                  )}
+                                >
+                                  <div className="flex items-center gap-0.5 px-2 py-1 rounded-full bg-muted/60 shadow-sm text-sm">
+                                    {reactionsData[message.id].slice(0, 5).map((r, idx) => (
+                                      <button
+                                        key={r.emoji + idx}
+                                        onClick={() => handleReactToMessage(message.id, r.emoji)}
+                                        className={cn(
+                                          "hover:scale-125 transition-transform px-0.5",
+                                          r.hasReacted && "drop-shadow-sm"
+                                        )}
+                                        title={r.users?.map(u => u.full_name).join(', ')}
+                                      >
+                                        {r.emoji}
+                                      </button>
+                                    ))}
+                                    <span className="text-xs text-muted-foreground ml-1 font-medium">
+                                      {reactionsData[message.id].reduce((acc, r) => acc + r.count, 0)}
+                                    </span>
+                                  </div>
+                                </motion.div>
+                              )}
+                            </div>
                           );
                         })}
                       </AnimatePresence>
