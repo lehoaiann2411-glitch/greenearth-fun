@@ -12,6 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useQueryClient } from '@tanstack/react-query';
 import { CamlyCoinIcon } from '@/components/rewards/CamlyCoinIcon';
 import { formatCamly } from '@/lib/camlyCoin';
+import { ProfilePhotoLightbox } from './ProfilePhotoLightbox';
 
 interface ProfileHeaderProps {
   profile: {
@@ -41,8 +42,10 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
   const queryClient = useQueryClient();
   const coverInputRef = useRef<HTMLInputElement>(null);
   const [isUploadingCover, setIsUploadingCover] = useState(false);
+  const [selectedPhoto, setSelectedPhoto] = useState<'avatar' | 'cover' | null>(null);
 
   const camlyBalance = profile.camly_balance ?? 0;
+  const defaultCover = 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1200&q=80';
 
   const handleMessageClick = () => {
     navigate(`/messages?userId=${profile.id}`);
@@ -93,18 +96,32 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
     }
   };
 
-  const defaultCover = 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1200&q=80';
+  const currentPhotoUrl = selectedPhoto === 'avatar' 
+    ? (profile.avatar_url || '') 
+    : (profile.cover_photo_url || defaultCover);
 
   return (
     <div className="relative">
+      {/* Profile Photo Lightbox */}
+      <ProfilePhotoLightbox
+        isOpen={selectedPhoto !== null}
+        onClose={() => setSelectedPhoto(null)}
+        photoUrl={currentPhotoUrl}
+        photoType={selectedPhoto || 'avatar'}
+        profileId={profile.id}
+        profileName={profile.full_name || 'User'}
+        profileAvatar={profile.avatar_url || undefined}
+      />
+
       {/* Cover Photo */}
       <div className="relative h-48 md:h-64 rounded-t-xl overflow-hidden">
         <img
           src={profile.cover_photo_url || defaultCover}
           alt="Cover"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover cursor-pointer hover:brightness-95 transition-all"
+          onClick={() => setSelectedPhoto('cover')}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
         
         {isOwnProfile && (
           <>
@@ -134,7 +151,10 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
         {/* Avatar */}
         <div className="absolute -top-16 left-6">
           <div className="relative">
-            <Avatar className="h-32 w-32 border-4 border-background shadow-xl">
+            <Avatar 
+              className="h-32 w-32 border-4 border-background shadow-xl cursor-pointer hover:scale-105 transition-transform"
+              onClick={() => setSelectedPhoto('avatar')}
+            >
               <AvatarImage src={profile.avatar_url || ''} alt={profile.full_name || ''} />
               <AvatarFallback className="bg-primary text-3xl text-primary-foreground">
                 {profile.full_name?.charAt(0) || '?'}
