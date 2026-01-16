@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { useSuggestedUsers, useFollowUser, useIsFollowing } from '@/hooks/useFollow';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useConfetti } from '@/hooks/useConfetti';
 
 interface SuggestedUserCardProps {
   user: {
@@ -24,9 +25,12 @@ function SuggestedUserCard({ user, index }: SuggestedUserCardProps) {
   const { t } = useTranslation();
   const followUser = useFollowUser();
   const { data: isFollowing } = useIsFollowing(user.id);
+  const { triggerConfetti } = useConfetti();
 
   const handleFollow = async () => {
     await followUser.mutateAsync(user.id);
+    // Trigger confetti on successful follow
+    triggerConfetti('medium');
   };
 
   return (
