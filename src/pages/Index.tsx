@@ -67,7 +67,7 @@ export default function Index() {
               className="font-display text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 text-shadow-lg"
             >
               {t('vision.hero.title')}
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-green-400 to-emerald-300 drop-shadow-[0_2px_8px_rgba(144,238,144,0.7)]">
+              <span className="block text-white drop-shadow-[0_2px_8px_rgba(255,255,255,0.5)]">
                 {t('vision.hero.titleHighlight')}
               </span>
             </motion.h1>
