@@ -64,10 +64,10 @@ export default function Index() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="font-display text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] [text-shadow:_0_1px_0_rgb(0_0_0_/_40%),_0_2px_4px_rgb(0_0_0_/_30%),_0_4px_8px_rgb(0_0_0_/_20%)]"
+              className="font-display text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 drop-shadow-[0_3px_6px_rgba(0,0,0,0.8)] [text-shadow:_0_2px_0_rgb(0_0_0_/_70%),_0_4px_6px_rgb(0_0_0_/_60%),_0_6px_12px_rgb(0_0_0_/_50%),_0_0_20px_rgb(0_0_0_/_40%)]"
             >
               {t('vision.hero.title')}
-              <span className="block text-white drop-shadow-[0_2px_8px_rgba(255,255,255,0.5)]">
+              <span className="block text-white drop-shadow-[0_3px_6px_rgba(0,0,0,0.8)] [text-shadow:_0_2px_0_rgb(0_0_0_/_70%),_0_4px_6px_rgb(0_0_0_/_60%),_0_6px_12px_rgb(0_0_0_/_50%)]">
                 {t('vision.hero.titleHighlight')}
               </span>
             </motion.h1>
@@ -77,7 +77,7 @@ export default function Index() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-lg md:text-xl text-white/80 mb-10 max-w-3xl mx-auto text-shadow font-medium"
+              className="text-lg md:text-xl text-white mb-10 max-w-3xl mx-auto font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)] [text-shadow:_0_1px_2px_rgb(0_0_0_/_60%),_0_2px_4px_rgb(0_0_0_/_40%)]"
             >
               {t('vision.hero.subtitle')}
             </motion.p>
