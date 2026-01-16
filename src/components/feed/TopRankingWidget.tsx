@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Trophy, Crown, ChevronRight, Sparkles, Star } from 'lucide-react';
+import { Trophy, Crown, ChevronRight, Sparkles, Star, Leaf } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -11,7 +11,7 @@ import { useLeaderboard, LeaderboardEntry } from '@/hooks/useLeaderboard';
 import { formatCamly } from '@/lib/camlyCoin';
 import { cn } from '@/lib/utils';
 
-// Podium card for top 3 with enhanced metallic colors
+// Podium card for top 3 with Green-Gold-Pearl theme
 function PodiumCard({ 
   user, 
   rank, 
@@ -33,44 +33,44 @@ function PodiumCard({
     3: 'w-12 h-12'
   };
 
-  // Enhanced metallic glow effects
+  // Enhanced glow effects with Green-Gold-Pearl theme
   const glowColors = {
-    1: 'shadow-[0_0_25px_rgba(251,191,36,0.6),0_0_50px_rgba(245,158,11,0.3)]',
-    2: 'shadow-[0_0_20px_rgba(148,163,184,0.5),0_0_40px_rgba(100,116,139,0.3)]',
-    3: 'shadow-[0_0_20px_rgba(234,88,12,0.5),0_0_40px_rgba(194,65,12,0.3)]'
+    1: 'shadow-[0_0_25px_rgba(251,191,36,0.6),0_0_50px_rgba(16,185,129,0.3)]', // Gold + Green glow
+    2: 'shadow-[0_0_20px_rgba(148,163,184,0.5),0_0_40px_rgba(100,116,139,0.3)]', // Silver
+    3: 'shadow-[0_0_20px_rgba(234,88,12,0.5),0_0_40px_rgba(194,65,12,0.3)]' // Bronze
   };
 
-  // Enhanced ring colors with gradients
+  // Ring colors with gold accent for champion
   const ringColors = {
     1: 'ring-4 ring-yellow-400',
     2: 'ring-3 ring-slate-300',
     3: 'ring-3 ring-orange-500'
   };
 
-  // Rich metallic gradients for backgrounds
+  // Rich gradients - Green for champion background
   const bgGradients = {
-    1: 'bg-gradient-to-t from-yellow-500/40 via-amber-400/30 via-orange-300/20 to-transparent',
+    1: 'bg-gradient-to-t from-emerald-500/40 via-yellow-400/30 via-green-300/20 to-transparent',
     2: 'bg-gradient-to-t from-slate-400/40 via-gray-300/30 via-slate-200/15 to-transparent',
     3: 'bg-gradient-to-t from-orange-600/40 via-amber-600/30 via-yellow-700/15 to-transparent'
   };
 
-  // Enhanced text colors
+  // Enhanced text colors - Emerald for champion
   const textColors = {
-    1: 'text-amber-500 dark:text-yellow-300',
+    1: 'text-emerald-600 dark:text-emerald-400',
     2: 'text-slate-500 dark:text-slate-300',
     3: 'text-orange-600 dark:text-amber-400'
   };
 
-  // Glow background colors
+  // Glow background colors - Green-Gold for champion
   const glowBgColors = {
-    1: 'bg-gradient-to-r from-yellow-400 via-amber-300 to-orange-400',
+    1: 'bg-gradient-to-r from-yellow-400 via-emerald-400 to-green-500',
     2: 'bg-gradient-to-r from-slate-300 via-gray-200 to-slate-400',
     3: 'bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-600'
   };
 
-  // Podium base 3D metallic effect
+  // Podium base - Green + Gold for champion
   const podiumStyles = {
-    1: 'bg-gradient-to-t from-yellow-500/50 via-amber-400/40 via-yellow-300/20 to-yellow-100/10 border-yellow-400/60 shadow-inner shadow-yellow-500/30',
+    1: 'bg-gradient-to-t from-emerald-500/50 via-yellow-400/40 via-green-300/20 to-emerald-100/10 border-emerald-400/60 shadow-inner shadow-emerald-500/30',
     2: 'bg-gradient-to-t from-slate-400/50 via-gray-300/40 via-slate-200/20 to-slate-100/10 border-slate-300/60 shadow-inner shadow-slate-400/30',
     3: 'bg-gradient-to-t from-orange-500/50 via-amber-500/40 via-orange-400/20 to-amber-200/10 border-orange-500/60 shadow-inner shadow-orange-500/30'
   };
@@ -80,7 +80,7 @@ function PodiumCard({
       to={`/profile/${user.id}`}
       className="flex flex-col items-center group"
     >
-      {/* Crown for champion with rainbow glow */}
+      {/* Crown for champion with gold glow */}
       {isChampion && (
         <motion.div
           animate={{ 
@@ -109,7 +109,7 @@ function PodiumCard({
         </motion.div>
       )}
 
-      {/* Avatar with enhanced metallic glow */}
+      {/* Avatar with enhanced glow */}
       <motion.div
         animate={isChampion ? { 
           y: [0, -3, 0],
@@ -155,7 +155,7 @@ function PodiumCard({
         </Avatar>
       </motion.div>
 
-      {/* Name with enhanced color */}
+      {/* Name with emerald color for champion */}
       <p className={cn(
         "mt-2 text-xs font-bold truncate max-w-[80px] text-center drop-shadow-sm",
         textColors[rank as 1 | 2 | 3]
@@ -163,8 +163,13 @@ function PodiumCard({
         {user.full_name?.split(' ')[0] || 'User'}
       </p>
 
-      {/* Camly balance with glow */}
-      <div className="flex items-center gap-1 mt-0.5">
+      {/* Camly balance with gold-green accent */}
+      <div className={cn(
+        "flex items-center gap-1 mt-0.5 px-2 py-0.5 rounded-full",
+        rank === 1 && "bg-gradient-to-r from-yellow-400/20 via-emerald-400/15 to-yellow-400/20",
+        rank === 2 && "bg-slate-200/30 dark:bg-slate-700/30",
+        rank === 3 && "bg-orange-200/30 dark:bg-orange-900/30"
+      )}>
         <motion.div
           animate={{ rotate: [0, 10, -10, 0] }}
           transition={{ duration: 2, repeat: Infinity, delay: rank * 0.3 }}
@@ -173,7 +178,7 @@ function PodiumCard({
         </motion.div>
         <span className={cn(
           "text-xs font-bold",
-          rank === 1 && "text-amber-600 dark:text-yellow-400",
+          rank === 1 && "text-yellow-600 dark:text-yellow-400",
           rank === 2 && "text-slate-600 dark:text-slate-300",
           rank === 3 && "text-orange-600 dark:text-amber-500"
         )}>
@@ -200,18 +205,18 @@ function PodiumCard({
   );
 }
 
-// Colorful rank badges for positions 4-10
+// Green-themed rank badges for positions 4-10
 const rankBadgeColors: Record<number, string> = {
-  4: 'bg-gradient-to-r from-violet-500/20 to-purple-500/20 text-violet-600 dark:text-violet-400 border-violet-300/30',
-  5: 'bg-gradient-to-r from-blue-500/20 to-indigo-500/20 text-blue-600 dark:text-blue-400 border-blue-300/30',
-  6: 'bg-gradient-to-r from-cyan-500/20 to-teal-500/20 text-cyan-600 dark:text-cyan-400 border-cyan-300/30',
-  7: 'bg-gradient-to-r from-emerald-500/20 to-green-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-300/30',
-  8: 'bg-gradient-to-r from-lime-500/20 to-yellow-500/20 text-lime-600 dark:text-lime-400 border-lime-300/30',
-  9: 'bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-600 dark:text-amber-400 border-amber-300/30',
-  10: 'bg-gradient-to-r from-rose-500/20 to-pink-500/20 text-rose-600 dark:text-rose-400 border-rose-300/30'
+  4: 'bg-gradient-to-r from-emerald-500/20 to-green-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-300/30',
+  5: 'bg-gradient-to-r from-teal-500/20 to-cyan-500/20 text-teal-600 dark:text-teal-400 border-teal-300/30',
+  6: 'bg-gradient-to-r from-green-500/20 to-lime-500/20 text-green-600 dark:text-green-400 border-green-300/30',
+  7: 'bg-gradient-to-r from-yellow-500/20 to-amber-500/20 text-yellow-600 dark:text-yellow-400 border-yellow-300/30',
+  8: 'bg-gradient-to-r from-emerald-400/20 to-teal-400/20 text-emerald-500 dark:text-emerald-300 border-emerald-200/30',
+  9: 'bg-gradient-to-r from-lime-500/20 to-green-500/20 text-lime-600 dark:text-lime-400 border-lime-300/30',
+  10: 'bg-gradient-to-r from-green-600/20 to-emerald-600/20 text-green-700 dark:text-green-300 border-green-400/30'
 };
 
-// Regular ranking item for #4-#10 with colorful badges
+// Regular ranking item for #4-#10 with green theme
 function RankingItem({ user, index }: { user: LeaderboardEntry; index: number }) {
   const rank = user.rank || (index + 4);
   
@@ -223,7 +228,7 @@ function RankingItem({ user, index }: { user: LeaderboardEntry; index: number })
     >
       <Link
         to={`/profile/${user.id}`}
-        className="flex items-center gap-2.5 py-2 px-2 rounded-xl hover:bg-gradient-to-r hover:from-primary/5 hover:via-transparent hover:to-primary/5 transition-all duration-200 group border border-transparent hover:border-primary/10"
+        className="flex items-center gap-2.5 py-2 px-2 rounded-xl hover:bg-gradient-to-r hover:from-emerald-500/5 hover:via-transparent hover:to-emerald-500/5 transition-all duration-200 group border border-transparent hover:border-emerald-200/30 dark:hover:border-emerald-700/30"
       >
         {/* Colorful rank badge */}
         <div className={cn(
@@ -233,23 +238,23 @@ function RankingItem({ user, index }: { user: LeaderboardEntry; index: number })
           {rank}
         </div>
         
-        {/* Avatar */}
-        <Avatar className="w-8 h-8 group-hover:scale-105 transition-transform ring-2 ring-transparent group-hover:ring-primary/20">
+        {/* Avatar with green hover */}
+        <Avatar className="w-8 h-8 group-hover:scale-105 transition-transform ring-2 ring-emerald-100/50 dark:ring-emerald-800/50 group-hover:ring-emerald-300/50 dark:group-hover:ring-emerald-600/50">
           <AvatarImage src={user.avatar_url || ''} alt={user.full_name || ''} />
-          <AvatarFallback className="text-xs bg-primary/10 text-primary">
+          <AvatarFallback className="text-xs bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400">
             {user.full_name?.charAt(0) || '?'}
           </AvatarFallback>
         </Avatar>
 
         {/* Name */}
-        <p className="flex-1 text-sm font-medium truncate text-foreground group-hover:text-primary transition-colors">
+        <p className="flex-1 text-sm font-medium truncate text-foreground group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
           {user.full_name || 'Anonymous'}
         </p>
 
-        {/* Camly balance with coin */}
-        <div className="flex items-center gap-1 bg-amber-500/10 dark:bg-amber-500/20 px-2 py-0.5 rounded-full">
+        {/* Camly balance with gold-green accent */}
+        <div className="flex items-center gap-1 bg-gradient-to-r from-yellow-400/15 to-emerald-400/10 px-2 py-0.5 rounded-full border border-yellow-300/20">
           <CamlyCoinIcon className="w-3.5 h-3.5" />
-          <span className="text-xs font-bold text-amber-600 dark:text-amber-400">
+          <span className="text-xs font-bold text-yellow-600 dark:text-yellow-400">
             {formatCamly(user.camly_balance || 0)}
           </span>
         </div>
@@ -264,8 +269,8 @@ export function TopRankingWidget() {
 
   if (isLoading) {
     return (
-      <Card className="overflow-hidden bg-gradient-to-b from-white via-amber-50/30 to-white dark:from-gray-900 dark:via-amber-950/10 dark:to-gray-900 shadow-xl border-0">
-        <div className="bg-gradient-to-r from-amber-500 via-yellow-400 via-orange-500 to-rose-500 p-4">
+      <Card className="overflow-hidden bg-gradient-to-b from-slate-50 via-emerald-50/30 to-white dark:from-gray-900 dark:via-emerald-950/20 dark:to-gray-900 shadow-xl border-0">
+        <div className="bg-gradient-to-r from-emerald-600 via-green-500 to-emerald-700 p-4">
           <div className="flex items-center gap-2">
             <Trophy className="w-6 h-6 text-white" />
             <h3 className="font-bold text-white text-lg">Top Ranking</h3>
@@ -316,17 +321,20 @@ export function TopRankingWidget() {
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.4 }}
     >
-      <Card className="overflow-hidden bg-gradient-to-b from-white via-amber-50/20 to-white dark:from-gray-900 dark:via-amber-950/10 dark:to-gray-900 shadow-xl border-0">
-        {/* Header with luxury golden gradient */}
+      <Card className="overflow-hidden bg-gradient-to-b from-slate-50 via-emerald-50/30 to-white dark:from-gray-900 dark:via-emerald-950/20 dark:to-gray-900 shadow-xl border-0 relative">
+        {/* Pearl shimmer effect overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none" />
+        
+        {/* Header with Green-Gold-Pearl theme */}
         <motion.div 
-          className="bg-gradient-to-r from-amber-500 via-yellow-400 via-orange-500 to-rose-500 p-4 relative overflow-hidden"
+          className="bg-gradient-to-r from-emerald-600 via-green-500 to-emerald-700 p-4 relative overflow-hidden"
           animate={{
             backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
           }}
           transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
           style={{ backgroundSize: '200% 200%' }}
         >
-          {/* Animated shimmer overlay */}
+          {/* Pearl shimmer overlay */}
           <motion.div
             className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
             animate={{ x: ['-100%', '200%'] }}
@@ -334,10 +342,30 @@ export function TopRankingWidget() {
             style={{ width: '50%' }}
           />
           
-          {/* Sparkle pattern */}
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMiIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjE1KSIvPjwvc3ZnPg==')] opacity-60" />
+          {/* Pearl white sparkle pattern */}
+          <div className="absolute inset-0 opacity-30">
+            {[...Array(12)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute w-1 h-1 bg-white rounded-full"
+                style={{
+                  left: `${10 + (i % 4) * 25}%`,
+                  top: `${20 + Math.floor(i / 4) * 30}%`,
+                }}
+                animate={{
+                  opacity: [0.3, 1, 0.3],
+                  scale: [0.8, 1.2, 0.8],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  delay: i * 0.15,
+                }}
+              />
+            ))}
+          </div>
           
-          {/* Floating sparkles with multiple colors */}
+          {/* Floating sparkles - Gold and White */}
           <motion.div
             className="absolute top-2 right-8"
             animate={{ 
@@ -347,7 +375,7 @@ export function TopRankingWidget() {
             }}
             transition={{ duration: 2, repeat: Infinity }}
           >
-            <Sparkles className="w-5 h-5 text-yellow-200 drop-shadow-[0_0_4px_rgba(255,255,255,0.8)]" />
+            <Sparkles className="w-5 h-5 text-yellow-300 drop-shadow-[0_0_4px_rgba(253,224,71,0.8)]" />
           </motion.div>
           <motion.div
             className="absolute top-4 right-20"
@@ -367,24 +395,24 @@ export function TopRankingWidget() {
             }}
             transition={{ duration: 1.8, repeat: Infinity, delay: 0.3 }}
           >
-            <Sparkles className="w-4 h-4 text-pink-200" />
+            <Leaf className="w-4 h-4 text-emerald-200" />
           </motion.div>
           
           <div className="relative flex items-center justify-between">
             <div className="flex items-center gap-2">
               <motion.div 
-                className="bg-white/25 backdrop-blur-sm rounded-full p-2 shadow-lg"
+                className="bg-white/25 backdrop-blur-sm rounded-full p-2 shadow-lg ring-2 ring-yellow-400/50"
                 animate={{ 
                   rotate: [0, 5, -5, 0],
                   scale: [1, 1.05, 1]
                 }}
                 transition={{ duration: 3, repeat: Infinity }}
               >
-                <Trophy className="w-6 h-6 text-white drop-shadow-lg" />
+                <Trophy className="w-6 h-6 text-yellow-300 drop-shadow-lg" />
               </motion.div>
               <div>
                 <h3 className="font-bold text-white text-lg drop-shadow-md flex items-center gap-2">
-                  👑 Top Ranking
+                  🌿 Top Ranking
                   <motion.span
                     animate={{ rotate: [0, 10, -10, 0] }}
                     transition={{ duration: 2, repeat: Infinity }}
@@ -392,24 +420,24 @@ export function TopRankingWidget() {
                     ✨
                   </motion.span>
                 </h3>
-                <p className="text-white/80 text-xs flex items-center gap-1 font-medium">
-                  <Sparkles className="w-3 h-3" />
-                  Top 10 {t('leaderboard.topEarners', 'Earners')}
+                <p className="text-emerald-100/90 text-xs flex items-center gap-1 font-medium">
+                  <CamlyCoinIcon className="w-3 h-3" />
+                  Bảng xếp hạng Camly Coin
                 </p>
               </div>
             </div>
             <Link 
               to="/leaderboard" 
-              className="text-xs text-white font-semibold flex items-center gap-1 transition-all bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-full border border-white/30 hover:border-white/50 shadow-lg hover:shadow-xl"
+              className="text-xs text-white font-semibold flex items-center gap-1 transition-all bg-yellow-400/30 hover:bg-yellow-400/50 px-3 py-1.5 rounded-full border border-yellow-300/50 hover:border-yellow-300/70 shadow-lg hover:shadow-xl"
             >
-              {t('common.viewAll', 'View all')}
+              {t('common.viewAll', 'Xem tất cả')}
               <ChevronRight className="w-3 h-3" />
             </Link>
           </div>
         </motion.div>
 
-        {/* Podium Section - Top 3 */}
-        <div className="px-4 pt-6 pb-2 bg-gradient-to-b from-amber-50/50 to-transparent dark:from-amber-950/20 dark:to-transparent">
+        {/* Podium Section with green-pearl gradient */}
+        <div className="px-4 pt-6 pb-2 bg-gradient-to-b from-emerald-50/60 via-yellow-50/20 to-white/80 dark:from-emerald-950/30 dark:via-yellow-950/10 dark:to-gray-900/80">
           <div className="flex items-end justify-center gap-2">
             {/* #2 - Left */}
             {top3[1] && <PodiumCard user={top3[1]} rank={2} />}
@@ -422,13 +450,13 @@ export function TopRankingWidget() {
           </div>
         </div>
 
-        {/* Divider with medal icons */}
+        {/* Divider with green and gold accents */}
         <div className="flex items-center justify-center gap-2 py-3 px-4">
-          <div className="flex-1 h-px bg-gradient-to-r from-transparent via-amber-300/50 to-transparent" />
+          <div className="flex-1 h-px bg-gradient-to-r from-transparent via-emerald-300/50 to-transparent" />
           <div className="flex gap-2 items-center">
             <span className="text-lg drop-shadow-md">🥇</span>
             <motion.span 
-              className="text-yellow-500 text-lg"
+              className="text-emerald-500 text-lg"
               animate={{ scale: [1, 1.2, 1], opacity: [0.7, 1, 0.7] }}
               transition={{ duration: 2, repeat: Infinity }}
             >
@@ -436,7 +464,7 @@ export function TopRankingWidget() {
             </motion.span>
             <span className="text-lg drop-shadow-md">🥈</span>
             <motion.span 
-              className="text-amber-500 text-lg"
+              className="text-yellow-500 text-lg"
               animate={{ scale: [1, 1.2, 1], opacity: [0.7, 1, 0.7] }}
               transition={{ duration: 2, repeat: Infinity, delay: 0.3 }}
             >
@@ -444,7 +472,7 @@ export function TopRankingWidget() {
             </motion.span>
             <span className="text-lg drop-shadow-md">🥉</span>
           </div>
-          <div className="flex-1 h-px bg-gradient-to-r from-transparent via-amber-300/50 to-transparent" />
+          <div className="flex-1 h-px bg-gradient-to-r from-transparent via-emerald-300/50 to-transparent" />
         </div>
 
         {/* Rankings List #4-#10 */}
@@ -452,22 +480,18 @@ export function TopRankingWidget() {
           <ScrollArea className="h-[200px] px-2">
             <div className="space-y-0.5">
               {rest.map((user, index) => (
-                <RankingItem key={user.id} user={user} index={index} />
+                <RankingItem 
+                  key={user.id} 
+                  user={user} 
+                  index={index}
+                />
               ))}
             </div>
           </ScrollArea>
         )}
-
-        {/* Footer CTA with golden gradient */}
-        <div className="p-3 pt-2">
-          <Link
-            to="/leaderboard"
-            className="block w-full py-2.5 text-center text-sm font-bold text-amber-700 dark:text-amber-300 bg-gradient-to-r from-amber-500/20 via-yellow-400/15 to-orange-400/20 hover:from-amber-500/30 hover:via-yellow-400/25 hover:to-orange-400/30 rounded-xl transition-all border border-amber-300/30 hover:border-amber-400/50 shadow-sm hover:shadow-md"
-          >
-            🏆 {t('leaderboard.seeFullRanking', 'See Full Ranking')}
-          </Link>
-        </div>
       </Card>
     </motion.div>
   );
 }
+
+export default TopRankingWidget;
