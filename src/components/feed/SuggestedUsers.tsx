@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
@@ -9,6 +10,8 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { useSuggestedUsers, useFollowUser, useIsFollowing } from '@/hooks/useFollow';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useConfetti } from '@/hooks/useConfetti';
+import { AllSuggestionsModal } from './AllSuggestionsModal';
+
 interface SuggestedUserCardProps {
   user: {
     id: string;
@@ -52,14 +55,14 @@ function SuggestedUserCard({ user, index }: SuggestedUserCardProps) {
       <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300
                       bg-gradient-to-r from-emerald-400/5 via-yellow-400/5 to-emerald-400/5" />
       
-      <Link to={`/profile?id=${user.id}`} className="relative">
-        <Avatar className="w-12 h-12 ring-2 ring-emerald-200/50 dark:ring-emerald-700/50 
+      <Link to={`/profile?id=${user.id}`} className="relative flex-shrink-0">
+        <Avatar className="w-10 h-10 ring-2 ring-emerald-200/50 dark:ring-emerald-700/50 
                           group-hover:ring-yellow-400/60 transition-all duration-300
                           shadow-md shadow-emerald-200/30">
           <AvatarImage src={user.avatar_url || undefined} />
           <AvatarFallback className="bg-gradient-to-br from-emerald-100 to-green-200 
                                      dark:from-emerald-800 dark:to-green-900 
-                                     text-emerald-700 dark:text-emerald-300 font-bold">
+                                     text-emerald-700 dark:text-emerald-300 font-bold text-sm">
             {user.full_name?.[0] || '🌱'}
           </AvatarFallback>
         </Avatar>
@@ -95,7 +98,7 @@ function SuggestedUserCard({ user, index }: SuggestedUserCardProps) {
       <Button
         variant={isFollowing ? 'secondary' : 'default'}
         size="sm"
-        className={`h-9 text-xs relative z-10 transition-all duration-300 ${
+        className={`h-8 px-2.5 text-[11px] relative z-10 transition-all duration-300 flex-shrink-0 whitespace-nowrap ${
           isFollowing 
             ? 'bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-700' 
             : 'bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white shadow-md shadow-emerald-300/50 hover:shadow-lg hover:shadow-emerald-400/50 border-0'
@@ -105,12 +108,12 @@ function SuggestedUserCard({ user, index }: SuggestedUserCardProps) {
       >
         {isFollowing ? (
           <>
-            <Check className="w-3.5 h-3.5 mr-1" />
+            <Check className="w-3 h-3 mr-1" />
             {t('feed.following')}
           </>
         ) : (
           <>
-            <UserPlus className="w-3.5 h-3.5 mr-1 text-yellow-300" />
+            <UserPlus className="w-3 h-3 mr-1 text-yellow-300" />
             {t('feed.follow')}
           </>
         )}
@@ -122,6 +125,7 @@ function SuggestedUserCard({ user, index }: SuggestedUserCardProps) {
 export function SuggestedUsers() {
   const { t } = useTranslation();
   const { data: users, isLoading } = useSuggestedUsers();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   if (isLoading) {
     return (
@@ -327,29 +331,34 @@ export function SuggestedUsers() {
         </div>
         
         {/* View all button */}
-        <Link to="/leaderboard" className="block">
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+        <motion.div
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+        >
+          <Button 
+            variant="ghost" 
+            onClick={() => setIsModalOpen(true)}
+            className="w-full h-10 text-sm font-semibold
+                       bg-gradient-to-r from-emerald-100/80 via-yellow-50/50 to-emerald-100/80
+                       dark:from-emerald-900/40 dark:via-yellow-900/20 dark:to-emerald-900/40
+                       hover:from-emerald-200/90 hover:via-yellow-100/60 hover:to-emerald-200/90
+                       dark:hover:from-emerald-800/50 dark:hover:via-yellow-800/30 dark:hover:to-emerald-800/50
+                       text-emerald-700 dark:text-emerald-300
+                       border border-emerald-200/60 dark:border-emerald-700/40
+                       hover:border-emerald-300/80 dark:hover:border-emerald-600/60
+                       rounded-xl shadow-sm hover:shadow-md hover:shadow-emerald-200/30
+                       transition-all duration-300"
           >
-            <Button 
-              variant="ghost" 
-              className="w-full h-10 text-sm font-semibold
-                         bg-gradient-to-r from-emerald-100/80 via-yellow-50/50 to-emerald-100/80
-                         dark:from-emerald-900/40 dark:via-yellow-900/20 dark:to-emerald-900/40
-                         hover:from-emerald-200/90 hover:via-yellow-100/60 hover:to-emerald-200/90
-                         dark:hover:from-emerald-800/50 dark:hover:via-yellow-800/30 dark:hover:to-emerald-800/50
-                         text-emerald-700 dark:text-emerald-300
-                         border border-emerald-200/60 dark:border-emerald-700/40
-                         hover:border-emerald-300/80 dark:hover:border-emerald-600/60
-                         rounded-xl shadow-sm hover:shadow-md hover:shadow-emerald-200/30
-                         transition-all duration-300"
-            >
-              {t('feed.seeAll')}
-              <ChevronRight className="w-4 h-4 ml-1 text-emerald-500" />
-            </Button>
-          </motion.div>
-        </Link>
+            {t('feed.seeAll')}
+            <ChevronRight className="w-4 h-4 ml-1 text-emerald-500" />
+          </Button>
+        </motion.div>
+        
+        {/* All Suggestions Modal */}
+        <AllSuggestionsModal 
+          open={isModalOpen} 
+          onOpenChange={setIsModalOpen} 
+        />
       </CardContent>
       
       {/* Bottom glow effect */}
