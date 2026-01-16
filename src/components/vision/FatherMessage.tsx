@@ -56,13 +56,13 @@ export function FatherMessage() {
           {/* Main Quote */}
           <blockquote className="mb-12">
             <p className="font-display text-2xl md:text-4xl lg:text-5xl font-bold leading-relaxed mb-8">
-              <span className="text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)] [text-shadow:_0_2px_0_rgb(0_0_0_/_60%),_0_3px_6px_rgb(0_0_0_/_50%)]">{t('vision.fatherMessage.line1')}</span>
+              <span className="text-white">{t('vision.fatherMessage.line1')}</span>
               <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-300 to-amber-300 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-300 to-amber-300">
                 {t('vision.fatherMessage.line2')}
               </span>
               <br />
-              <span className="text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)] [text-shadow:_0_2px_0_rgb(0_0_0_/_60%),_0_3px_6px_rgb(0_0_0_/_50%)]">{t('vision.fatherMessage.line3')}</span>
+              <span className="text-white">{t('vision.fatherMessage.line3')}</span>
               <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-green-300 to-emerald-300">
                 {t('vision.fatherMessage.line4')}
@@ -91,7 +91,7 @@ export function FatherMessage() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.5 }}
-            className="text-lg md:text-xl text-white max-w-2xl mx-auto mb-8 drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)] [text-shadow:_0_1px_2px_rgb(0_0_0_/_50%)]"
+            className="text-lg md:text-xl text-white/70 max-w-2xl mx-auto mb-8"
           >
             {t('vision.fatherMessage.subMessage')}
           </motion.p>
