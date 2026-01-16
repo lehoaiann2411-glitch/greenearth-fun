@@ -154,11 +154,84 @@ export function SuggestedUsers() {
                      dark:from-gray-900 dark:via-emerald-950/30 dark:to-gray-900
                      shadow-xl shadow-emerald-200/40 dark:shadow-emerald-900/30
                      border-2 border-emerald-200/60 dark:border-emerald-800/40
+                     ring-2 ring-emerald-400/20 hover:ring-emerald-400/40
                      hover:shadow-2xl hover:shadow-emerald-300/50 dark:hover:shadow-emerald-800/40
-                     transition-shadow duration-500">
+                     transition-all duration-500">
+      
+      {/* Animated background gradient */}
+      <motion.div
+        className="absolute inset-0 bg-gradient-to-br from-emerald-100/30 via-yellow-50/20 to-emerald-100/30 dark:from-emerald-900/15 dark:via-yellow-900/10 dark:to-emerald-900/15"
+        animate={{
+          background: [
+            'linear-gradient(135deg, rgba(16,185,129,0.12) 0%, rgba(253,224,71,0.08) 50%, rgba(16,185,129,0.12) 100%)',
+            'linear-gradient(135deg, rgba(253,224,71,0.08) 0%, rgba(16,185,129,0.12) 50%, rgba(253,224,71,0.08) 100%)',
+            'linear-gradient(135deg, rgba(16,185,129,0.12) 0%, rgba(253,224,71,0.08) 50%, rgba(16,185,129,0.12) 100%)'
+          ]
+        }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+      />
+
+      {/* Floating orbs */}
+      <motion.div
+        className="absolute top-16 right-6 w-20 h-20 rounded-full bg-gradient-to-br from-emerald-400/15 to-green-300/10 blur-2xl"
+        animate={{ 
+          x: [0, 10, 0], 
+          y: [0, -8, 0],
+          opacity: [0.2, 0.5, 0.2]
+        }}
+        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="absolute bottom-24 left-4 w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400/15 to-amber-300/10 blur-2xl"
+        animate={{ 
+          x: [0, -8, 0], 
+          y: [0, 10, 0],
+          opacity: [0.15, 0.4, 0.15]
+        }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+      />
+      <motion.div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 rounded-full bg-gradient-to-br from-emerald-300/10 to-teal-300/5 blur-2xl"
+        animate={{ 
+          scale: [1, 1.2, 1],
+          opacity: [0.1, 0.3, 0.1]
+        }}
+        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+      />
+
+      {/* Sparkle grid */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {[...Array(10)].map((_, i) => (
+          <motion.div
+            key={`sparkle-${i}`}
+            className="absolute w-1 h-1 bg-gradient-to-br from-white to-yellow-200 rounded-full"
+            style={{
+              left: `${8 + (i * 9) % 85}%`,
+              top: `${15 + (i * 13) % 70}%`,
+            }}
+            animate={{
+              opacity: [0.1, 0.7, 0.1],
+              scale: [0.5, 1.1, 0.5],
+            }}
+            transition={{
+              duration: 2.5 + (i % 3),
+              repeat: Infinity,
+              delay: i * 0.25,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Aurora shimmer effect */}
+      <motion.div
+        className="absolute inset-0 bg-gradient-to-r from-transparent via-emerald-400/8 to-transparent pointer-events-none"
+        animate={{ x: ['-100%', '100%'] }}
+        transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
+        style={{ width: '200%' }}
+      />
       
       {/* Floating decorations */}
-      <div className="absolute top-20 right-3 opacity-20 dark:opacity-10">
+      <div className="absolute top-20 right-3 opacity-25 dark:opacity-15 z-10">
         <motion.div
           animate={{ y: [0, -8, 0], rotate: [0, 10, 0] }}
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
@@ -166,7 +239,7 @@ export function SuggestedUsers() {
           <Leaf className="w-6 h-6 text-emerald-400" />
         </motion.div>
       </div>
-      <div className="absolute bottom-16 left-3 opacity-20 dark:opacity-10">
+      <div className="absolute bottom-16 left-3 opacity-25 dark:opacity-15 z-10">
         <motion.div
           animate={{ y: [0, 8, 0], rotate: [0, -10, 0] }}
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
