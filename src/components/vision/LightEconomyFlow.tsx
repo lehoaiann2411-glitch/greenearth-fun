@@ -71,10 +71,10 @@ export function LightEconomyFlow() {
             <Sun className="h-4 w-4" />
             {t('vision.lightEconomy.badge')}
           </span>
-          <h2 className="font-display text-3xl md:text-5xl font-bold text-white mb-4">
+          <h2 className="font-display text-3xl md:text-5xl font-bold text-white mb-4 drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)] [text-shadow:_0_2px_0_rgb(0_0_0_/_60%),_0_3px_6px_rgb(0_0_0_/_50%)]">
             {t('vision.lightEconomy.title')}
           </h2>
-          <p className="text-white/70 max-w-3xl mx-auto text-lg">
+          <p className="text-white max-w-3xl mx-auto text-lg drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)] [text-shadow:_0_1px_2px_rgb(0_0_0_/_50%)]">
             {t('vision.lightEconomy.subtitle')}
           </p>
         </motion.div>
@@ -95,10 +95,10 @@ export function LightEconomyFlow() {
                   <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl ${step.bgColor} mb-4`}>
                     <step.icon className={`h-8 w-8 ${step.iconColor}`} />
                   </div>
-                  <h3 className="font-display text-xl font-bold text-white mb-2">
+                  <h3 className="font-display text-xl font-bold text-white mb-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)] [text-shadow:_0_1px_2px_rgb(0_0_0_/_40%)]">
                     {t(step.titleKey)}
                   </h3>
-                  <p className="text-white/60 text-sm">
+                  <p className="text-white text-sm drop-shadow-[0_1px_1px_rgba(0,0,0,0.4)] [text-shadow:_0_1px_1px_rgb(0_0_0_/_30%)]">
                     {t(step.descKey)}
                   </p>
                 </CardContent>
@@ -135,10 +135,10 @@ export function LightEconomyFlow() {
                   <currency.icon className="h-7 w-7 text-white" />
                 </div>
                 <div>
-                  <h4 className="font-display text-lg font-semibold text-white mb-1">
+                  <h4 className="font-display text-lg font-semibold text-white mb-1 drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)] [text-shadow:_0_1px_2px_rgb(0_0_0_/_40%)]">
                     {t(currency.titleKey)}
                   </h4>
-                  <p className="text-white/60 text-sm">
+                  <p className="text-white text-sm drop-shadow-[0_1px_1px_rgba(0,0,0,0.4)] [text-shadow:_0_1px_1px_rgb(0_0_0_/_30%)]">
                     {t(currency.descKey)}
                   </p>
                 </div>
