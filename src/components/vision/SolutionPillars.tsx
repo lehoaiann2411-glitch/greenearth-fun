@@ -83,7 +83,7 @@ export function SolutionPillars() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.15 }}
             >
-              <Card className="glass-card border-white/20 h-full hover:scale-[1.02] transition-all duration-300 overflow-hidden group">
+              <Card className="bg-gradient-to-br from-emerald-800/90 via-green-800/90 to-emerald-900/90 backdrop-blur-lg border border-emerald-600/30 h-full hover:scale-[1.02] transition-all duration-300 overflow-hidden group shadow-xl">
                 {/* Glow effect */}
                 <div className={`absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 ${pillar.bgGlow} rounded-full blur-3xl opacity-50 group-hover:opacity-80 transition-opacity`} />
 
