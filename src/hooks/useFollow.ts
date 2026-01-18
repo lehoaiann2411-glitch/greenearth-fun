@@ -20,6 +20,58 @@ export function useFollowUser() {
 
       if (error) throw error;
 
+      // Check if mutual follow exists (target already follows current user)
+      const { data: mutualFollow } = await supabase
+        .from('user_follows')
+        .select('id')
+        .eq('follower_id', targetUserId)
+        .eq('following_id', user.id)
+        .maybeSingle();
+
+      // If mutual follow → auto create friendship
+      if (mutualFollow) {
+        // Check if friendship already exists
+        const { data: existingFriendship } = await supabase
+          .from('friendships')
+          .select('id')
+          .or(`and(requester_id.eq.${user.id},addressee_id.eq.${targetUserId}),and(requester_id.eq.${targetUserId},addressee_id.eq.${user.id})`)
+          .maybeSingle();
+
+        if (!existingFriendship) {
+          // Create auto-accepted friendship
+          await supabase
+            .from('friendships')
+            .insert({
+              requester_id: user.id,
+              addressee_id: targetUserId,
+              status: 'accepted',
+              accepted_at: new Date().toISOString(),
+            });
+
+          // Update friends_count for both users using RPC
+          await supabase.rpc('increment_friends_count', { p_user_id: user.id });
+          await supabase.rpc('increment_friends_count', { p_user_id: targetUserId });
+
+          // Send notifications about becoming friends
+          await supabase.from('notifications').insert([
+            {
+              user_id: targetUserId,
+              actor_id: user.id,
+              type: 'new_friend',
+              title: 'Bạn bè mới',
+              message: 'Các bạn đã theo dõi lẫn nhau và trở thành bạn bè!',
+            },
+            {
+              user_id: user.id,
+              actor_id: targetUserId,
+              type: 'new_friend',
+              title: 'Bạn bè mới',
+              message: 'Các bạn đã theo dõi lẫn nhau và trở thành bạn bè!',
+            }
+          ]);
+        }
+      }
+
       // Check if user wants follow notifications before creating
       const wantsNotification = await shouldSendNotification(targetUserId, 'follows');
       
@@ -40,6 +92,9 @@ export function useFollowUser() {
       queryClient.invalidateQueries({ queryKey: ['following'] });
       queryClient.invalidateQueries({ queryKey: ['followers'] });
       queryClient.invalidateQueries({ queryKey: ['profiles'] });
+      queryClient.invalidateQueries({ queryKey: ['profile'] });
+      queryClient.invalidateQueries({ queryKey: ['friends'] });
+      queryClient.invalidateQueries({ queryKey: ['friendship-status'] });
     },
   });
 }
