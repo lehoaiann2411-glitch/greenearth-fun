@@ -1,5 +1,10 @@
 {
   "notifications": {
+    "title": "Thông báo",
+    "markAllRead": "Đánh dấu đã đọc",
+    "noNotifications": "Chưa có thông báo",
+    "noNotificationsDesc": "Khi có thông báo mới, chúng sẽ hiển thị ở đây",
+    "seeAll": "Xem tất cả thông báo",
     "settings": {
       "title": "Cài đặt thông báo",
       "description": "Chọn loại thông báo bạn muốn nhận",

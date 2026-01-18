@@ -1,4 +1,33 @@
 {
+  "notifications": {
+    "title": "सूचनाएं",
+    "markAllRead": "सभी को पढ़ा हुआ चिह्नित करें",
+    "noNotifications": "कोई सूचना नहीं",
+    "noNotificationsDesc": "जब आपको सूचनाएं मिलेंगी, वे यहां दिखाई देंगी",
+    "seeAll": "सभी सूचनाएं देखें",
+    "settings": {
+      "title": "सूचना सेटिंग्स",
+      "description": "चुनें कि आप कौन सी सूचनाएं प्राप्त करना चाहते हैं",
+      "follows": "नए अनुयायी",
+      "followsDesc": "जब कोई आपको फॉलो करे तो सूचित करें",
+      "friendRequests": "मित्र अनुरोध",
+      "friendRequestsDesc": "नए मित्र अनुरोधों की सूचनाएं",
+      "messages": "नए संदेश",
+      "messagesDesc": "संदेश प्राप्त होने पर सूचित करें",
+      "likes": "पसंद",
+      "likesDesc": "किसी ने आपकी पोस्ट पसंद की",
+      "comments": "टिप्पणियां",
+      "commentsDesc": "आपकी पोस्ट पर टिप्पणियां",
+      "shares": "शेयर",
+      "sharesDesc": "किसी ने आपकी पोस्ट शेयर की",
+      "campaigns": "अभियान",
+      "campaignsDesc": "पर्यावरण अभियानों के अपडेट",
+      "rewards": "पुरस्कार",
+      "rewardsDesc": "Camly Coins और पुरस्कारों की सूचनाएं",
+      "saved": "सेटिंग्स सहेजी गईं",
+      "saveFailed": "सेटिंग्स सहेजने में विफल"
+    }
+  },
 "common": {
     "loading": "लोड हो रहा है...",
     "error": "एक त्रुटि हुई",

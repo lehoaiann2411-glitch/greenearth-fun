@@ -1,4 +1,33 @@
 {
+  "notifications": {
+    "title": "الإشعارات",
+    "markAllRead": "تحديد الكل كمقروء",
+    "noNotifications": "لا توجد إشعارات",
+    "noNotificationsDesc": "عندما تحصل على إشعارات، ستظهر هنا",
+    "seeAll": "عرض جميع الإشعارات",
+    "settings": {
+      "title": "إعدادات الإشعارات",
+      "description": "اختر الإشعارات التي تريد استلامها",
+      "follows": "متابعون جدد",
+      "followsDesc": "الحصول على إشعار عندما يتابعك شخص ما",
+      "friendRequests": "طلبات الصداقة",
+      "friendRequestsDesc": "إشعارات حول طلبات الصداقة الجديدة",
+      "messages": "رسائل جديدة",
+      "messagesDesc": "الحصول على إشعار عند استلام رسالة",
+      "likes": "الإعجابات",
+      "likesDesc": "أعجب شخص ما بمنشورك",
+      "comments": "التعليقات",
+      "commentsDesc": "تعليقات على منشوراتك",
+      "shares": "المشاركات",
+      "sharesDesc": "شارك شخص ما منشورك",
+      "campaigns": "الحملات",
+      "campaignsDesc": "تحديثات حول الحملات البيئية",
+      "rewards": "المكافآت",
+      "rewardsDesc": "إشعارات حول Camly Coins والمكافآت",
+      "saved": "تم حفظ الإعدادات",
+      "saveFailed": "فشل في حفظ الإعدادات"
+    }
+  },
 "common": {
     "loading": "جاري التحميل...",
     "error": "حدث خطأ",

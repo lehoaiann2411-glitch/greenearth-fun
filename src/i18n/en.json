@@ -1,5 +1,10 @@
 {
   "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Mark all read",
+    "noNotifications": "No notifications yet",
+    "noNotificationsDesc": "When you get notifications, they'll show up here",
+    "seeAll": "See all notifications",
     "settings": {
       "title": "Notification Settings",
       "description": "Choose which notifications you want to receive",
