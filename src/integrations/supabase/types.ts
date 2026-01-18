@@ -3257,6 +3257,10 @@ export type Database = {
         }
         Returns: string
       }
+      decrement_friends_count: {
+        Args: { p_user_id: string }
+        Returns: undefined
+      }
       get_conversation_other_user: {
         Args: { conv_id: string; current_user_id: string }
         Returns: string
@@ -3267,6 +3271,10 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      increment_friends_count: {
+        Args: { p_user_id: string }
+        Returns: undefined
       }
       insert_call_log_message: {
         Args: {
