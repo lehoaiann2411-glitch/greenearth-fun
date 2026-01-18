@@ -4,13 +4,19 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Tables, TablesUpdate } from '@/integrations/supabase/types';
 
 type Profile = Tables<'profiles'> & {
-  // New Camly Coin fields (added via migration)
+  // Extended fields
   camly_balance?: number;
   total_posts?: number;
   total_shares?: number;
   total_likes_given?: number;
   current_streak?: number;
   last_check_in?: string | null;
+  friends_count?: number;
+  followers_count?: number;
+  following_count?: number;
+  trees_planted?: number;
+  campaigns_joined?: number;
+  cover_photo_url?: string | null;
 };
 type ProfileUpdate = TablesUpdate<'profiles'>;
 

@@ -46,6 +46,17 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
+  // Debug: Log profile data to verify it's being passed correctly
+  console.log('ProfileHeader - profile data:', {
+    id: profile.id,
+    friends_count: profile.friends_count,
+    followers_count: profile.followers_count,
+    trees_planted: profile.trees_planted,
+    campaigns_joined: profile.campaigns_joined,
+    camly_balance: profile.camly_balance,
+    cover_photo_url: profile.cover_photo_url
+  });
+
   const formatJoinedDate = () => {
     try {
       const date = new Date(profile.created_at);
