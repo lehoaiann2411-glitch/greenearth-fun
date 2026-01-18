@@ -137,7 +137,8 @@
     "friends": "Bạn bè",
     "learn": "Học hỏi",
     "scan": "Quét rác",
-    "saved": "Kho lưu trữ"
+    "saved": "Kho lưu trữ",
+    "install": "Cài đặt"
   },
   "messages": {
     "title": "Tin nhắn",
@@ -1607,6 +1608,33 @@
       "line4": "Trái Đất chữa lành, và nhân loại cùng bước vào Kỷ Nguyên Vàng 5D.",
       "subMessage": "Đây là lời mời của chúng tôi đến bạn — tham gia một phong trào vượt qua lợi nhuận và chính trị, trở thành một phần của sự thức tỉnh hành tinh.",
       "closing": "Với Tình Yêu Trái Đất"
+    }
+  },
+  "install": {
+    "title": "Cài đặt Green Earth",
+    "subtitle": "Cài đặt ứng dụng miễn phí!",
+    "installButton": "Cài đặt ngay",
+    "installing": "Đang cài đặt...",
+    "success": "Cài đặt thành công!",
+    "alreadyInstalled": "Ứng dụng đã được cài đặt!",
+    "enjoyApp": "Mở app từ màn hình chính để trải nghiệm tốt nhất",
+    "shareLink": "Chia sẻ link này với bạn bè:",
+    "features": {
+      "offline": "Hoạt động offline",
+      "fast": "Nhanh như app native",
+      "light": "Không chiếm dung lượng",
+      "updated": "Luôn cập nhật mới nhất"
+    },
+    "iosGuide": {
+      "title": "Trên iPhone:",
+      "step1": "Nhấn nút Share",
+      "step2": "Chọn \"Thêm vào MH chính\"",
+      "step3": "Nhấn \"Thêm\" ở góc trên phải"
+    },
+    "androidGuide": {
+      "title": "Trên Android:",
+      "step1": "Nhấn menu 3 chấm",
+      "step2": "Chọn \"Cài đặt ứng dụng\" hoặc \"Thêm vào MH chính\""
     }
   }
 }

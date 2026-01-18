@@ -137,7 +137,8 @@
     "friends": "Friends",
     "learn": "Learn",
     "scan": "Scan",
-    "saved": "Saved Items"
+    "saved": "Saved Items",
+    "install": "Install"
   },
   "header": {
     "lightMode": "Light mode",
@@ -1570,6 +1571,33 @@
       "line4": "the Earth heals, and humanity enters the 5D Golden Age together.",
       "subMessage": "This is our invitation to you — to join a movement that transcends profit and politics, to be part of a planetary awakening.",
       "closing": "With Love for Earth"
+    }
+  },
+  "install": {
+    "title": "Install Green Earth",
+    "subtitle": "Install the app for free!",
+    "installButton": "Install Now",
+    "installing": "Installing...",
+    "success": "Installation successful!",
+    "alreadyInstalled": "App is already installed!",
+    "enjoyApp": "Open the app from your home screen for the best experience",
+    "shareLink": "Share this link with friends:",
+    "features": {
+      "offline": "Works offline",
+      "fast": "Fast like native app",
+      "light": "No storage needed",
+      "updated": "Always up to date"
+    },
+    "iosGuide": {
+      "title": "On iPhone:",
+      "step1": "Tap Share button",
+      "step2": "Select \"Add to Home Screen\"",
+      "step3": "Tap \"Add\" in top right"
+    },
+    "androidGuide": {
+      "title": "On Android:",
+      "step1": "Tap 3-dot menu",
+      "step2": "Select \"Install app\" or \"Add to Home Screen\""
     }
   }
 }

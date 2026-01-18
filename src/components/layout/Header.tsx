@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
-import { Leaf, Menu, X, User, LogOut, LayoutDashboard, Coins, Users, MessageCircle, UserPlus, PlayCircle, Sun, Moon, BookOpen, Camera, Bookmark } from 'lucide-react';
+import { Leaf, Menu, X, User, LogOut, LayoutDashboard, Coins, Users, MessageCircle, UserPlus, PlayCircle, Sun, Moon, BookOpen, Camera, Bookmark, Download } from 'lucide-react';
 import { GreenEarthLogo } from '@/components/brand/GreenEarthLogo';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -19,6 +19,7 @@ import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { useUnreadMessagesCount } from '@/hooks/useMessages';
 import { useFriendRequestsCount } from '@/hooks/useFriendships';
 import { useProfile } from '@/hooks/useProfile';
+import { usePWAInstall } from '@/hooks/usePWAInstall';
 
 export function Header() {
   const { t } = useTranslation();
@@ -35,6 +36,9 @@ export function Header() {
   const { data: unreadMessages } = useUnreadMessagesCount();
   const { data: friendRequests } = useFriendRequestsCount();
   const { data: profile } = useProfile();
+  const { isInstalled, isMobile } = usePWAInstall();
+  
+  const showInstallButton = isMobile && !isInstalled;
 
   useEffect(() => {
     if (isDark) {
@@ -98,6 +102,19 @@ export function Header() {
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
+          {showInstallButton && (
+            <Button
+              variant="ghost"
+              size="sm"
+              asChild
+              className="text-white hover:bg-white/10 gap-1"
+            >
+              <Link to="/install">
+                <Download className="h-4 w-4" />
+                {t('nav.install')}
+              </Link>
+            </Button>
+          )}
           <Button
             variant="ghost"
             size="icon"
@@ -216,6 +233,16 @@ export function Header() {
               </Link>
             ))}
             <div className="border-t border-border my-2" />
+            {showInstallButton && (
+              <Link
+                to="/install"
+                className="px-4 py-3 rounded-lg text-primary hover:bg-primary/10 transition-colors font-medium flex items-center gap-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <Download className="h-4 w-4" />
+                {t('nav.install')}
+              </Link>
+            )}
             {user ? (
               <>
                 <Link to="/dashboard" className="px-4 py-3 rounded-lg text-foreground hover:bg-primary/10 transition-colors font-medium flex items-center gap-2" onClick={() => setMobileMenuOpen(false)}>
