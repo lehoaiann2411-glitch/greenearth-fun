@@ -33,7 +33,13 @@
     "noFollowing": "Not following anyone",
     "mutualFollowers": "{{name}} and {{count}} other friends also follow",
     "mutualFollowerSingle": "{{name}} also follows",
-    "alsoFollows": "also follows"
+    "alsoFollows": "also follows",
+    "joined": "Joined",
+    "trees": "Trees",
+    "campaigns": "Campaigns",
+    "editCover": "Edit Cover",
+    "editProfile": "Edit Profile",
+    "website": "Website"
   },
   "calls": {
     "screenShareStarted": "Screen sharing started",

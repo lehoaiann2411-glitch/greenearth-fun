@@ -28,6 +28,19 @@
       "saveFailed": "Error al guardar configuración"
     }
   },
+  "profile": {
+    "following": "Siguiendo",
+    "noFollowing": "No sigue a nadie",
+    "mutualFollowers": "{{name}} y {{count}} amigos más también siguen",
+    "mutualFollowerSingle": "{{name}} también sigue",
+    "alsoFollows": "también sigue",
+    "joined": "Se unió",
+    "trees": "Árboles",
+    "campaigns": "Campañas",
+    "editCover": "Editar portada",
+    "editProfile": "Editar perfil",
+    "website": "Sitio web"
+  },
 "common": {
     "loading": "Cargando...",
     "error": "Ocurrió un error",

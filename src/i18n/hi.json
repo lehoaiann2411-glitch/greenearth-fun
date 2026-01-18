@@ -28,6 +28,19 @@
       "saveFailed": "सेटिंग्स सहेजने में विफल"
     }
   },
+  "profile": {
+    "following": "फॉलो कर रहे हैं",
+    "noFollowing": "किसी को फॉलो नहीं कर रहे",
+    "mutualFollowers": "{{name}} और {{count}} अन्य मित्र भी फॉलो करते हैं",
+    "mutualFollowerSingle": "{{name}} भी फॉलो करते हैं",
+    "alsoFollows": "भी फॉलो करते हैं",
+    "joined": "शामिल हुए",
+    "trees": "पेड़",
+    "campaigns": "अभियान",
+    "editCover": "कवर संपादित करें",
+    "editProfile": "प्रोफाइल संपादित करें",
+    "website": "वेबसाइट"
+  },
 "common": {
     "loading": "लोड हो रहा है...",
     "error": "एक त्रुटि हुई",

@@ -15,6 +15,8 @@ import { formatCamly } from '@/lib/camlyCoin';
 import { ProfilePhotoLightbox } from './ProfilePhotoLightbox';
 import { FollowersModal } from './FollowersModal';
 import { useMutualFollowers } from '@/hooks/useMutualFollowers';
+import { format, isValid } from 'date-fns';
+import { getDateLocale } from '@/lib/dateLocale';
 interface ProfileHeaderProps {
   profile: {
     id: string;
@@ -40,9 +42,20 @@ interface ProfileHeaderProps {
 export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
   const { user } = useAuth();
   const { toast } = useToast();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+
+  const formatJoinedDate = () => {
+    try {
+      const date = new Date(profile.created_at);
+      if (!isValid(date)) return t('common.unknown');
+      const locale = getDateLocale(i18n.language);
+      return format(date, 'MMMM yyyy', { locale });
+    } catch {
+      return t('common.unknown');
+    }
+  };
   const coverInputRef = useRef<HTMLInputElement>(null);
   const [isUploadingCover, setIsUploadingCover] = useState(false);
   const [selectedPhoto, setSelectedPhoto] = useState<'avatar' | 'cover' | null>(null);
@@ -147,7 +160,7 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
               disabled={isUploadingCover}
             >
               <Camera className="h-4 w-4" />
-              {isUploadingCover ? 'Uploading...' : 'Edit Cover'}
+              {isUploadingCover ? t('common.uploading') : t('profile.editCover')}
             </Button>
           </>
         )}
@@ -236,12 +249,12 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
                 className="flex items-center gap-1 text-primary hover:underline"
               >
                 <LinkIcon className="h-4 w-4" />
-                Website
+                {t('profile.website')}
               </a>
             )}
             <span className="flex items-center gap-1">
               <Calendar className="h-4 w-4" />
-              Joined {new Date(profile.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+              {t('profile.joined')} {formatJoinedDate()}
             </span>
           </div>
 
@@ -303,11 +316,11 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
             
             <span>
               <span className="font-bold">{profile.trees_planted ?? 0}</span>
-              <span className="text-muted-foreground ml-1">Trees</span>
+              <span className="text-muted-foreground ml-1">{t('profile.trees')}</span>
             </span>
             <span>
               <span className="font-bold">{profile.campaigns_joined ?? 0}</span>
-              <span className="text-muted-foreground ml-1">Campaigns</span>
+              <span className="text-muted-foreground ml-1">{t('profile.campaigns')}</span>
             </span>
             <span className="flex items-center gap-1">
               <CamlyCoinIcon size="sm" />

@@ -28,6 +28,19 @@
       "saveFailed": "فشل في حفظ الإعدادات"
     }
   },
+  "profile": {
+    "following": "أتابع",
+    "noFollowing": "لا يتابع أحداً",
+    "mutualFollowers": "{{name}} و{{count}} أصدقاء آخرين يتابعون أيضاً",
+    "mutualFollowerSingle": "{{name}} يتابع أيضاً",
+    "alsoFollows": "يتابع أيضاً",
+    "joined": "انضم في",
+    "trees": "أشجار",
+    "campaigns": "حملات",
+    "editCover": "تعديل الغلاف",
+    "editProfile": "تعديل الملف الشخصي",
+    "website": "الموقع"
+  },
 "common": {
     "loading": "جاري التحميل...",
     "error": "حدث خطأ",

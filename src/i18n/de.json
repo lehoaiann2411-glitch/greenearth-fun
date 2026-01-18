@@ -28,6 +28,19 @@
       "saveFailed": "Speichern fehlgeschlagen"
     }
   },
+  "profile": {
+    "following": "Folge ich",
+    "noFollowing": "Folgt niemandem",
+    "mutualFollowers": "{{name}} und {{count}} andere Freunde folgen auch",
+    "mutualFollowerSingle": "{{name}} folgt auch",
+    "alsoFollows": "folgt auch",
+    "joined": "Beigetreten",
+    "trees": "Bäume",
+    "campaigns": "Kampagnen",
+    "editCover": "Cover bearbeiten",
+    "editProfile": "Profil bearbeiten",
+    "website": "Webseite"
+  },
 "common": {
     "loading": "Wird geladen...",
     "error": "Ein Fehler ist aufgetreten",
