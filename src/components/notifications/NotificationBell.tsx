@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bell, Check, Settings, Heart, MessageCircle, UserPlus, Share2, Coins, TreePine } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
@@ -18,6 +19,7 @@ import {
   Notification 
 } from '@/hooks/useNotifications';
 import { CamlyCoinIcon } from '@/components/rewards/CamlyCoinIcon';
+import { getDateLocale } from '@/lib/dateLocale';
 
 const getNotificationIcon = (type: string) => {
   switch (type) {
@@ -52,11 +54,13 @@ const getNotificationLink = (notification: Notification) => {
 };
 
 export function NotificationBell() {
+  const { t, i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const { data: notifications, isLoading } = useNotifications();
   const { data: unreadCount } = useUnreadNotificationsCount();
   const markAsRead = useMarkNotificationAsRead();
   const markAllAsRead = useMarkAllNotificationsAsRead();
+  const dateLocale = getDateLocale(i18n.language);
 
   const handleNotificationClick = (notification: Notification) => {
     if (!notification.is_read) {
@@ -97,7 +101,7 @@ export function NotificationBell() {
       <PopoverContent className="w-80 p-0" align="end">
         {/* Header */}
         <div className="flex items-center justify-between p-3 border-b">
-          <h3 className="font-semibold">Notifications</h3>
+          <h3 className="font-semibold">{t('notifications.title')}</h3>
           <div className="flex items-center gap-1">
             {(unreadCount || 0) > 0 && (
               <Button
@@ -107,7 +111,7 @@ export function NotificationBell() {
                 onClick={handleMarkAllRead}
               >
                 <Check className="w-3 h-3 mr-1" />
-                Mark all read
+                {t('notifications.markAllRead')}
               </Button>
             )}
             <Link to="/notifications">
@@ -135,9 +139,9 @@ export function NotificationBell() {
           ) : notifications?.length === 0 ? (
             <div className="p-8 text-center">
               <Bell className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
-              <p className="text-muted-foreground text-sm">No notifications yet</p>
+              <p className="text-muted-foreground text-sm">{t('notifications.noNotifications')}</p>
               <p className="text-muted-foreground/70 text-xs mt-1">
-                When you get notifications, they'll show up here
+                {t('notifications.noNotificationsDesc')}
               </p>
             </div>
           ) : (
@@ -168,7 +172,7 @@ export function NotificationBell() {
                     <div className="flex-1 min-w-0">
                       <p className="text-sm">
                         <span className="font-semibold">
-                          {notification.actor?.full_name || 'Someone'}
+                          {notification.actor?.full_name || t('common.anonymous')}
                         </span>{' '}
                         <span className="text-muted-foreground">
                           {notification.message || notification.title}
@@ -177,7 +181,7 @@ export function NotificationBell() {
                       
                       <div className="flex items-center gap-2 mt-1">
                         <span className="text-xs text-muted-foreground">
-                          {formatDistanceToNow(new Date(notification.created_at), { addSuffix: true })}
+                          {formatDistanceToNow(new Date(notification.created_at), { addSuffix: true, locale: dateLocale })}
                         </span>
                         
                         {notification.camly_amount && notification.camly_amount > 0 && (
@@ -210,7 +214,7 @@ export function NotificationBell() {
         <div className="p-2 border-t">
           <Link to="/notifications" onClick={() => setIsOpen(false)}>
             <Button variant="ghost" className="w-full text-primary">
-              See all notifications
+              {t('notifications.seeAll')}
             </Button>
           </Link>
         </div>

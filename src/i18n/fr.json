@@ -1,4 +1,33 @@
 {
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Tout marquer comme lu",
+    "noNotifications": "Aucune notification",
+    "noNotificationsDesc": "Lorsque vous recevez des notifications, elles apparaîtront ici",
+    "seeAll": "Voir toutes les notifications",
+    "settings": {
+      "title": "Paramètres de notifications",
+      "description": "Choisissez les notifications que vous souhaitez recevoir",
+      "follows": "Nouveaux abonnés",
+      "followsDesc": "Être notifié quand quelqu'un vous suit",
+      "friendRequests": "Demandes d'amitié",
+      "friendRequestsDesc": "Notifications sur les nouvelles demandes d'amitié",
+      "messages": "Nouveaux messages",
+      "messagesDesc": "Être notifié quand vous recevez un message",
+      "likes": "J'aime",
+      "likesDesc": "Quelqu'un a aimé votre publication",
+      "comments": "Commentaires",
+      "commentsDesc": "Commentaires sur vos publications",
+      "shares": "Partages",
+      "sharesDesc": "Quelqu'un a partagé votre publication",
+      "campaigns": "Campagnes",
+      "campaignsDesc": "Mises à jour sur les campagnes environnementales",
+      "rewards": "Récompenses",
+      "rewardsDesc": "Notifications sur les Camly Coins et récompenses",
+      "saved": "Paramètres enregistrés",
+      "saveFailed": "Échec de l'enregistrement"
+    }
+  },
 "common": {
     "loading": "Chargement...",
     "error": "Une erreur s'est produite",

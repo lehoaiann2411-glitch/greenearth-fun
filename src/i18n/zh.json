@@ -1,4 +1,33 @@
 {
+  "notifications": {
+    "title": "通知",
+    "markAllRead": "全部标记为已读",
+    "noNotifications": "暂无通知",
+    "noNotificationsDesc": "有新通知时会显示在这里",
+    "seeAll": "查看所有通知",
+    "settings": {
+      "title": "通知设置",
+      "description": "选择您想接收的通知类型",
+      "follows": "新粉丝",
+      "followsDesc": "有人关注您时收到通知",
+      "friendRequests": "好友请求",
+      "friendRequestsDesc": "关于新好友请求的通知",
+      "messages": "新消息",
+      "messagesDesc": "收到消息时通知您",
+      "likes": "点赞",
+      "likesDesc": "有人点赞了您的帖子",
+      "comments": "评论",
+      "commentsDesc": "您帖子上的评论",
+      "shares": "分享",
+      "sharesDesc": "有人分享了您的帖子",
+      "campaigns": "活动",
+      "campaignsDesc": "环保活动更新",
+      "rewards": "奖励",
+      "rewardsDesc": "Camly币和奖励通知",
+      "saved": "设置已保存",
+      "saveFailed": "保存设置失败"
+    }
+  },
 "common": {
     "loading": "加载中...",
     "error": "发生错误",
