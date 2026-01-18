@@ -10,6 +10,17 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
   },
+  build: {
+    rollupOptions: {
+      onwarn(warning, warn) {
+        // Suppress the /*#__PURE__*/ annotation warnings from Web3 packages
+        if (warning.code === 'INVALID_ANNOTATION' && warning.message.includes('/*#__PURE__*/')) {
+          return;
+        }
+        warn(warning);
+      },
+    },
+  },
   plugins: [
     react(),
     mode === "development" && componentTagger(),
