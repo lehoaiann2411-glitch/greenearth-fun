@@ -745,6 +745,7 @@
     "title": "Bạn bè",
     "allFriends": "Tất cả bạn bè",
     "requests": "Lời mời",
+    "followers": "Người theo dõi",
     "suggestions": "Gợi ý",
     "searchFriends": "Tìm kiếm bạn bè...",
     "trees": "cây",
@@ -762,7 +763,11 @@
     "requestSent": "Đã gửi lời mời",
     "acceptRequest": "Chấp nhận",
     "unfriend": "Hủy kết bạn",
-    "requestAccepted": "Đã chấp nhận lời mời kết bạn!"
+    "requestAccepted": "Đã chấp nhận lời mời kết bạn!",
+    "noFollowers": "Chưa có ai theo dõi bạn",
+    "followersWillAppear": "Khi có người theo dõi bạn, họ sẽ xuất hiện ở đây",
+    "startedFollowing": "Bắt đầu theo dõi bạn",
+    "followBack": "Theo dõi lại"
   },
   "notFound": {
     "title": "404",
