@@ -1,4 +1,35 @@
 {
+  "notifications": {
+    "settings": {
+      "title": "Notification Settings",
+      "description": "Choose which notifications you want to receive",
+      "follows": "New Followers",
+      "followsDesc": "Get notified when someone follows you",
+      "friendRequests": "Friend Requests",
+      "friendRequestsDesc": "Notifications about new friend requests",
+      "messages": "New Messages",
+      "messagesDesc": "Get notified when you receive a message",
+      "likes": "Likes",
+      "likesDesc": "Someone liked your post",
+      "comments": "Comments",
+      "commentsDesc": "Comments on your posts",
+      "shares": "Shares",
+      "sharesDesc": "Someone shared your post",
+      "campaigns": "Campaigns",
+      "campaignsDesc": "Updates about environmental campaigns",
+      "rewards": "Rewards",
+      "rewardsDesc": "Notifications about Camly Coins and rewards",
+      "saved": "Settings saved",
+      "saveFailed": "Failed to save settings"
+    }
+  },
+  "profile": {
+    "following": "Following",
+    "noFollowing": "Not following anyone",
+    "mutualFollowers": "{{name}} and {{count}} other friends also follow",
+    "mutualFollowerSingle": "{{name}} also follows",
+    "alsoFollows": "also follows"
+  },
   "calls": {
     "screenShareStarted": "Screen sharing started",
     "screenShareStopped": "Screen sharing stopped",

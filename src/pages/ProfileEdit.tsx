@@ -12,6 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { Camera, Loader2, ArrowLeft } from 'lucide-react';
+import { NotificationSettings } from '@/components/notifications/NotificationSettings';
 
 export default function ProfileEdit() {
   const { user, loading: authLoading } = useAuth();
@@ -261,6 +262,11 @@ export default function ProfileEdit() {
               </form>
             </CardContent>
           </Card>
+
+          {/* Notification Settings */}
+          <div className="mt-6">
+            <NotificationSettings />
+          </div>
         </div>
       </div>
     </Layout>

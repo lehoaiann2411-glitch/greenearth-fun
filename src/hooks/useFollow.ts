@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { shouldSendNotification } from '@/hooks/useNotificationPreferences';
 
 export function useFollowUser() {
   const queryClient = useQueryClient();
@@ -19,16 +20,21 @@ export function useFollowUser() {
 
       if (error) throw error;
 
-      // Create notification for the followed user
-      await supabase.from('notifications').insert({
-        user_id: targetUserId,
-        actor_id: user.id,
-        type: 'follow',
-        title: 'New Follower',
-        message: 'started following you',
-        reference_id: user.id,
-        reference_type: 'user',
-      });
+      // Check if user wants follow notifications before creating
+      const wantsNotification = await shouldSendNotification(targetUserId, 'follows');
+      
+      if (wantsNotification) {
+        // Create notification for the followed user
+        await supabase.from('notifications').insert({
+          user_id: targetUserId,
+          actor_id: user.id,
+          type: 'follow',
+          title: 'New Follower',
+          message: 'started following you',
+          reference_id: user.id,
+          reference_type: 'user',
+        });
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['following'] });

@@ -2080,6 +2080,7 @@ export type Database = {
           last_check_in: string | null
           last_habit_date: string | null
           location: string | null
+          notification_preferences: Json | null
           notification_sounds: boolean | null
           show_online_status: boolean | null
           total_camly_claimed: number | null
@@ -2114,6 +2115,7 @@ export type Database = {
           last_check_in?: string | null
           last_habit_date?: string | null
           location?: string | null
+          notification_preferences?: Json | null
           notification_sounds?: boolean | null
           show_online_status?: boolean | null
           total_camly_claimed?: number | null
@@ -2148,6 +2150,7 @@ export type Database = {
           last_check_in?: string | null
           last_habit_date?: string | null
           location?: string | null
+          notification_preferences?: Json | null
           notification_sounds?: boolean | null
           show_online_status?: boolean | null
           total_camly_claimed?: number | null
