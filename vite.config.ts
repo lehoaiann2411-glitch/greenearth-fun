@@ -26,7 +26,7 @@ export default defineConfig(({ mode }) => ({
     mode === "development" && componentTagger(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.png', 'robots.txt', 'pwa-192x192.png', 'pwa-512x512.png'],
+      includeAssets: ['favicon-20260118.png', 'apple-touch-icon-20260118.png', 'robots.txt', 'pwa-192x192-20260118.png', 'pwa-512x512-20260118.png'],
       manifest: {
         name: 'Green Earth - Earn Camly Coin',
         short_name: 'Green Earth',
@@ -39,17 +39,17 @@ export default defineConfig(({ mode }) => ({
         start_url: '/',
         icons: [
           {
-            src: '/pwa-192x192.png',
+            src: '/pwa-192x192-20260118.png',
             sizes: '192x192',
             type: 'image/png'
           },
           {
-            src: '/pwa-512x512.png',
+            src: '/pwa-512x512-20260118.png',
             sizes: '512x512',
             type: 'image/png'
           },
           {
-            src: '/pwa-512x512.png',
+            src: '/pwa-512x512-20260118.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'maskable'
@@ -59,6 +59,9 @@ export default defineConfig(({ mode }) => ({
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MiB limit
+        cleanupOutdatedCaches: true,
+        skipWaiting: true,
+        clientsClaim: true,
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/.*\.supabase\.co\/.*/i,
