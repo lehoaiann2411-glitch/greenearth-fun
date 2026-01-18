@@ -1,4 +1,35 @@
 {
+  "notifications": {
+    "settings": {
+      "title": "Cài đặt thông báo",
+      "description": "Chọn loại thông báo bạn muốn nhận",
+      "follows": "Người theo dõi mới",
+      "followsDesc": "Nhận thông báo khi có người theo dõi bạn",
+      "friendRequests": "Lời mời kết bạn",
+      "friendRequestsDesc": "Thông báo về yêu cầu kết bạn mới",
+      "messages": "Tin nhắn mới",
+      "messagesDesc": "Thông báo khi nhận tin nhắn",
+      "likes": "Lượt thích",
+      "likesDesc": "Ai đó thích bài viết của bạn",
+      "comments": "Bình luận",
+      "commentsDesc": "Bình luận trên bài viết của bạn",
+      "shares": "Chia sẻ",
+      "sharesDesc": "Ai đó chia sẻ bài viết của bạn",
+      "campaigns": "Chiến dịch",
+      "campaignsDesc": "Cập nhật về các chiến dịch môi trường",
+      "rewards": "Phần thưởng",
+      "rewardsDesc": "Thông báo về Camly Coins và phần thưởng",
+      "saved": "Đã lưu cài đặt",
+      "saveFailed": "Không thể lưu cài đặt"
+    }
+  },
+  "profile": {
+    "following": "Đang theo dõi",
+    "noFollowing": "Chưa theo dõi ai",
+    "mutualFollowers": "{{name}} và {{count}} người bạn khác cũng theo dõi",
+    "mutualFollowerSingle": "{{name}} cũng theo dõi",
+    "alsoFollows": "cũng theo dõi"
+  },
   "calls": {
     "screenShareStarted": "Đã bắt đầu chia sẻ màn hình",
     "screenShareStopped": "Đã dừng chia sẻ màn hình",

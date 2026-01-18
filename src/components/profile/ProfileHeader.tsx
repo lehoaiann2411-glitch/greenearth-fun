@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Camera, Edit, MapPin, Briefcase, GraduationCap, Link as LinkIcon, Calendar, MessageCircle } from 'lucide-react';
+import { Camera, Edit, MapPin, Briefcase, GraduationCap, Link as LinkIcon, Calendar, MessageCircle, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { AddFriendButton } from './AddFriendButton';
@@ -13,7 +13,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import { CamlyCoinIcon } from '@/components/rewards/CamlyCoinIcon';
 import { formatCamly } from '@/lib/camlyCoin';
 import { ProfilePhotoLightbox } from './ProfilePhotoLightbox';
-
+import { FollowersModal } from './FollowersModal';
+import { useMutualFollowers } from '@/hooks/useMutualFollowers';
 interface ProfileHeaderProps {
   profile: {
     id: string;
@@ -28,6 +29,8 @@ interface ProfileHeaderProps {
     trees_planted: number;
     campaigns_joined: number;
     friends_count?: number;
+    followers_count?: number;
+    following_count?: number;
     camly_balance?: number;
     created_at: string;
   };
@@ -43,7 +46,10 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
   const coverInputRef = useRef<HTMLInputElement>(null);
   const [isUploadingCover, setIsUploadingCover] = useState(false);
   const [selectedPhoto, setSelectedPhoto] = useState<'avatar' | 'cover' | null>(null);
+  const [followersModalOpen, setFollowersModalOpen] = useState(false);
+  const [followersModalTab, setFollowersModalTab] = useState<'followers' | 'following'>('followers');
 
+  const { data: mutualFollowers } = useMutualFollowers(profile.id);
   const camlyBalance = profile.camly_balance ?? 0;
   const defaultCover = 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1200&q=80';
 
@@ -239,12 +245,62 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
             </span>
           </div>
 
+          {/* Mutual Followers (for other profiles only) */}
+          {!isOwnProfile && mutualFollowers && mutualFollowers.length > 0 && (
+            <div className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
+              <div className="flex -space-x-2">
+                {mutualFollowers.slice(0, 3).map((follower) => (
+                  <Avatar key={follower.id} className="w-6 h-6 border-2 border-background">
+                    <AvatarImage src={follower.avatar_url || ''} />
+                    <AvatarFallback className="text-xs bg-primary/10">
+                      {follower.full_name?.[0] || '?'}
+                    </AvatarFallback>
+                  </Avatar>
+                ))}
+              </div>
+              <span>
+                {mutualFollowers.length === 1 
+                  ? t('profile.mutualFollowerSingle', { name: mutualFollowers[0].full_name })
+                  : t('profile.mutualFollowers', { 
+                      name: mutualFollowers[0].full_name, 
+                      count: mutualFollowers.length - 1 
+                    })
+                }
+              </span>
+            </div>
+          )}
+
           {/* Stats Row */}
-          <div className="mt-4 flex items-center gap-6 text-sm">
-            <Link to={`/profile/${profile.id}/friends`} className="hover:underline">
-              <span className="font-bold">{profile.friends_count || 0}</span>
-              <span className="text-muted-foreground ml-1">Friends</span>
+          <div className="mt-4 flex flex-wrap items-center gap-4 md:gap-6 text-sm">
+            <Link to={`/profile/${profile.id}/friends`} className="hover:underline group">
+              <span className="font-bold group-hover:text-primary transition-colors">{profile.friends_count || 0}</span>
+              <span className="text-muted-foreground ml-1">{t('friends.friends')}</span>
             </Link>
+            
+            {/* Followers - clickable */}
+            <button 
+              onClick={() => {
+                setFollowersModalTab('followers');
+                setFollowersModalOpen(true);
+              }}
+              className="hover:underline group"
+            >
+              <span className="font-bold group-hover:text-primary transition-colors">{profile.followers_count || 0}</span>
+              <span className="text-muted-foreground ml-1">{t('friends.followers')}</span>
+            </button>
+            
+            {/* Following - clickable */}
+            <button 
+              onClick={() => {
+                setFollowersModalTab('following');
+                setFollowersModalOpen(true);
+              }}
+              className="hover:underline group"
+            >
+              <span className="font-bold group-hover:text-primary transition-colors">{profile.following_count || 0}</span>
+              <span className="text-muted-foreground ml-1">{t('profile.following')}</span>
+            </button>
+            
             <span>
               <span className="font-bold">{profile.trees_planted ?? 0}</span>
               <span className="text-muted-foreground ml-1">Trees</span>
@@ -258,6 +314,15 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
               <span className="font-bold text-yellow-600 dark:text-yellow-400">{formatCamly(camlyBalance)}</span>
             </span>
           </div>
+
+          {/* Followers Modal */}
+          <FollowersModal
+            isOpen={followersModalOpen}
+            onClose={() => setFollowersModalOpen(false)}
+            userId={profile.id}
+            userName={profile.full_name || 'User'}
+            initialTab={followersModalTab}
+          />
         </div>
       </div>
     </div>
