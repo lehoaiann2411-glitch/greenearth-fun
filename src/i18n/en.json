@@ -708,6 +708,7 @@
     "title": "Friends",
     "allFriends": "All Friends",
     "requests": "Requests",
+    "followers": "Followers",
     "suggestions": "Suggestions",
     "searchFriends": "Search friends...",
     "trees": "trees",
@@ -725,7 +726,11 @@
     "requestSent": "Request Sent",
     "acceptRequest": "Accept Request",
     "unfriend": "Unfriend",
-    "requestAccepted": "Friend request accepted!"
+    "requestAccepted": "Friend request accepted!",
+    "noFollowers": "No followers yet",
+    "followersWillAppear": "When someone follows you, they'll appear here",
+    "startedFollowing": "Started following you",
+    "followBack": "Follow back"
   },
   "notFound": {
     "title": "404",

@@ -69,7 +69,8 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
 
     try {
       const fileExt = file.name.split('.').pop();
-      const filePath = `${user.id}/cover.${fileExt}`;
+      const timestamp = Date.now();
+      const filePath = `${user.id}/cover_${timestamp}.${fileExt}`;
 
       const { error: uploadError } = await supabase.storage
         .from('cover-photos')

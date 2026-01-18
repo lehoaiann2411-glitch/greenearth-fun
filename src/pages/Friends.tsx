@@ -4,18 +4,89 @@ import { useTranslation } from 'react-i18next';
 import { Layout } from '@/components/layout/Layout';
 import { useAuth } from '@/contexts/AuthContext';
 import { useFriends, useFriendRequests, useFriendSuggestions, useAcceptFriendRequest, useRejectFriendRequest } from '@/hooks/useFriendships';
+import { useFollowers, useFollowUser, useIsFollowing } from '@/hooks/useFollow';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Input } from '@/components/ui/input';
-import { Users, UserPlus, Search, Check, X, TreePine, Loader2 } from 'lucide-react';
+import { Users, UserPlus, Search, Check, X, TreePine, Loader2, Heart } from 'lucide-react';
 import { AddFriendButton } from '@/components/profile/AddFriendButton';
+import { formatDistanceToNow } from 'date-fns';
+import { vi, enUS } from 'date-fns/locale';
 import { CamlyCoinInline } from '@/components/rewards/CamlyCoinIcon';
 
+// FollowerCard component
+function FollowerCard({ follower, dateLocale, t, followUser }: { 
+  follower: any; 
+  dateLocale: any; 
+  t: any;
+  followUser: any;
+}) {
+  const followerProfile = follower.follower;
+  const { data: isFollowingBack } = useIsFollowing(followerProfile?.id);
+  
+  const handleFollowBack = () => {
+    if (followerProfile?.id) {
+      followUser.mutate(followerProfile.id);
+    }
+  };
+
+  return (
+    <Card className="overflow-hidden hover:shadow-md transition-shadow">
+      <CardContent className="p-4">
+        <div className="flex items-center gap-4">
+          <Link to={`/profile/${followerProfile?.id}`}>
+            <Avatar className="h-16 w-16 ring-2 ring-blue-100 dark:ring-blue-900">
+              <AvatarImage src={followerProfile?.avatar_url || ''} />
+              <AvatarFallback className="bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300">
+                {followerProfile?.full_name?.charAt(0) || '?'}
+              </AvatarFallback>
+            </Avatar>
+          </Link>
+          <div className="flex-1 min-w-0">
+            <Link to={`/profile/${followerProfile?.id}`} className="font-medium hover:underline">
+              {followerProfile?.full_name || t('common.user')}
+            </Link>
+            <p className="text-sm text-muted-foreground">
+              {t('friends.startedFollowing')} {formatDistanceToNow(new Date(follower.created_at), { 
+                addSuffix: true, 
+                locale: dateLocale 
+              })}
+            </p>
+            <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
+              <TreePine className="h-3 w-3" />
+              {followerProfile?.trees_planted || 0} {t('friends.trees')}
+            </div>
+          </div>
+          <div className="flex gap-2 flex-shrink-0">
+            {!isFollowingBack && (
+              <Button
+                size="sm"
+                variant="outline"
+                className="gap-1 border-blue-200 text-blue-600 hover:bg-blue-50 dark:border-blue-800 dark:text-blue-400 dark:hover:bg-blue-950"
+                onClick={handleFollowBack}
+                disabled={followUser.isPending}
+              >
+                {followUser.isPending ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Heart className="h-4 w-4" />
+                )}
+                {t('friends.followBack')}
+              </Button>
+            )}
+            <AddFriendButton targetUserId={followerProfile?.id} variant="compact" />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 export default function Friends() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
@@ -23,9 +94,13 @@ export default function Friends() {
   const { data: friends, isLoading: friendsLoading } = useFriends(user?.id || '');
   const { data: requests, isLoading: requestsLoading } = useFriendRequests();
   const { data: suggestions, isLoading: suggestionsLoading } = useFriendSuggestions();
+  const { data: followers, isLoading: followersLoading } = useFollowers(user?.id || '');
+  const followUser = useFollowUser();
 
   const acceptRequest = useAcceptFriendRequest();
   const rejectRequest = useRejectFriendRequest();
+
+  const dateLocale = i18n.language === 'vi' ? vi : enUS;
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -59,7 +134,7 @@ export default function Friends() {
           </h1>
 
           <Tabs defaultValue="all" className="space-y-6">
-            <TabsList>
+            <TabsList className="flex-wrap">
               <TabsTrigger value="all">
                 {t('friends.allFriends')} ({friends?.length || 0})
               </TabsTrigger>
@@ -68,6 +143,14 @@ export default function Friends() {
                 {requests && requests.length > 0 && (
                   <span className="ml-2 bg-primary text-primary-foreground text-xs rounded-full px-2">
                     {requests.length}
+                  </span>
+                )}
+              </TabsTrigger>
+              <TabsTrigger value="followers" className="relative">
+                {t('friends.followers')}
+                {followers && followers.length > 0 && (
+                  <span className="ml-2 bg-blue-500 text-white text-xs rounded-full px-2">
+                    {followers.length}
                   </span>
                 )}
               </TabsTrigger>
@@ -198,6 +281,35 @@ export default function Friends() {
                   <UserPlus className="h-12 w-12 mx-auto text-muted-foreground/50" />
                   <h3 className="mt-4 text-lg font-medium">{t('friends.noRequests')}</h3>
                   <p className="text-muted-foreground">{t('friends.requestsWillAppear')}</p>
+                </div>
+              )}
+            </TabsContent>
+
+            {/* Followers */}
+            <TabsContent value="followers" className="space-y-4">
+              {followersLoading ? (
+                <div className="space-y-4">
+                  {[...Array(3)].map((_, i) => (
+                    <Skeleton key={i} className="h-24 w-full" />
+                  ))}
+                </div>
+              ) : followers && followers.length > 0 ? (
+                <div className="space-y-4">
+                  {followers.map((follower: any) => (
+                    <FollowerCard 
+                      key={follower.follower_id} 
+                      follower={follower} 
+                      dateLocale={dateLocale}
+                      t={t}
+                      followUser={followUser}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12">
+                  <Heart className="h-12 w-12 mx-auto text-muted-foreground/50" />
+                  <h3 className="mt-4 text-lg font-medium">{t('friends.noFollowers')}</h3>
+                  <p className="text-muted-foreground">{t('friends.followersWillAppear')}</p>
                 </div>
               )}
             </TabsContent>
