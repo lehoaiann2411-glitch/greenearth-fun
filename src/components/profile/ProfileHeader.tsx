@@ -60,7 +60,7 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
   const [isUploadingCover, setIsUploadingCover] = useState(false);
   const [selectedPhoto, setSelectedPhoto] = useState<'avatar' | 'cover' | null>(null);
   const [followersModalOpen, setFollowersModalOpen] = useState(false);
-  const [followersModalTab, setFollowersModalTab] = useState<'followers' | 'following'>('followers');
+  // Removed followersModalTab state - only showing followers now
 
   const { data: mutualFollowers } = useMutualFollowers(profile.id);
   const camlyBalance = profile.camly_balance ?? 0;
@@ -292,26 +292,11 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
             
             {/* Followers - clickable */}
             <button 
-              onClick={() => {
-                setFollowersModalTab('followers');
-                setFollowersModalOpen(true);
-              }}
+              onClick={() => setFollowersModalOpen(true)}
               className="hover:underline group"
             >
               <span className="font-bold group-hover:text-primary transition-colors">{profile.followers_count || 0}</span>
               <span className="text-muted-foreground ml-1">{t('friends.followers')}</span>
-            </button>
-            
-            {/* Following - clickable */}
-            <button 
-              onClick={() => {
-                setFollowersModalTab('following');
-                setFollowersModalOpen(true);
-              }}
-              className="hover:underline group"
-            >
-              <span className="font-bold group-hover:text-primary transition-colors">{profile.following_count || 0}</span>
-              <span className="text-muted-foreground ml-1">{t('profile.following')}</span>
             </button>
             
             <span>
@@ -334,7 +319,6 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
             onClose={() => setFollowersModalOpen(false)}
             userId={profile.id}
             userName={profile.full_name || 'User'}
-            initialTab={followersModalTab}
           />
         </div>
       </div>
