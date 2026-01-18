@@ -28,6 +28,19 @@
       "saveFailed": "Échec de l'enregistrement"
     }
   },
+  "profile": {
+    "following": "Abonnements",
+    "noFollowing": "Ne suit personne",
+    "mutualFollowers": "{{name}} et {{count}} autres amis suivent aussi",
+    "mutualFollowerSingle": "{{name}} suit aussi",
+    "alsoFollows": "suit aussi",
+    "joined": "Inscrit",
+    "trees": "Arbres",
+    "campaigns": "Campagnes",
+    "editCover": "Modifier couverture",
+    "editProfile": "Modifier le profil",
+    "website": "Site web"
+  },
 "common": {
     "loading": "Chargement...",
     "error": "Une erreur s'est produite",

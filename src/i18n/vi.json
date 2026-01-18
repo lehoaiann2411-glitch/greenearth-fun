@@ -33,7 +33,13 @@
     "noFollowing": "Chưa theo dõi ai",
     "mutualFollowers": "{{name}} và {{count}} người bạn khác cũng theo dõi",
     "mutualFollowerSingle": "{{name}} cũng theo dõi",
-    "alsoFollows": "cũng theo dõi"
+    "alsoFollows": "cũng theo dõi",
+    "joined": "Tham gia",
+    "trees": "Cây",
+    "campaigns": "Chiến dịch",
+    "editCover": "Sửa ảnh bìa",
+    "editProfile": "Chỉnh sửa",
+    "website": "Website"
   },
   "calls": {
     "screenShareStarted": "Đã bắt đầu chia sẻ màn hình",

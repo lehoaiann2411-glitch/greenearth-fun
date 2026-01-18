@@ -28,6 +28,19 @@
       "saveFailed": "保存设置失败"
     }
   },
+  "profile": {
+    "following": "关注",
+    "noFollowing": "暂未关注任何人",
+    "mutualFollowers": "{{name}}和{{count}}位好友也在关注",
+    "mutualFollowerSingle": "{{name}}也在关注",
+    "alsoFollows": "也在关注",
+    "joined": "加入于",
+    "trees": "树木",
+    "campaigns": "活动",
+    "editCover": "编辑封面",
+    "editProfile": "编辑资料",
+    "website": "网站"
+  },
 "common": {
     "loading": "加载中...",
     "error": "发生错误",

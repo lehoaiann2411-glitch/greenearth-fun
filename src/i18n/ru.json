@@ -28,6 +28,19 @@
       "saveFailed": "Не удалось сохранить настройки"
     }
   },
+  "profile": {
+    "following": "Подписки",
+    "noFollowing": "Нет подписок",
+    "mutualFollowers": "{{name}} и ещё {{count}} друзей тоже подписаны",
+    "mutualFollowerSingle": "{{name}} тоже подписан(а)",
+    "alsoFollows": "тоже подписан(а)",
+    "joined": "Присоединился",
+    "trees": "Деревья",
+    "campaigns": "Кампании",
+    "editCover": "Изменить обложку",
+    "editProfile": "Редактировать профиль",
+    "website": "Сайт"
+  },
 "common": {
     "loading": "Загрузка...",
     "error": "Произошла ошибка",
