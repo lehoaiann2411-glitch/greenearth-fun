@@ -8,6 +8,8 @@ export interface Reel {
   id: string;
   user_id: string;
   video_url: string;
+  image_url: string | null;
+  media_type: 'video' | 'image';
   thumbnail_url: string | null;
   caption: string | null;
   hashtags: string[] | null;
@@ -207,7 +209,8 @@ export function useCreateReel() {
 
   return useMutation({
     mutationFn: async ({
-      videoFile,
+      mediaFile,
+      mediaType,
       caption,
       hashtags,
       locationName,
@@ -215,7 +218,8 @@ export function useCreateReel() {
       musicName,
       durationSeconds,
     }: {
-      videoFile: File;
+      mediaFile: File;
+      mediaType: 'video' | 'image';
       caption?: string;
       hashtags?: string[];
       locationName?: string;
@@ -225,18 +229,19 @@ export function useCreateReel() {
     }) => {
       if (!user?.id) throw new Error('User not authenticated');
 
-      // Upload video to storage
-      const fileExt = videoFile.name.split('.').pop();
+      // Determine bucket based on media type
+      const bucket = mediaType === 'video' ? 'reels' : 'reel-images';
+      const fileExt = mediaFile.name.split('.').pop();
       const fileName = `${user.id}/${Date.now()}.${fileExt}`;
 
       const { error: uploadError } = await supabase.storage
-        .from('reels')
-        .upload(fileName, videoFile, { cacheControl: '3600' });
+        .from(bucket)
+        .upload(fileName, mediaFile, { cacheControl: '3600' });
 
       if (uploadError) throw uploadError;
 
       const { data: { publicUrl } } = supabase.storage
-        .from('reels')
+        .from(bucket)
         .getPublicUrl(fileName);
 
       // Create reel record
@@ -244,7 +249,9 @@ export function useCreateReel() {
         .from('reels')
         .insert({
           user_id: user.id,
-          video_url: publicUrl,
+          video_url: mediaType === 'video' ? publicUrl : null,
+          image_url: mediaType === 'image' ? publicUrl : null,
+          media_type: mediaType,
           caption,
           hashtags,
           location_name: locationName,

@@ -2,13 +2,14 @@ import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
-  X, Upload, Video, MapPin, Users, Hash, Music, 
-  Sparkles, Check, ChevronLeft, Play, Pause
+  X, Upload, Video, MapPin, Hash, 
+  Sparkles, ChevronLeft, Play, Camera, Image
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { CamlyCoinIcon } from '@/components/rewards/CamlyCoinIcon';
+import { ReelCameraCapture } from '@/components/reels/ReelCameraCapture';
 import { useCreateReel, REEL_REWARDS, TRENDING_HASHTAGS, REEL_STICKERS } from '@/hooks/useReels';
 import { useAuth } from '@/contexts/AuthContext';
 import { Layout } from '@/components/layout/Layout';
@@ -17,11 +18,14 @@ export default function ReelCreate() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const [step, setStep] = useState<'upload' | 'edit'>('upload');
-  const [videoFile, setVideoFile] = useState<File | null>(null);
-  const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  const [step, setStep] = useState<'upload' | 'camera' | 'edit'>('upload');
+  const [cameraMode, setCameraMode] = useState<'video' | 'photo'>('video');
+  const [mediaFile, setMediaFile] = useState<File | null>(null);
+  const [mediaUrl, setMediaUrl] = useState<string | null>(null);
+  const [mediaType, setMediaType] = useState<'video' | 'image'>('video');
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
 
@@ -34,45 +38,61 @@ export default function ReelCreate() {
 
   const createMutation = useCreateReel();
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>, type: 'video' | 'image') => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
-    if (!file.type.startsWith('video/')) {
-      alert('Vui lòng chọn file video');
-      return;
+    if (type === 'video') {
+      if (!file.type.startsWith('video/')) {
+        alert('Vui lòng chọn file video');
+        return;
+      }
+      if (file.size > 100 * 1024 * 1024) {
+        alert('Video không được quá 100MB');
+        return;
+      }
+    } else {
+      if (!file.type.startsWith('image/')) {
+        alert('Vui lòng chọn file ảnh');
+        return;
+      }
+      if (file.size > 20 * 1024 * 1024) {
+        alert('Ảnh không được quá 20MB');
+        return;
+      }
     }
 
-    // Validate file size (100MB max)
-    if (file.size > 100 * 1024 * 1024) {
-      alert('Video không được quá 100MB');
-      return;
-    }
-
-    setVideoFile(file);
+    setMediaFile(file);
+    setMediaType(type);
     const url = URL.createObjectURL(file);
-    setVideoUrl(url);
+    setMediaUrl(url);
+    setStep('edit');
+  };
+
+  const handleCameraCapture = (file: File, type: 'video' | 'image') => {
+    setMediaFile(file);
+    setMediaType(type);
+    const url = URL.createObjectURL(file);
+    setMediaUrl(url);
     setStep('edit');
   };
 
   const handleVideoLoad = () => {
-    if (videoRef.current) {
+    if (videoRef.current && mediaType === 'video') {
       const videoDuration = videoRef.current.duration;
       setDuration(Math.round(videoDuration));
 
-      // Validate duration (15-60 seconds)
       if (videoDuration < 5) {
         alert('Video phải dài ít nhất 5 giây');
-        setVideoFile(null);
-        setVideoUrl(null);
+        setMediaFile(null);
+        setMediaUrl(null);
         setStep('upload');
         return;
       }
       if (videoDuration > 120) {
         alert('Video không được dài quá 2 phút');
-        setVideoFile(null);
-        setVideoUrl(null);
+        setMediaFile(null);
+        setMediaUrl(null);
         setStep('upload');
         return;
       }
@@ -111,15 +131,16 @@ export default function ReelCreate() {
   };
 
   const handlePublish = () => {
-    if (!videoFile || !user) return;
+    if (!mediaFile || !user) return;
 
     createMutation.mutate(
       {
-        videoFile,
+        mediaFile,
+        mediaType,
         caption: caption.trim() || undefined,
         hashtags: hashtags.length > 0 ? hashtags : undefined,
         locationName: locationName.trim() || undefined,
-        durationSeconds: duration,
+        durationSeconds: mediaType === 'video' ? duration : 10, // Default 10s for images
       },
       {
         onSuccess: () => {
@@ -127,6 +148,11 @@ export default function ReelCreate() {
         },
       }
     );
+  };
+
+  const openCamera = (mode: 'video' | 'photo') => {
+    setCameraMode(mode);
+    setStep('camera');
   };
 
   if (!user) {
@@ -144,14 +170,24 @@ export default function ReelCreate() {
 
   return (
     <div className="fixed inset-0 bg-black z-50">
+      {/* Camera Mode */}
+      {step === 'camera' && (
+        <ReelCameraCapture
+          mode={cameraMode}
+          onCapture={handleCameraCapture}
+          onClose={() => setStep('upload')}
+        />
+      )}
+
       {/* Header */}
+      {step !== 'camera' && (
       <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-b from-black to-transparent">
         <button
           onClick={() => {
             if (step === 'edit') {
               setStep('upload');
-              setVideoFile(null);
-              setVideoUrl(null);
+              setMediaFile(null);
+              setMediaUrl(null);
             } else {
               navigate(-1);
             }
@@ -179,76 +215,155 @@ export default function ReelCreate() {
           </Button>
         )}
       </div>
+      )}
 
-      {step === 'upload' ? (
+      {step === 'upload' && (
         /* Upload Step */
         <div className="flex flex-col items-center justify-center h-[calc(100%-60px)] px-8">
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="text-center"
+            className="text-center w-full max-w-md"
           >
-            <div className="w-32 h-32 rounded-full bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center mx-auto mb-6">
-              <Video className="h-16 w-16 text-white" />
+            <h2 className="text-white text-2xl font-bold mb-2">Tạo Reel mới</h2>
+            <p className="text-white/60 mb-8">Quay video, chụp ảnh hoặc tải lên từ thiết bị</p>
+
+            {/* Three Options */}
+            <div className="grid grid-cols-3 gap-4 mb-8">
+              {/* Record Video */}
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => openCamera('video')}
+                className="flex flex-col items-center p-4 rounded-2xl bg-gradient-to-br from-red-500 to-pink-600 text-white"
+              >
+                <div className="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center mb-2">
+                  <Video className="h-7 w-7" />
+                </div>
+                <span className="text-sm font-medium">Quay Video</span>
+              </motion.button>
+
+              {/* Take Photo */}
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => openCamera('photo')}
+                className="flex flex-col items-center p-4 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white"
+              >
+                <div className="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center mb-2">
+                  <Camera className="h-7 w-7" />
+                </div>
+                <span className="text-sm font-medium">Chụp Ảnh</span>
+              </motion.button>
+
+              {/* Upload File */}
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => fileInputRef.current?.click()}
+                className="flex flex-col items-center p-4 rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white"
+              >
+                <div className="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center mb-2">
+                  <Upload className="h-7 w-7" />
+                </div>
+                <span className="text-sm font-medium">Tải Video</span>
+              </motion.button>
             </div>
 
-            <h2 className="text-white text-2xl font-bold mb-2">Tải video lên</h2>
-            <p className="text-white/60 mb-8">Video 5 giây - 2 phút, tối đa 100MB</p>
+            {/* Upload Image Button */}
+            <Button
+              variant="outline"
+              onClick={() => imageInputRef.current?.click()}
+              className="w-full border-white/30 text-white hover:bg-white/10 mb-4"
+            >
+              <Image className="h-5 w-5 mr-2" />
+              Hoặc tải ảnh từ thiết bị
+            </Button>
 
             <input
               ref={fileInputRef}
               type="file"
               accept="video/*"
-              onChange={handleFileSelect}
+              onChange={(e) => handleFileSelect(e, 'video')}
+              className="hidden"
+            />
+            <input
+              ref={imageInputRef}
+              type="file"
+              accept="image/*"
+              onChange={(e) => handleFileSelect(e, 'image')}
               className="hidden"
             />
 
-            <Button
-              onClick={() => fileInputRef.current?.click()}
-              className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white px-8 py-6 rounded-full text-lg font-bold"
-            >
-              <Upload className="h-5 w-5 mr-2" />
-              Chọn video
-            </Button>
-
             {/* Reward hint */}
-            <div className="mt-8 flex items-center justify-center gap-2 text-yellow-400">
+            <div className="flex items-center justify-center gap-2 text-yellow-400">
               <CamlyCoinIcon size="sm" />
               <span className="text-sm">Nhận +{REEL_REWARDS.CREATE.toLocaleString()} Camly khi đăng</span>
             </div>
+
+            {/* Tips */}
+            <div className="mt-6 text-left bg-white/5 rounded-xl p-4">
+              <p className="text-white/80 text-sm font-medium mb-2">💡 Mẹo tạo Reel hay:</p>
+              <ul className="text-white/60 text-xs space-y-1">
+                <li>• Video từ 5 giây đến 2 phút</li>
+                <li>• Ảnh sẽ hiển thị trong 10 giây</li>
+                <li>• Thêm hashtag để được nhiều người xem</li>
+              </ul>
+            </div>
           </motion.div>
         </div>
-      ) : (
+      )}
+
+      {step === 'edit' && (
         /* Edit Step */
         <div className="flex flex-col md:flex-row h-[calc(100%-60px)]">
-          {/* Video Preview */}
+          {/* Media Preview */}
           <div className="relative flex-shrink-0 w-full md:w-1/2 h-1/2 md:h-full bg-black">
-            <video
-              ref={videoRef}
-              src={videoUrl || ''}
-              className="w-full h-full object-contain"
-              loop
-              playsInline
-              onLoadedMetadata={handleVideoLoad}
-              onClick={togglePlayPause}
-            />
-
-            {/* Play/Pause overlay */}
-            <button
-              onClick={togglePlayPause}
-              className="absolute inset-0 flex items-center justify-center bg-black/20"
-            >
-              {!isPlaying && (
-                <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                  <Play className="h-8 w-8 text-white fill-white ml-1" />
-                </div>
-              )}
-            </button>
+            {mediaType === 'video' ? (
+              <video
+                ref={videoRef}
+                src={mediaUrl || ''}
+                className="w-full h-full object-contain"
+                loop
+                playsInline
+                onLoadedMetadata={handleVideoLoad}
+                onClick={togglePlayPause}
+              />
+            ) : (
+              <img
+                src={mediaUrl || ''}
+                alt="Preview"
+                className="w-full h-full object-contain"
+              />
+            )}
+            {/* Play/Pause overlay for video */}
+            {mediaType === 'video' && (
+              <button
+                onClick={togglePlayPause}
+                className="absolute inset-0 flex items-center justify-center bg-black/20"
+              >
+                {!isPlaying && (
+                  <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                    <Play className="h-8 w-8 text-white fill-white ml-1" />
+                  </div>
+                )}
+              </button>
+            )}
 
             {/* Duration badge */}
-            <div className="absolute bottom-4 right-4 px-3 py-1 rounded-full bg-black/50 text-white text-sm">
-              {Math.floor(duration / 60)}:{(duration % 60).toString().padStart(2, '0')}
-            </div>
+            {mediaType === 'video' && (
+              <div className="absolute bottom-4 right-4 px-3 py-1 rounded-full bg-black/50 text-white text-sm">
+                {Math.floor(duration / 60)}:{(duration % 60).toString().padStart(2, '0')}
+              </div>
+            )}
+
+            {/* Image indicator */}
+            {mediaType === 'image' && (
+              <div className="absolute bottom-4 right-4 px-3 py-1 rounded-full bg-emerald-500/80 text-white text-sm flex items-center gap-1">
+                <Image className="h-4 w-4" />
+                Ảnh
+              </div>
+            )}
           </div>
 
           {/* Edit Form */}
