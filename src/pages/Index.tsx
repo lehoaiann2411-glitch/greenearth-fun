@@ -15,6 +15,7 @@ import {
   Target,
   TrendingUp,
   Sparkles,
+  FileText,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import {
@@ -87,7 +88,7 @@ export default function Index() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center"
+              className="flex flex-col sm:flex-row gap-4 justify-center flex-wrap"
             >
               <Button 
                 size="lg" 
@@ -108,6 +109,17 @@ export default function Index() {
                 <Link to="/impact">
                   <Globe className="h-5 w-5 mr-2" />
                   {t('vision.hero.cta2')}
+                </Link>
+              </Button>
+              <Button 
+                size="lg" 
+                asChild
+                variant="outline"
+                className="border-white/30 text-white hover:bg-white/10 text-lg px-8 py-6 hover:scale-105 transition-all duration-300"
+              >
+                <Link to="/docs/platform">
+                  <FileText className="h-5 w-5 mr-2" />
+                  Tài liệu dự án
                 </Link>
               </Button>
             </motion.div>

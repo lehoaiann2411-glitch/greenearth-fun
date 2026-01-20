@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { 
   Leaf, Users, MessageSquare, Video, Map, Recycle, Calculator, 
   Award, BookOpen, Zap, Database, Code, Layers, Globe, 
@@ -8,7 +9,8 @@ import {
   Calendar, TrendingUp, Bot, Wallet, Play, Radio, UserPlus,
   Share2, Image, Hash, Mic, Phone, VideoIcon, Lock, Search,
   BarChart3, FileText, Lightbulb, Rocket, CheckCircle2, Clock,
-  AlertCircle, ArrowRight
+  AlertCircle, ArrowRight, Copy, ExternalLink, Home, Terminal,
+  FolderTree, Key
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +19,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { toast } from "sonner";
 
 const PlatformDocs = () => {
   const [openSections, setOpenSections] = useState<string[]>(["overview"]);
@@ -29,22 +32,41 @@ const PlatformDocs = () => {
     );
   };
 
+  const copyLink = () => {
+    navigator.clipboard.writeText("https://greenearth-fun.lovable.app/docs/platform");
+    toast.success("Đã copy link tài liệu!");
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg border-b border-green-100 dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
-              <Leaf className="w-7 h-7 text-white" />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Link to="/" className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center hover:scale-105 transition-transform">
+                <Leaf className="w-7 h-7 text-white" />
+              </Link>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  Green Earth Platform
+                </h1>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Tài liệu dự án - Phiên bản 1.0
+                </p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                Green Earth Platform
-              </h1>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                Tài liệu dự án - Phiên bản 1.0
-              </p>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" onClick={copyLink} className="gap-2">
+                <Copy className="w-4 h-4" />
+                Copy Link
+              </Button>
+              <Button variant="ghost" size="sm" asChild>
+                <Link to="/" className="gap-2">
+                  <Home className="w-4 h-4" />
+                  Trang chủ
+                </Link>
+              </Button>
             </div>
           </div>
         </div>
@@ -102,9 +124,175 @@ const PlatformDocs = () => {
               Lộ trình
             </TabsTrigger>
           </TabsList>
-
           {/* OVERVIEW TAB */}
           <TabsContent value="overview" className="space-y-6">
+            {/* Quick Links */}
+            <div className="grid md:grid-cols-3 gap-4">
+              <a 
+                href="https://greenearth-fun.lovable.app" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 p-4 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-800 hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors"
+              >
+                <ExternalLink className="w-5 h-5 text-green-600" />
+                <div>
+                  <div className="font-semibold text-green-800 dark:text-green-300">Live Website</div>
+                  <div className="text-xs text-gray-500">greenearth-fun.lovable.app</div>
+                </div>
+              </a>
+              <a 
+                href="https://id-preview--0c972b50-c284-47cb-8ccb-57e71f3827b0.lovable.app" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors"
+              >
+                <ExternalLink className="w-5 h-5 text-blue-600" />
+                <div>
+                  <div className="font-semibold text-blue-800 dark:text-blue-300">Preview URL</div>
+                  <div className="text-xs text-gray-500">Development preview</div>
+                </div>
+              </a>
+              <a 
+                href="https://lovable.dev" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 p-4 bg-purple-50 dark:bg-purple-900/20 rounded-xl border border-purple-200 dark:border-purple-800 hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors"
+              >
+                <ExternalLink className="w-5 h-5 text-purple-600" />
+                <div>
+                  <div className="font-semibold text-purple-800 dark:text-purple-300">Lovable Editor</div>
+                  <div className="text-xs text-gray-500">AI-powered development</div>
+                </div>
+              </a>
+            </div>
+
+            {/* Quick Start Guide */}
+            <Card className="border-2 border-amber-200 dark:border-amber-800">
+              <CardHeader className="bg-amber-50 dark:bg-amber-900/20">
+                <CardTitle className="flex items-center gap-2 text-amber-700 dark:text-amber-400">
+                  <Terminal className="w-6 h-6" />
+                  🚀 Quick Start Guide (Cho team mới)
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4 pt-4">
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold text-sm">1</div>
+                    <div>
+                      <div className="font-semibold text-gray-800 dark:text-gray-200">Clone repository</div>
+                      <code className="text-sm bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded mt-1 block">
+                        git clone [repository-url]
+                      </code>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold text-sm">2</div>
+                    <div>
+                      <div className="font-semibold text-gray-800 dark:text-gray-200">Cài đặt dependencies</div>
+                      <code className="text-sm bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded mt-1 block">
+                        npm install hoặc bun install
+                      </code>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold text-sm">3</div>
+                    <div>
+                      <div className="font-semibold text-gray-800 dark:text-gray-200">Chạy development server</div>
+                      <code className="text-sm bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded mt-1 block">
+                        npm run dev hoặc bun dev
+                      </code>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold text-sm">4</div>
+                    <div>
+                      <div className="font-semibold text-gray-800 dark:text-gray-200">Mở trình duyệt</div>
+                      <code className="text-sm bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded mt-1 block">
+                        http://localhost:8080
+                      </code>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Environment Variables */}
+            <Card className="border-2 border-blue-200 dark:border-blue-800">
+              <CardHeader className="bg-blue-50 dark:bg-blue-900/20">
+                <CardTitle className="flex items-center gap-2 text-blue-700 dark:text-blue-400">
+                  <Key className="w-6 h-6" />
+                  🔐 Environment Variables
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-4">
+                <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-4 font-mono text-sm">
+                  <pre className="text-gray-700 dark:text-gray-300 overflow-x-auto">
+{`# .env file (đã được cấu hình sẵn trong Lovable)
+
+# Supabase (Required)
+VITE_SUPABASE_URL=https://xxx.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJxxx...
+
+# Edge Functions (Stored in Supabase Secrets)
+OPENAI_API_KEY=sk-xxx...          # Cho AI features
+WAQI_API_KEY=xxx...               # Air Quality API
+
+# Web3 (Optional)
+VITE_WALLETCONNECT_PROJECT_ID=xxx...`}
+                  </pre>
+                </div>
+                <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800">
+                  <p className="text-sm text-amber-800 dark:text-amber-300">
+                    <strong>⚠️ Lưu ý:</strong> Các API keys được quản lý qua Lovable Cloud Secrets. 
+                    Liên hệ admin để được cấp quyền truy cập.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Project Structure */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FolderTree className="w-6 h-6 text-purple-500" />
+                  Cấu trúc thư mục
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 font-mono text-sm">
+                  <pre className="text-gray-700 dark:text-gray-300 overflow-x-auto">
+{`src/
+├── components/          # React components
+│   ├── ui/             # shadcn/ui components
+│   ├── layout/         # Header, Footer, Layout
+│   ├── social/         # Feed, Posts, Stories
+│   ├── messages/       # Chat, Calls
+│   ├── groups/         # Group features
+│   ├── campaigns/      # Campaign features
+│   ├── impact/         # Map, Environment tools
+│   ├── rewards/        # Camly, Leaderboard
+│   └── reels/          # Short videos
+├── pages/              # Route pages (20+ pages)
+├── hooks/              # Custom React hooks (50+ hooks)
+├── contexts/           # React contexts
+├── i18n/               # Translation files (11 languages)
+├── lib/                # Utilities, helpers
+└── integrations/       # Supabase client, types
+
+supabase/
+├── functions/          # Edge Functions
+│   ├── analyze-waste/  # AI waste analysis
+│   └── green-buddy-chat/ # AI chatbot
+└── migrations/         # Database migrations`}
+                  </pre>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Introduction */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-green-700 dark:text-green-400">
