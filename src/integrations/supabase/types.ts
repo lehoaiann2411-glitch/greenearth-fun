@@ -1528,6 +1528,146 @@ export type Database = {
         }
         Relationships: []
       }
+      live_stream_comments: {
+        Row: {
+          content: string
+          created_at: string | null
+          gift_amount: number | null
+          id: string
+          is_gift: boolean | null
+          stream_id: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          gift_amount?: number | null
+          id?: string
+          is_gift?: boolean | null
+          stream_id: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          gift_amount?: number | null
+          id?: string
+          is_gift?: boolean | null
+          stream_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "live_stream_comments_stream_id_fkey"
+            columns: ["stream_id"]
+            isOneToOne: false
+            referencedRelation: "live_streams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "live_stream_comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      live_stream_viewers: {
+        Row: {
+          id: string
+          joined_at: string | null
+          left_at: string | null
+          stream_id: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          joined_at?: string | null
+          left_at?: string | null
+          stream_id: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          joined_at?: string | null
+          left_at?: string | null
+          stream_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "live_stream_viewers_stream_id_fkey"
+            columns: ["stream_id"]
+            isOneToOne: false
+            referencedRelation: "live_streams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "live_stream_viewers_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      live_streams: {
+        Row: {
+          camly_earned: number | null
+          created_at: string | null
+          description: string | null
+          ended_at: string | null
+          id: string
+          peak_viewers: number | null
+          started_at: string | null
+          status: string | null
+          thumbnail_url: string | null
+          title: string
+          total_gifts: number | null
+          user_id: string
+          viewer_count: number | null
+        }
+        Insert: {
+          camly_earned?: number | null
+          created_at?: string | null
+          description?: string | null
+          ended_at?: string | null
+          id?: string
+          peak_viewers?: number | null
+          started_at?: string | null
+          status?: string | null
+          thumbnail_url?: string | null
+          title: string
+          total_gifts?: number | null
+          user_id: string
+          viewer_count?: number | null
+        }
+        Update: {
+          camly_earned?: number | null
+          created_at?: string | null
+          description?: string | null
+          ended_at?: string | null
+          id?: string
+          peak_viewers?: number | null
+          started_at?: string | null
+          status?: string | null
+          thumbnail_url?: string | null
+          title?: string
+          total_gifts?: number | null
+          user_id?: string
+          viewer_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "live_streams_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       message_reactions: {
         Row: {
           created_at: string | null
@@ -2656,6 +2796,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      sound_library: {
+        Row: {
+          artist: string | null
+          audio_url: string
+          category: string | null
+          cover_image_url: string | null
+          created_at: string | null
+          duration_seconds: number | null
+          id: string
+          is_featured: boolean | null
+          name: string
+          use_count: number | null
+        }
+        Insert: {
+          artist?: string | null
+          audio_url: string
+          category?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          duration_seconds?: number | null
+          id?: string
+          is_featured?: boolean | null
+          name: string
+          use_count?: number | null
+        }
+        Update: {
+          artist?: string | null
+          audio_url?: string
+          category?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          duration_seconds?: number | null
+          id?: string
+          is_featured?: boolean | null
+          name?: string
+          use_count?: number | null
+        }
+        Relationships: []
       }
       stories: {
         Row: {
