@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Radio, X, RefreshCcw, Mic, MicOff, Video, VideoOff,
   Sparkles, Settings, Users, MessageCircle, Gift,
@@ -20,6 +20,11 @@ import {
   useLiveComments,
   useStreamPresence
 } from '@/hooks/useLiveStream';
+import { useLiveCountdown } from '@/hooks/useLiveCountdown';
+import { useLiveSounds } from '@/hooks/useLiveSounds';
+import { useLiveRecording } from '@/hooks/useLiveRecording';
+import { LiveFilterPicker, LIVE_FILTERS } from '@/components/live/LiveFilterPicker';
+import { SaveLiveModal } from '@/components/live/SaveLiveModal';
 import { CamlyCoinIcon } from '@/components/rewards/CamlyCoinIcon';
 
 type Step = 'setup' | 'preview' | 'live';
@@ -34,6 +39,14 @@ export default function LiveCreate() {
   const [streamId, setStreamId] = useState<string | null>(null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  
+  // Beauty Filter state
+  const [selectedFilter, setSelectedFilter] = useState('original');
+  const [showFilterPicker, setShowFilterPicker] = useState(false);
+  
+  // Save modal state
+  const [showSaveModal, setShowSaveModal] = useState(false);
+  const [totalGifts, setTotalGifts] = useState(0);
 
   const createMutation = useCreateLiveStream();
   const startMutation = useStartLiveStream();
@@ -53,6 +66,25 @@ export default function LiveCreate() {
 
   const comments = useLiveComments(streamId || undefined);
   const viewerCount = useStreamPresence(streamId || undefined);
+  
+  // Custom hooks
+  const { countdown, isActive: isCountdownActive, startCountdown } = useLiveCountdown();
+  const { 
+    playCountdownBeep, 
+    playGoLiveChime, 
+    playGiftSound, 
+    playNewViewerSound,
+    playEndStreamSound 
+  } = useLiveSounds();
+  const {
+    isRecording,
+    recordedBlob,
+    recordingDuration,
+    startRecording,
+    stopRecording,
+    downloadRecording,
+    clearRecording,
+  } = useLiveRecording(localStream);
 
   // Attach stream to video element
   useEffect(() => {
@@ -60,6 +92,27 @@ export default function LiveCreate() {
       videoRef.current.srcObject = localStream;
     }
   }, [localStream]);
+
+  // Play countdown beep sound
+  useEffect(() => {
+    if (countdown !== null && countdown > 0) {
+      playCountdownBeep(countdown);
+    }
+  }, [countdown, playCountdownBeep]);
+
+  // Track gifts from comments
+  useEffect(() => {
+    const giftComments = comments.filter(c => c.is_gift);
+    const total = giftComments.reduce((sum, c) => sum + (c.gift_amount || 0), 0);
+    if (total > totalGifts) {
+      playGiftSound();
+      setTotalGifts(total);
+    }
+  }, [comments, totalGifts, playGiftSound]);
+
+  // Get current filter CSS
+  const currentFilter = LIVE_FILTERS.find(f => f.id === selectedFilter);
+  const filterCSS = currentFilter?.css !== 'none' ? currentFilter?.css : undefined;
 
   // Start camera preview
   const handleStartPreview = async () => {
@@ -71,7 +124,7 @@ export default function LiveCreate() {
     }
   };
 
-  // Create stream and go live
+  // Create stream and go live with countdown
   const handleGoLive = async () => {
     if (!title.trim()) {
       alert('Vui lòng nhập tiêu đề');
@@ -79,6 +132,13 @@ export default function LiveCreate() {
     }
 
     try {
+      // Start countdown
+      await startCountdown(3);
+      
+      // Play go live chime
+      playGoLiveChime();
+
+      // Create stream
       const stream = await createMutation.mutateAsync({
         title: title.trim(),
         description: description.trim() || undefined,
@@ -86,6 +146,10 @@ export default function LiveCreate() {
       
       setStreamId(stream.id);
       await startMutation.mutateAsync(stream.id);
+      
+      // Start recording
+      startRecording();
+      
       setStep('live');
     } catch (err) {
       console.error('Failed to go live:', err);
@@ -94,11 +158,19 @@ export default function LiveCreate() {
 
   // End stream
   const handleEndStream = async () => {
+    // Play end sound
+    playEndStreamSound();
+    
+    // Stop recording first
+    stopRecording();
+    
     if (streamId) {
       await endMutation.mutateAsync(streamId);
     }
     stopBroadcast();
-    navigate('/live');
+    
+    // Show save modal
+    setShowSaveModal(true);
   };
 
   // Handle close/back
@@ -111,6 +183,13 @@ export default function LiveCreate() {
       stopBroadcast();
       navigate(-1);
     }
+  };
+
+  // Handle save modal close
+  const handleSaveModalClose = () => {
+    setShowSaveModal(false);
+    clearRecording();
+    navigate('/live');
   };
 
   if (!user) {
@@ -196,14 +275,47 @@ export default function LiveCreate() {
       {/* Preview / Live Step */}
       {(step === 'preview' || step === 'live') && (
         <div className="relative h-full">
-          {/* Video Preview */}
+          {/* Video Preview with Filter */}
           <video
             ref={videoRef}
             className="w-full h-full object-cover"
+            style={{ filter: filterCSS }}
             autoPlay
             muted
             playsInline
           />
+
+          {/* Countdown Overlay */}
+          <AnimatePresence>
+            {isCountdownActive && countdown !== null && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="absolute inset-0 flex items-center justify-center bg-black/60 z-50"
+              >
+                <motion.div
+                  key={countdown}
+                  initial={{ scale: 2, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.5, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="text-center"
+                >
+                  {countdown > 0 ? (
+                    <span className="text-9xl font-bold text-white drop-shadow-lg">
+                      {countdown}
+                    </span>
+                  ) : (
+                    <div className="flex flex-col items-center">
+                      <span className="text-8xl mb-4">🔴</span>
+                      <span className="text-3xl font-bold text-white">LIVE!</span>
+                    </div>
+                  )}
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Overlay gradient */}
           <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/70 pointer-events-none" />
@@ -220,6 +332,10 @@ export default function LiveCreate() {
                 <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-500 text-white text-sm font-bold">
                   <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
                   LIVE
+                </div>
+                {/* Duration */}
+                <div className="px-3 py-1.5 rounded-full bg-black/50 text-white text-sm font-mono">
+                  {Math.floor(recordingDuration / 60)}:{(recordingDuration % 60).toString().padStart(2, '0')}
                 </div>
                 {/* Viewer count */}
                 <div className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-black/50 text-white text-sm">
@@ -250,6 +366,12 @@ export default function LiveCreate() {
                 <h2 className="text-white font-bold">{title || 'Untitled'}</h2>
                 <p className="text-white/60 text-sm">{profile?.full_name}</p>
               </div>
+              {step === 'live' && totalGifts > 0 && (
+                <div className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-yellow-500/20 text-yellow-400 text-sm">
+                  <CamlyCoinIcon size="sm" />
+                  <span className="font-bold">{totalGifts}</span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -316,7 +438,12 @@ export default function LiveCreate() {
                   >
                     {isMuted ? <MicOff className="h-6 w-6" /> : <Mic className="h-6 w-6" />}
                   </button>
-                  <button className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white">
+                  <button 
+                    onClick={() => setShowFilterPicker(true)}
+                    className={`w-14 h-14 rounded-full backdrop-blur-sm flex items-center justify-center text-white ${
+                      selectedFilter !== 'original' ? 'bg-pink-500' : 'bg-white/20'
+                    }`}
+                  >
                     <Sparkles className="h-6 w-6" />
                   </button>
                 </div>
@@ -324,7 +451,7 @@ export default function LiveCreate() {
                 {/* Go Live Button */}
                 <Button
                   onClick={handleGoLive}
-                  disabled={createMutation.isPending || startMutation.isPending}
+                  disabled={createMutation.isPending || startMutation.isPending || isCountdownActive}
                   className="w-full py-6 text-lg bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600"
                 >
                   {createMutation.isPending || startMutation.isPending ? (
@@ -371,12 +498,29 @@ export default function LiveCreate() {
                 >
                   {isMuted ? <MicOff className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
                 </button>
-                <button className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white">
-                  <MessageCircle className="h-5 w-5" />
+                <button 
+                  onClick={() => setShowFilterPicker(true)}
+                  className={`w-12 h-12 rounded-full backdrop-blur-sm flex items-center justify-center text-white ${
+                    selectedFilter !== 'original' ? 'bg-pink-500' : 'bg-white/20'
+                  }`}
+                >
+                  <Sparkles className="h-5 w-5" />
                 </button>
               </div>
             )}
           </div>
+
+          {/* Filter Picker */}
+          <AnimatePresence>
+            {showFilterPicker && (
+              <LiveFilterPicker
+                selectedFilter={selectedFilter}
+                onSelectFilter={(id) => setSelectedFilter(id)}
+                onClose={() => setShowFilterPicker(false)}
+                videoRef={videoRef}
+              />
+            )}
+          </AnimatePresence>
 
           {/* Error display */}
           {error && (
@@ -386,6 +530,19 @@ export default function LiveCreate() {
           )}
         </div>
       )}
+
+      {/* Save Live Modal */}
+      <SaveLiveModal
+        isOpen={showSaveModal}
+        onClose={handleSaveModalClose}
+        streamId={streamId || ''}
+        streamTitle={title}
+        recordedBlob={recordedBlob}
+        duration={recordingDuration}
+        viewerCount={viewerCount}
+        giftsReceived={totalGifts}
+        onDownload={downloadRecording}
+      />
     </div>
   );
 }
