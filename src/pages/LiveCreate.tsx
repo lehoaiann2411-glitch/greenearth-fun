@@ -1,10 +1,10 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Radio, X, RefreshCcw, Mic, MicOff, Video, VideoOff,
   Sparkles, Settings, Users, MessageCircle, Gift,
-  ChevronLeft, Share2, MoreHorizontal
+  ChevronLeft, Share2, MoreHorizontal, Play
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -58,6 +58,9 @@ export default function LiveCreate() {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showEndConfirm, setShowEndConfirm] = useState(false);
   const [totalGifts, setTotalGifts] = useState(0);
+  
+  // Tap to play state for Safari/mobile
+  const [needsTapToPlay, setNeedsTapToPlay] = useState(false);
 
   const createMutation = useCreateLiveStream();
   const startMutation = useStartLiveStream();
@@ -68,6 +71,7 @@ export default function LiveCreate() {
     isMuted,
     isVideoOff,
     error,
+    hasAudio,
     startBroadcast,
     stopBroadcast,
     toggleMute,
@@ -97,18 +101,64 @@ export default function LiveCreate() {
     clearRecording,
   } = useLiveRecording(localStream);
 
-  // Attach stream to video element - also re-attach when step changes
-  useEffect(() => {
-    if (videoRef.current && localStream) {
-      console.log('[LiveCreate] Attaching stream to video element', { step, hasStream: !!localStream });
-      videoRef.current.srcObject = localStream;
-      
-      // Ensure video plays
-      videoRef.current.play().catch(err => {
+  // Function to play video with proper error handling
+  const playVideo = useCallback(() => {
+    if (!videoRef.current) return;
+    
+    const video = videoRef.current;
+    video.muted = true; // Required for autoplay on Safari
+    
+    video.play()
+      .then(() => {
+        console.log('[LiveCreate] Video playing successfully');
+        setNeedsTapToPlay(false);
+      })
+      .catch(err => {
         console.error('[LiveCreate] Video play failed:', err);
+        setNeedsTapToPlay(true);
       });
+  }, []);
+
+  // Attach stream to video element with robust handling
+  useEffect(() => {
+    if (!localStream) return;
+    
+    const video = videoRef.current;
+    if (!video) {
+      console.log('[LiveCreate] Video ref not ready yet');
+      return;
     }
-  }, [localStream, step]);
+    
+    console.log('[LiveCreate] Attaching stream to video element', { 
+      step, 
+      hasStream: !!localStream,
+      videoTracks: localStream.getVideoTracks().length,
+      audioTracks: localStream.getAudioTracks().length
+    });
+    
+    // Set srcObject
+    video.srcObject = localStream;
+    video.muted = true; // Mute to allow autoplay
+    
+    // Handle loadedmetadata event
+    const handleLoadedMetadata = () => {
+      console.log('[LiveCreate] Video metadata loaded', {
+        videoWidth: video.videoWidth,
+        videoHeight: video.videoHeight,
+        readyState: video.readyState
+      });
+      playVideo();
+    };
+    
+    video.addEventListener('loadedmetadata', handleLoadedMetadata);
+    
+    // Try to play immediately as well
+    playVideo();
+    
+    return () => {
+      video.removeEventListener('loadedmetadata', handleLoadedMetadata);
+    };
+  }, [localStream, step, playVideo]);
 
   // Play countdown beep sound
   useEffect(() => {
@@ -138,7 +188,7 @@ export default function LiveCreate() {
   // Start camera preview
   const handleStartPreview = async () => {
     try {
-      await startBroadcast('video');
+      await startBroadcast();
       setStep('preview');
     } catch (err) {
       console.error('Failed to start preview:', err);
@@ -328,7 +378,47 @@ export default function LiveCreate() {
             autoPlay
             muted
             playsInline
+            webkit-playsinline="true"
           />
+
+          {/* Tap to Play Overlay (for Safari/mobile autoplay restrictions) */}
+          <AnimatePresence>
+            {needsTapToPlay && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="absolute inset-0 flex items-center justify-center bg-black/80 z-50"
+                onClick={playVideo}
+              >
+                <div className="text-center">
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="p-8 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-xl shadow-green-500/30"
+                  >
+                    <Play className="h-16 w-16" fill="white" />
+                  </motion.button>
+                  <p className="mt-6 text-white text-lg font-medium">Chạm để bật camera</p>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* No Audio Warning */}
+          <AnimatePresence>
+            {!hasAudio && step === 'preview' && (
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="absolute top-20 left-4 right-4 z-40 flex items-center gap-2 px-4 py-3 rounded-xl bg-yellow-500/90 text-yellow-950"
+              >
+                <MicOff className="h-5 w-5 flex-shrink-0" />
+                <span className="text-sm font-medium">Mic chưa được cấp quyền. Bạn vẫn có thể xem preview camera.</span>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Countdown Overlay */}
           <AnimatePresence>

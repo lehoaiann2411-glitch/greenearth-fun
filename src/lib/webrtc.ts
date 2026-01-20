@@ -33,6 +33,91 @@ export const getLocalStream = async (
   return navigator.mediaDevices.getUserMedia(constraints);
 };
 
+// Robust stream getter for Live streaming with fallback
+export const getLocalStreamForLive = async (
+  facingMode: 'user' | 'environment' = 'user'
+): Promise<MediaStream> => {
+  console.log('[WebRTC] Getting stream for live, facingMode:', facingMode);
+  
+  // Try #1: Full audio + video with high quality
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: {
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true,
+      },
+      video: {
+        width: { ideal: 1280, max: 1920 },
+        height: { ideal: 720, max: 1080 },
+        facingMode,
+        frameRate: { ideal: 30, max: 60 },
+      },
+    });
+    console.log('[WebRTC] Got full audio+video stream');
+    return stream;
+  } catch (err) {
+    console.warn('[WebRTC] Full stream failed, trying video-only:', err);
+  }
+
+  // Try #2: Video only (in case mic permission denied)
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: false,
+      video: {
+        width: { ideal: 1280, max: 1920 },
+        height: { ideal: 720, max: 1080 },
+        facingMode,
+        frameRate: { ideal: 30, max: 60 },
+      },
+    });
+    console.log('[WebRTC] Got video-only stream');
+    return stream;
+  } catch (err) {
+    console.warn('[WebRTC] Video-only failed, trying lower quality:', err);
+  }
+
+  // Try #3: Lower quality video
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: false,
+      video: {
+        width: { ideal: 640 },
+        height: { ideal: 480 },
+        facingMode,
+      },
+    });
+    console.log('[WebRTC] Got low-quality video stream');
+    return stream;
+  } catch (err) {
+    console.warn('[WebRTC] Low-quality video failed, trying any video:', err);
+  }
+
+  // Try #4: Any video at all
+  const stream = await navigator.mediaDevices.getUserMedia({
+    audio: false,
+    video: true,
+  });
+  console.log('[WebRTC] Got basic video stream');
+  return stream;
+};
+
+// Enable/disable audio tracks explicitly
+export const setAudioEnabled = (stream: MediaStream, enabled: boolean): void => {
+  stream.getAudioTracks().forEach((track) => {
+    track.enabled = enabled;
+    console.log('[WebRTC] Audio track enabled:', enabled);
+  });
+};
+
+// Enable/disable video tracks explicitly  
+export const setVideoEnabled = (stream: MediaStream, enabled: boolean): void => {
+  stream.getVideoTracks().forEach((track) => {
+    track.enabled = enabled;
+    console.log('[WebRTC] Video track enabled:', enabled);
+  });
+};
+
 export const createOffer = async (
   peerConnection: RTCPeerConnection
 ): Promise<RTCSessionDescriptionInit> => {
