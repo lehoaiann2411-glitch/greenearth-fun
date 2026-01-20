@@ -36,6 +36,7 @@ import LiveList from "./pages/LiveList";
 import LiveCreate from "./pages/LiveCreate";
 import LiveWatch from "./pages/LiveWatch";
 import NotFound from "./pages/NotFound";
+import PlatformDocs from "./pages/PlatformDocs";
 
 const queryClient = new QueryClient();
 
@@ -90,6 +91,9 @@ const App = () => (
                 
                 {/* PWA Install Page */}
                 <Route path="/install" element={<Install />} />
+                
+                {/* Documentation */}
+                <Route path="/docs/platform" element={<PlatformDocs />} />
                 
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
