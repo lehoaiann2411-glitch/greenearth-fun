@@ -94,15 +94,6 @@ export function SaveLiveModal({
 
       if (postError) throw postError;
 
-      // Update live stream record
-      await supabase
-        .from('live_streams')
-        .update({
-          recording_url: publicUrl,
-          is_saved_as_post: true,
-        })
-        .eq('id', streamId);
-
       toast({
         title: 'Đã lưu!',
         description: 'Video đã được đăng lên trang cá nhân',
@@ -163,15 +154,6 @@ export function SaveLiveModal({
         });
 
       if (reelError) throw reelError;
-
-      // Update live stream record
-      await supabase
-        .from('live_streams')
-        .update({
-          recording_url: publicUrl,
-          is_saved_as_post: true,
-        })
-        .eq('id', streamId);
 
       toast({
         title: 'Đã lưu!',

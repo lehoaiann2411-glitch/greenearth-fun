@@ -1619,7 +1619,10 @@ export type Database = {
           description: string | null
           ended_at: string | null
           id: string
+          is_saved_as_post: boolean | null
           peak_viewers: number | null
+          recording_duration: number | null
+          recording_url: string | null
           started_at: string | null
           status: string | null
           thumbnail_url: string | null
@@ -1634,7 +1637,10 @@ export type Database = {
           description?: string | null
           ended_at?: string | null
           id?: string
+          is_saved_as_post?: boolean | null
           peak_viewers?: number | null
+          recording_duration?: number | null
+          recording_url?: string | null
           started_at?: string | null
           status?: string | null
           thumbnail_url?: string | null
@@ -1649,7 +1655,10 @@ export type Database = {
           description?: string | null
           ended_at?: string | null
           id?: string
+          is_saved_as_post?: boolean | null
           peak_viewers?: number | null
+          recording_duration?: number | null
+          recording_url?: string | null
           started_at?: string | null
           status?: string | null
           thumbnail_url?: string | null
