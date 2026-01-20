@@ -172,8 +172,8 @@ export function useLiveComments(streamId: string | undefined) {
 export function useCreateLiveStream() {
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: async (data: { title: string; description?: string }) => {
+  return useMutation<LiveStream, Error, { title: string; description?: string }>({
+    mutationFn: async (data) => {
       const { data: stream, error } = await supabase
         .from('live_streams')
         .insert({
@@ -186,7 +186,7 @@ export function useCreateLiveStream() {
         .single();
 
       if (error) throw error;
-      return stream;
+      return stream as LiveStream;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['live-streams'] });
