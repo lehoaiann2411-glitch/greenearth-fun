@@ -194,7 +194,7 @@ export default function LiveCreate() {
 
   if (!user) {
     return (
-      <div className="fixed inset-0 bg-black flex items-center justify-center">
+      <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-purple-900/50 to-slate-900 flex items-center justify-center">
         <div className="text-center text-white">
           <Radio className="h-16 w-16 mx-auto mb-4 text-red-500" />
           <h2 className="text-xl font-bold mb-4">Đăng nhập để phát live</h2>
@@ -205,68 +205,77 @@ export default function LiveCreate() {
   }
 
   return (
-    <div className="fixed inset-0 bg-black z-50">
+    <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-purple-900/50 to-slate-900 z-50">
       {/* Setup Step */}
       {step === 'setup' && (
-        <div className="flex flex-col items-center justify-center h-full px-6">
+        <div className="flex flex-col items-center justify-center h-full px-6 relative">
+          {/* Close button - fixed z-index */}
+          <button
+            onClick={() => navigate(-1)}
+            className="absolute top-4 left-4 z-50 p-3 rounded-full bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 transition-colors duration-200"
+          >
+            <X className="h-6 w-6" />
+          </button>
+
+          {/* Ambient light effects */}
+          <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-pink-500/20 rounded-full blur-[100px] pointer-events-none" />
+          <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-purple-500/20 rounded-full blur-[100px] pointer-events-none" />
+
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="w-full max-w-md text-center"
+            className="w-full max-w-md"
           >
-            {/* Close button */}
-            <button
-              onClick={() => navigate(-1)}
-              className="absolute top-4 left-4 text-white p-2"
-            >
-              <X className="h-6 w-6" />
-            </button>
+            {/* Glassmorphism Card */}
+            <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl">
+              <div className="text-center">
+                <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-r from-red-500 to-pink-500 flex items-center justify-center shadow-lg shadow-pink-500/30">
+                  <Radio className="h-10 w-10 text-white" />
+                </div>
 
-            <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-r from-red-500 to-pink-500 flex items-center justify-center">
-              <Radio className="h-12 w-12 text-white" />
-            </div>
+                <h1 className="text-2xl font-bold text-white mb-2">
+                  Bắt đầu Live Stream
+                </h1>
+                <p className="text-white/70 mb-8">
+                  Chia sẻ khoảnh khắc với cộng đồng Green Earth
+                </p>
 
-            <h1 className="text-2xl font-bold text-white mb-2">
-              Bắt đầu Live Stream
-            </h1>
-            <p className="text-white/60 mb-8">
-              Chia sẻ khoảnh khắc với cộng đồng Green Earth
-            </p>
+                {/* Stream Title */}
+                <div className="mb-4">
+                  <Input
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="Tiêu đề live stream..."
+                    className="bg-white/15 border-white/30 text-white placeholder:text-white/50 text-center focus:bg-white/20 focus:border-pink-400/50 transition-all duration-300"
+                    maxLength={100}
+                  />
+                </div>
 
-            {/* Stream Title */}
-            <div className="mb-4">
-              <Input
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Tiêu đề live stream..."
-                className="bg-white/10 border-white/20 text-white placeholder:text-white/50 text-center"
-                maxLength={100}
-              />
-            </div>
+                {/* Description */}
+                <div className="mb-6">
+                  <Textarea
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Mô tả ngắn (tùy chọn)..."
+                    className="bg-white/15 border-white/30 text-white placeholder:text-white/50 resize-none min-h-[80px] focus:bg-white/20 focus:border-pink-400/50 transition-all duration-300"
+                    maxLength={200}
+                  />
+                </div>
 
-            {/* Description */}
-            <div className="mb-6">
-              <Textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Mô tả ngắn (tùy chọn)..."
-                className="bg-white/10 border-white/20 text-white placeholder:text-white/50 resize-none min-h-[80px]"
-                maxLength={200}
-              />
-            </div>
+                <Button
+                  onClick={handleStartPreview}
+                  className="w-full bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 py-6 text-lg shadow-lg shadow-pink-500/40 transition-all duration-300 hover:shadow-xl hover:shadow-pink-500/50"
+                >
+                  <Video className="h-5 w-5 mr-2" />
+                  Tiếp tục
+                </Button>
 
-            <Button
-              onClick={handleStartPreview}
-              className="w-full bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 py-6 text-lg"
-            >
-              <Video className="h-5 w-5 mr-2" />
-              Tiếp tục
-            </Button>
-
-            {/* Reward hint */}
-            <div className="flex items-center justify-center gap-2 text-yellow-400 mt-6">
-              <CamlyCoinIcon size="sm" />
-              <span className="text-sm">Nhận Camly từ người xem khi live!</span>
+                {/* Reward hint */}
+                <div className="flex items-center justify-center gap-2 mt-6 px-4 py-2 bg-yellow-500/10 rounded-full border border-yellow-500/20">
+                  <CamlyCoinIcon size="sm" />
+                  <span className="text-sm text-yellow-400">Nhận Camly từ người xem khi live!</span>
+                </div>
+              </div>
             </div>
           </motion.div>
         </div>
@@ -321,8 +330,11 @@ export default function LiveCreate() {
           <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/70 pointer-events-none" />
 
           {/* Top Controls */}
-          <div className="absolute top-0 left-0 right-0 p-4 flex items-center justify-between">
-            <button onClick={handleClose} className="text-white p-2">
+          <div className="absolute top-0 left-0 right-0 p-4 flex items-center justify-between z-40">
+            <button 
+              onClick={handleClose} 
+              className="p-3 rounded-full bg-black/40 backdrop-blur-sm text-white hover:bg-black/60 transition-colors duration-200"
+            >
               {step === 'live' ? <X className="h-6 w-6" /> : <ChevronLeft className="h-6 w-6" />}
             </button>
 
