@@ -10,6 +10,16 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { useAuth } from '@/contexts/AuthContext';
 import { useProfile } from '@/hooks/useProfile';
 import { 
@@ -46,6 +56,7 @@ export default function LiveCreate() {
   
   // Save modal state
   const [showSaveModal, setShowSaveModal] = useState(false);
+  const [showEndConfirm, setShowEndConfirm] = useState(false);
   const [totalGifts, setTotalGifts] = useState(0);
 
   const createMutation = useCreateLiveStream();
@@ -111,8 +122,12 @@ export default function LiveCreate() {
   }, [comments, totalGifts, playGiftSound]);
 
   // Get current filter CSS
-  const currentFilter = LIVE_FILTERS.find(f => f.id === selectedFilter);
+  const currentFilter = LIVE_FILTERS.find((f) => f.id === selectedFilter);
   const filterCSS = currentFilter?.css !== 'none' ? currentFilter?.css : undefined;
+
+  // Light boost (giúp camera sáng và đẹp hơn)
+  const baseVideoEnhanceCSS = 'brightness(1.12) contrast(1.05) saturate(1.08)';
+  const combinedFilterCSS = [baseVideoEnhanceCSS, filterCSS].filter(Boolean).join(' ');
 
   // Start camera preview
   const handleStartPreview = async () => {
@@ -174,15 +189,30 @@ export default function LiveCreate() {
   };
 
   // Handle close/back
-  const handleClose = () => {
-    if (step === 'live') {
-      if (confirm('Bạn có chắc muốn kết thúc live stream?')) {
-        handleEndStream();
-      }
-    } else {
-      stopBroadcast();
+  const navigateBack = () => {
+    const historyLength = window.history.length;
+    console.log('[LiveCreate] navigateBack', { historyLength });
+
+    if (historyLength > 1) {
       navigate(-1);
+      return;
     }
+
+    // Fallback: nếu user vào thẳng /live/create (không có history)
+    navigate('/live');
+  };
+
+  const handleClose = () => {
+    console.log('[LiveCreate] handleClose', { step });
+
+    if (step === 'live') {
+      // Trên mobile, window.confirm đôi khi không hiện ổn định → dùng AlertDialog
+      setShowEndConfirm(true);
+      return;
+    }
+
+    stopBroadcast();
+    navigateBack();
   };
 
   // Handle save modal close
@@ -211,7 +241,7 @@ export default function LiveCreate() {
         <div className="flex flex-col items-center justify-center h-full px-6 relative">
           {/* Close button - fixed z-index */}
           <button
-            onClick={() => navigate(-1)}
+            onClick={navigateBack}
             className="absolute top-4 left-4 z-50 p-3 rounded-full bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 transition-colors duration-200"
           >
             <X className="h-6 w-6" />
@@ -288,7 +318,7 @@ export default function LiveCreate() {
           <video
             ref={videoRef}
             className="w-full h-full object-cover"
-            style={{ filter: filterCSS }}
+            style={{ filter: combinedFilterCSS }}
             autoPlay
             muted
             playsInline
@@ -542,6 +572,29 @@ export default function LiveCreate() {
           )}
         </div>
       )}
+
+      {/* End live confirm */}
+      <AlertDialog open={showEndConfirm} onOpenChange={setShowEndConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Kết thúc live stream?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Bạn có chắc muốn kết thúc phiên live này không? Bản ghi (nếu có) sẽ được đề xuất lưu lại sau đó.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Ở lại</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                setShowEndConfirm(false);
+                handleEndStream();
+              }}
+            >
+              Kết thúc
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Save Live Modal */}
       <SaveLiveModal
