@@ -2,11 +2,12 @@ import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ChevronUp, X } from 'lucide-react';
+import { ChevronUp, X, Radio } from 'lucide-react';
 import { ReelCard } from '@/components/reels/ReelCard';
 import { ReelCreateButton } from '@/components/reels/ReelCreateButton';
 import { useReelsFeed, REEL_REWARDS } from '@/hooks/useReels';
 import { CamlyCoinIcon } from '@/components/rewards/CamlyCoinIcon';
+import { useLiveStreams } from '@/hooks/useLiveStream';
 export default function Reels() {
   const { t } = useTranslation();
   const { reelId } = useParams();
@@ -14,6 +15,8 @@ export default function Reels() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [activeTab, setActiveTab] = useState<'for-you' | 'following'>('for-you');
   const containerRef = useRef<HTMLDivElement>(null);
+  const { data: liveStreams } = useLiveStreams();
+  const hasActiveLive = liveStreams && liveStreams.length > 0;
 
   const handleClose = () => {
     navigate(-1);
@@ -168,6 +171,21 @@ export default function Reels() {
           </div>
         )}
       </div>
+
+      {/* Live Button - Bottom Left */}
+      <motion.button
+        onClick={() => navigate('/live')}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        className="absolute bottom-8 left-6 z-30 w-12 h-12 rounded-full bg-gradient-to-r from-red-500 to-pink-500 text-white shadow-lg flex items-center justify-center"
+      >
+        <Radio className="h-5 w-5" />
+        {hasActiveLive && (
+          <span className="absolute -top-1 -right-1 w-4 h-4 bg-white rounded-full flex items-center justify-center">
+            <span className="text-[10px] font-bold text-red-500">{liveStreams?.length}</span>
+          </span>
+        )}
+      </motion.button>
 
       {/* Create Button - Bottom Center */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30">

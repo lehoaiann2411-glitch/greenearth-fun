@@ -1,7 +1,8 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
-import { Leaf, Menu, X, User, LogOut, LayoutDashboard, Coins, Users, MessageCircle, UserPlus, PlayCircle, Sun, Moon, BookOpen, Camera, Bookmark, Download } from 'lucide-react';
+import { Leaf, Menu, X, User, LogOut, LayoutDashboard, Coins, Users, MessageCircle, UserPlus, PlayCircle, Sun, Moon, BookOpen, Camera, Bookmark, Download, Radio } from 'lucide-react';
+import { useLiveStreams } from '@/hooks/useLiveStream';
 import { GreenEarthLogo } from '@/components/brand/GreenEarthLogo';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -68,9 +69,13 @@ export function Header() {
     navigate('/');
   };
 
+  const { data: liveStreams } = useLiveStreams();
+  const hasActiveLive = liveStreams && liveStreams.length > 0;
+
   const navLinks = [
     { href: '/feed', label: t('nav.feed') },
     { href: '/reels', label: t('nav.reels'), icon: PlayCircle },
+    { href: '/live', label: 'Live', icon: Radio, isLive: hasActiveLive },
     { href: '/campaigns', label: t('nav.campaigns') },
     { href: '/groups', label: t('nav.groups'), icon: Users },
     { href: '/impact', label: t('nav.impact') },
@@ -93,10 +98,15 @@ export function Header() {
             <Link
               key={link.href}
               to={link.href}
-              className="relative px-4 py-2 text-sm font-medium transition-all duration-300 rounded-lg text-white/90 text-shadow-sm hover:text-white hover:bg-white/10 flex items-center gap-1"
+              className={`relative px-4 py-2 text-sm font-medium transition-all duration-300 rounded-lg text-white/90 text-shadow-sm hover:text-white hover:bg-white/10 flex items-center gap-1 ${
+                (link as any).isLive ? 'text-red-400' : ''
+              }`}
             >
-              {link.icon && <link.icon className="h-4 w-4" />}
+              {link.icon && <link.icon className={`h-4 w-4 ${(link as any).isLive ? 'text-red-500 animate-pulse' : ''}`} />}
               {link.label}
+              {(link as any).isLive && (
+                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+              )}
             </Link>
           ))}
         </nav>
