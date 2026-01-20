@@ -97,12 +97,18 @@ export default function LiveCreate() {
     clearRecording,
   } = useLiveRecording(localStream);
 
-  // Attach stream to video element
+  // Attach stream to video element - also re-attach when step changes
   useEffect(() => {
     if (videoRef.current && localStream) {
+      console.log('[LiveCreate] Attaching stream to video element', { step, hasStream: !!localStream });
       videoRef.current.srcObject = localStream;
+      
+      // Ensure video plays
+      videoRef.current.play().catch(err => {
+        console.error('[LiveCreate] Video play failed:', err);
+      });
     }
-  }, [localStream]);
+  }, [localStream, step]);
 
   // Play countdown beep sound
   useEffect(() => {
