@@ -2493,11 +2493,13 @@ export type Database = {
           duration_seconds: number
           hashtags: string[] | null
           id: string
+          image_url: string | null
           is_featured: boolean | null
           is_trending: boolean | null
           last_paid_views: number | null
           likes_count: number | null
           location_name: string | null
+          media_type: string | null
           music_name: string | null
           music_url: string | null
           shares_count: number | null
@@ -2516,11 +2518,13 @@ export type Database = {
           duration_seconds?: number
           hashtags?: string[] | null
           id?: string
+          image_url?: string | null
           is_featured?: boolean | null
           is_trending?: boolean | null
           last_paid_views?: number | null
           likes_count?: number | null
           location_name?: string | null
+          media_type?: string | null
           music_name?: string | null
           music_url?: string | null
           shares_count?: number | null
@@ -2539,11 +2543,13 @@ export type Database = {
           duration_seconds?: number
           hashtags?: string[] | null
           id?: string
+          image_url?: string | null
           is_featured?: boolean | null
           is_trending?: boolean | null
           last_paid_views?: number | null
           likes_count?: number | null
           location_name?: string | null
+          media_type?: string | null
           music_name?: string | null
           music_url?: string | null
           shares_count?: number | null

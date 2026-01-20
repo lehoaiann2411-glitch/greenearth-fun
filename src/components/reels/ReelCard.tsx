@@ -82,9 +82,11 @@ export function ReelCard({ reel, isActive }: ReelCardProps) {
 
   return (
     <div className="relative w-full h-full">
-      {/* Video Player - Full Screen */}
+      {/* Media Player - Full Screen */}
       <ReelPlayer
         videoUrl={reel.video_url}
+        imageUrl={reel.image_url}
+        mediaType={reel.media_type || 'video'}
         isActive={isActive}
         onDoubleTap={handleDoubleTap}
       />
