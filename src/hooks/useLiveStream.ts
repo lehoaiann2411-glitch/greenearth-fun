@@ -329,15 +329,30 @@ export function useStreamerBroadcast(streamId: string | undefined) {
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoOff, setIsVideoOff] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [hasAudio, setHasAudio] = useState(true);
   const peerConnectionsRef = useRef<Map<string, RTCPeerConnection>>(new Map());
 
-  const startBroadcast = useCallback(async (callType: 'video' | 'voice' = 'video') => {
+  const startBroadcast = useCallback(async () => {
     try {
-      const stream = await getLocalStream(callType);
+      // Use the robust live stream getter with fallback
+      const { getLocalStreamForLive } = await import('@/lib/webrtc');
+      const stream = await getLocalStreamForLive('user');
+      
+      // Check if we got audio
+      const audioTracks = stream.getAudioTracks();
+      setHasAudio(audioTracks.length > 0);
+      
+      // Log stream info for debugging
+      const videoTrack = stream.getVideoTracks()[0];
+      if (videoTrack) {
+        console.log('[useStreamerBroadcast] Video track settings:', videoTrack.getSettings());
+      }
+      
       setLocalStream(stream);
       setError(null);
       return stream;
     } catch (err) {
+      console.error('[useStreamerBroadcast] Failed to get stream:', err);
       setError('Không thể truy cập camera/mic');
       throw err;
     }
@@ -352,15 +367,24 @@ export function useStreamerBroadcast(streamId: string | undefined) {
 
   const toggleMute = useCallback(() => {
     if (localStream) {
-      toggleAudio(localStream, isMuted);
-      setIsMuted(!isMuted);
+      const newMuted = !isMuted;
+      // setAudioEnabled expects true for enabled, so pass !newMuted
+      localStream.getAudioTracks().forEach(track => {
+        track.enabled = !newMuted;
+      });
+      setIsMuted(newMuted);
+      console.log('[useStreamerBroadcast] Audio muted:', newMuted);
     }
   }, [localStream, isMuted]);
 
   const toggleCamera = useCallback(() => {
     if (localStream) {
-      toggleVideo(localStream, isVideoOff);
-      setIsVideoOff(!isVideoOff);
+      const newVideoOff = !isVideoOff;
+      localStream.getVideoTracks().forEach(track => {
+        track.enabled = !newVideoOff;
+      });
+      setIsVideoOff(newVideoOff);
+      console.log('[useStreamerBroadcast] Video off:', newVideoOff);
     }
   }, [localStream, isVideoOff]);
 
@@ -382,6 +406,7 @@ export function useStreamerBroadcast(streamId: string | undefined) {
     isMuted,
     isVideoOff,
     error,
+    hasAudio,
     startBroadcast,
     stopBroadcast,
     toggleMute,
