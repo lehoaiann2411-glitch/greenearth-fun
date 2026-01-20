@@ -6,6 +6,8 @@ import { useTranslation } from 'react-i18next';
 export function Footer() {
   const { t } = useTranslation();
   const currentYear = new Date().getFullYear();
+  const buildTime = __BUILD_TIME__;
+  const buildLabel = buildTime.replace('T', ' ').replace('Z', ' UTC').slice(0, 19);
 
   const footerLinks = {
     platform: [
@@ -113,6 +115,7 @@ export function Footer() {
             <div className="flex items-center gap-4 text-sm text-white/50">
               <Link to="/privacy" className="hover:text-accent transition-colors">{t('footer.privacy')}</Link>
               <Link to="/terms" className="hover:text-accent transition-colors">{t('footer.terms')}</Link>
+              <span className="text-xs text-white/40 tabular-nums">Build {buildLabel}</span>
             </div>
           </div>
         </div>
