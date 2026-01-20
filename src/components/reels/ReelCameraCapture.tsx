@@ -281,26 +281,26 @@ export function ReelCameraCapture({ mode, onCapture, onClose }: ReelCameraCaptur
   return (
     <div className="fixed inset-0 bg-black z-50 flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-b from-black/80 to-transparent absolute top-0 left-0 right-0 z-10">
-        <button onClick={onClose} className="text-white p-2">
+      <div className="flex-shrink-0 flex items-center justify-between px-4 py-3 pt-safe bg-black/80 relative z-10">
+        <button onClick={onClose} className="text-white p-2 -ml-2">
           <X className="h-6 w-6" />
         </button>
-        <span className="text-white font-bold">
+        <span className="text-white font-bold text-lg">
           {mode === 'video' ? 'Quay Video' : 'Chụp Ảnh'}
         </span>
         <div className="w-10" />
       </div>
 
-      {/* Camera Preview */}
-      <div className="flex-1 relative">
+      {/* Camera Preview - Fixed aspect ratio container */}
+      <div className="flex-1 flex items-center justify-center overflow-hidden bg-black relative">
         {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black">
+          <div className="absolute inset-0 flex items-center justify-center bg-black z-20">
             <div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
           </div>
         )}
 
         {error && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black">
+          <div className="absolute inset-0 flex items-center justify-center bg-black z-20">
             <div className="text-center p-6">
               <Camera className="h-16 w-16 text-white/50 mx-auto mb-4" />
               <p className="text-white/70 mb-4">{error}</p>
@@ -311,14 +311,20 @@ export function ReelCameraCapture({ mode, onCapture, onClose }: ReelCameraCaptur
           </div>
         )}
 
-        <video
-          ref={videoRef}
-          className="w-full h-full object-cover"
-          autoPlay
-          playsInline
-          muted
-          style={{ transform: facingMode === 'user' ? 'scaleX(-1)' : 'none' }}
-        />
+        {/* Video container with proper aspect ratio */}
+        <div className="relative w-full h-full max-h-[70vh] flex items-center justify-center">
+          <video
+            ref={videoRef}
+            className="max-w-full max-h-full w-auto h-auto object-contain rounded-lg"
+            autoPlay
+            playsInline
+            muted
+            style={{ 
+              transform: facingMode === 'user' ? 'scaleX(-1)' : 'none',
+              maxHeight: 'calc(100vh - 200px)'
+            }}
+          />
+        </div>
         <canvas ref={canvasRef} className="hidden" />
 
         {/* Recording Timer */}
@@ -326,7 +332,7 @@ export function ReelCameraCapture({ mode, onCapture, onClose }: ReelCameraCaptur
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="absolute top-20 left-1/2 -translate-x-1/2 bg-red-500/90 px-4 py-2 rounded-full flex items-center gap-2"
+            className="absolute top-4 left-1/2 -translate-x-1/2 bg-red-500/90 px-4 py-2 rounded-full flex items-center gap-2 z-10"
           >
             <motion.div
               animate={{ opacity: [1, 0.3, 1] }}
@@ -339,21 +345,21 @@ export function ReelCameraCapture({ mode, onCapture, onClose }: ReelCameraCaptur
 
         {/* Min duration hint */}
         {isRecording && recordingTime < MIN_DURATION && (
-          <div className="absolute top-32 left-1/2 -translate-x-1/2 bg-black/60 px-3 py-1 rounded-full">
+          <div className="absolute top-16 left-1/2 -translate-x-1/2 bg-black/60 px-3 py-1 rounded-full z-10">
             <span className="text-white text-sm">Tối thiểu {MIN_DURATION}s</span>
           </div>
         )}
       </div>
 
-      {/* Controls */}
-      <div className="bg-gradient-to-t from-black/90 to-transparent py-8 px-4">
-        <div className="flex items-center justify-center gap-8">
+      {/* Controls - Always visible at bottom */}
+      <div className="flex-shrink-0 bg-black py-6 px-4 pb-safe">
+        <div className="flex items-center justify-center gap-6 sm:gap-10">
           {/* Switch Camera Button */}
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={switchCamera}
             disabled={isRecording}
-            className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center disabled:opacity-50"
+            className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center disabled:opacity-50 border-2 border-white/30"
           >
             <RefreshCcw className="h-6 w-6 text-white" />
           </motion.button>
@@ -363,30 +369,32 @@ export function ReelCameraCapture({ mode, onCapture, onClose }: ReelCameraCaptur
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={isRecording ? stopRecording : startRecording}
-              className={`w-20 h-20 rounded-full flex items-center justify-center transition-all ${
+              className={`w-24 h-24 rounded-full flex items-center justify-center transition-all shadow-lg ${
                 isRecording 
-                  ? 'bg-red-500 ring-4 ring-red-300' 
-                  : 'bg-white ring-4 ring-white/50'
+                  ? 'bg-red-500 ring-4 ring-red-300/50' 
+                  : 'bg-white ring-4 ring-white/30'
               }`}
             >
               {isRecording ? (
-                <Square className="h-8 w-8 text-white fill-white" />
+                <Square className="h-10 w-10 text-white fill-white" />
               ) : (
-                <Circle className="h-16 w-16 text-red-500 fill-red-500" />
+                <div className="w-20 h-20 rounded-full bg-red-500 flex items-center justify-center">
+                  <Circle className="h-16 w-16 text-white fill-red-500" />
+                </div>
               )}
             </motion.button>
           ) : (
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={capturePhoto}
-              className="w-20 h-20 rounded-full bg-white ring-4 ring-white/50 flex items-center justify-center"
+              className="w-24 h-24 rounded-full bg-white ring-4 ring-white/30 flex items-center justify-center shadow-lg"
             >
-              <div className="w-16 h-16 rounded-full border-4 border-black/20" />
+              <div className="w-20 h-20 rounded-full border-4 border-gray-300 bg-white" />
             </motion.button>
           )}
 
           {/* Mode indicator */}
-          <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
+          <div className="w-14 h-14 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center border-2 border-white/20">
             {mode === 'video' ? (
               <Video className="h-6 w-6 text-red-400" />
             ) : (
@@ -398,7 +406,14 @@ export function ReelCameraCapture({ mode, onCapture, onClose }: ReelCameraCaptur
         {/* Duration hint for video */}
         {mode === 'video' && !isRecording && (
           <p className="text-center text-white/60 text-sm mt-4">
-            Video từ {MIN_DURATION}s đến {MAX_DURATION / 60} phút
+            Nhấn để quay • {MIN_DURATION}s - {MAX_DURATION / 60} phút
+          </p>
+        )}
+        
+        {/* Hint for photo */}
+        {mode === 'photo' && (
+          <p className="text-center text-white/60 text-sm mt-4">
+            Nhấn để chụp ảnh
           </p>
         )}
       </div>
