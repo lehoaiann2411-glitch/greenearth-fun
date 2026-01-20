@@ -37,6 +37,7 @@ import LiveCreate from "./pages/LiveCreate";
 import LiveWatch from "./pages/LiveWatch";
 import NotFound from "./pages/NotFound";
 import PlatformDocs from "./pages/PlatformDocs";
+import { PWAUpdateToast } from "@/components/pwa/PWAUpdateToast";
 
 const queryClient = new QueryClient();
 
@@ -45,6 +46,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
+      <PWAUpdateToast />
       <BrowserRouter>
         <AuthProvider>
           <Web3Provider>
