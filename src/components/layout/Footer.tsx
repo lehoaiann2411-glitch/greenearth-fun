@@ -12,6 +12,7 @@ export function Footer() {
       { href: '/campaigns', label: t('footer.campaigns') },
       { href: '/community', label: t('footer.community') },
       { href: '/leaderboard', label: t('footer.leaderboard') },
+      { href: '/docs/platform', label: 'Platform Docs' },
     ],
     about: [
       { href: '/about', label: t('footer.aboutUs') },
