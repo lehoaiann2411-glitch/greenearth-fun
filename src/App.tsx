@@ -32,6 +32,9 @@ import Reels from "./pages/Reels";
 import ReelCreate from "./pages/ReelCreate";
 import SavedItems from "./pages/SavedItems";
 import Install from "./pages/Install";
+import LiveList from "./pages/LiveList";
+import LiveCreate from "./pages/LiveCreate";
+import LiveWatch from "./pages/LiveWatch";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -76,6 +79,11 @@ const App = () => (
                 <Route path="/reels" element={<Reels />} />
                 <Route path="/reels/create" element={<ReelCreate />} />
                 <Route path="/reels/:reelId" element={<Reels />} />
+                
+                {/* Live Stream Routes */}
+                <Route path="/live" element={<LiveList />} />
+                <Route path="/live/create" element={<LiveCreate />} />
+                <Route path="/live/:streamId" element={<LiveWatch />} />
                 
                 {/* Saved Items */}
                 <Route path="/saved" element={<SavedItems />} />
