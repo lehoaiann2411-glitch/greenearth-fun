@@ -72,6 +72,7 @@ export function Header() {
   const { data: liveStreams } = useLiveStreams();
   const hasActiveLive = liveStreams && liveStreams.length > 0;
 
+  // Desktop nav links (full navigation)
   const navLinks = [
     { href: '/feed', label: t('nav.feed') },
     { href: '/reels', label: t('nav.reels'), icon: PlayCircle },
@@ -79,6 +80,16 @@ export function Header() {
     { href: '/campaigns', label: t('nav.campaigns') },
     { href: '/groups', label: t('nav.groups'), icon: Users },
     { href: '/impact', label: t('nav.impact') },
+    { href: '/rewards', label: t('nav.rewards'), icon: Coins },
+    { href: '/leaderboard', label: t('nav.leaderboard') },
+  ];
+
+  // Mobile hamburger menu items (excluding items in bottom nav)
+  const mobileMenuLinks = [
+    { href: '/live', label: 'Live', icon: Radio, isLive: hasActiveLive },
+    { href: '/campaigns', label: t('nav.campaigns'), icon: Leaf },
+    { href: '/groups', label: t('nav.groups'), icon: Users },
+    { href: '/impact', label: t('nav.impact'), icon: LayoutDashboard },
     { href: '/rewards', label: t('nav.rewards'), icon: Coins },
     { href: '/leaderboard', label: t('nav.leaderboard') },
   ];
@@ -230,46 +241,89 @@ export function Header() {
       </div>
 
       {mobileMenuOpen && (
-        <div className="md:hidden absolute top-20 inset-x-0 bg-white/95 backdrop-blur-lg border-b border-white/20 animate-fade-in-up">
-          <nav className="container py-4 flex flex-col gap-2">
-            {navLinks.map((link) => (
+        <div className="md:hidden absolute top-20 inset-x-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg border-b border-white/20 animate-fade-in-up max-h-[70vh] overflow-y-auto">
+          <nav className="container py-4 flex flex-col gap-1">
+            {/* Secondary navigation items */}
+            {mobileMenuLinks.map((link) => (
               <Link
                 key={link.href}
                 to={link.href}
-                className="px-4 py-3 rounded-lg text-foreground hover:bg-primary/10 transition-colors font-medium"
+                className={`px-4 py-3 rounded-lg text-foreground hover:bg-primary/10 transition-colors font-medium flex items-center gap-3 ${
+                  (link as any).isLive ? 'text-red-500' : ''
+                }`}
                 onClick={() => setMobileMenuOpen(false)}
               >
+                {link.icon && <link.icon className={`h-5 w-5 ${(link as any).isLive ? 'animate-pulse' : ''}`} />}
                 {link.label}
+                {(link as any).isLive && (
+                  <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                )}
               </Link>
             ))}
+            
             <div className="border-t border-border my-2" />
-            {showInstallButton && (
-              <Link
-                to="/install"
-                className="px-4 py-3 rounded-lg text-primary hover:bg-primary/10 transition-colors font-medium flex items-center gap-2"
-                onClick={() => setMobileMenuOpen(false)}
+            
+            {/* Theme & Language */}
+            <div className="px-4 py-2 flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">{isDark ? t('header.darkMode') : t('header.lightMode')}</span>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleDarkMode}
+                className="h-8 w-8"
               >
-                <Download className="h-4 w-4" />
-                {t('nav.install')}
-              </Link>
+                {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+              </Button>
+            </div>
+            
+            <div className="px-4 py-2">
+              <LanguageSwitcher />
+            </div>
+            
+            {showInstallButton && (
+              <>
+                <div className="border-t border-border my-2" />
+                <Link
+                  to="/install"
+                  className="px-4 py-3 rounded-lg text-primary hover:bg-primary/10 transition-colors font-medium flex items-center gap-3"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Download className="h-5 w-5" />
+                  {t('nav.install')}
+                </Link>
+              </>
             )}
+            
+            <div className="border-t border-border my-2" />
+            
             {user ? (
               <>
-                <Link to="/dashboard" className="px-4 py-3 rounded-lg text-foreground hover:bg-primary/10 transition-colors font-medium flex items-center gap-2" onClick={() => setMobileMenuOpen(false)}>
-                  <LayoutDashboard className="h-4 w-4" />
+                <Link 
+                  to="/dashboard" 
+                  className="px-4 py-3 rounded-lg text-foreground hover:bg-primary/10 transition-colors font-medium flex items-center gap-3" 
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <LayoutDashboard className="h-5 w-5" />
                   {t('nav.dashboard')}
                 </Link>
-                <Link to="/profile" className="px-4 py-3 rounded-lg text-foreground hover:bg-primary/10 transition-colors font-medium flex items-center gap-2" onClick={() => setMobileMenuOpen(false)}>
-                  <User className="h-4 w-4" />
-                  {t('nav.profile')}
+                <Link 
+                  to="/saved" 
+                  className="px-4 py-3 rounded-lg text-foreground hover:bg-primary/10 transition-colors font-medium flex items-center gap-3" 
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Bookmark className="h-5 w-5" />
+                  {t('nav.saved')}
                 </Link>
-                <button onClick={() => { handleSignOut(); setMobileMenuOpen(false); }} className="px-4 py-3 rounded-lg text-destructive hover:bg-destructive/10 transition-colors font-medium flex items-center gap-2 text-left">
-                  <LogOut className="h-4 w-4" />
+                <button 
+                  onClick={() => { handleSignOut(); setMobileMenuOpen(false); }} 
+                  className="px-4 py-3 rounded-lg text-destructive hover:bg-destructive/10 transition-colors font-medium flex items-center gap-3 text-left w-full"
+                >
+                  <LogOut className="h-5 w-5" />
                   {t('nav.logout')}
                 </button>
               </>
             ) : (
-              <div className="flex flex-col gap-2 px-4">
+              <div className="flex flex-col gap-2 px-4 pt-2">
                 <Button variant="outline" asChild className="w-full">
                   <Link to="/auth" onClick={() => setMobileMenuOpen(false)}>{t('nav.login')}</Link>
                 </Button>
