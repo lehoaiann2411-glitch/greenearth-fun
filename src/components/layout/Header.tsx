@@ -87,10 +87,10 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full">
       <div className="absolute inset-0 bg-black/10 backdrop-blur-sm border-b border-white/10" />
       
-      <div className="container relative flex h-36 items-center justify-between">
-        <Link to="/" className="flex items-center group relative">
+      <div className="container relative flex h-20 sm:h-24 md:h-36 items-center justify-between">
+        <Link to="/" className="flex items-center group relative overflow-hidden max-w-[120px] sm:max-w-[160px] md:max-w-none">
           <div className="absolute inset-0 bg-[radial-gradient(circle,_rgba(255,255,255,0.5)_0%,_rgba(74,222,128,0.4)_40%,_transparent_70%)] blur-xl scale-[2] animate-glow-pulse pointer-events-none" />
-          <GreenEarthLogo className="relative z-10 h-32 w-auto transition-transform duration-300 group-hover:scale-105 drop-shadow-lg" />
+          <GreenEarthLogo className="relative z-10 h-16 sm:h-20 md:h-32 w-auto transition-transform duration-300 group-hover:scale-105 drop-shadow-lg" />
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
@@ -230,7 +230,7 @@ export function Header() {
       </div>
 
       {mobileMenuOpen && (
-        <div className="md:hidden absolute top-16 inset-x-0 bg-white/95 backdrop-blur-lg border-b border-white/20 animate-fade-in-up">
+        <div className="md:hidden absolute top-20 inset-x-0 bg-white/95 backdrop-blur-lg border-b border-white/20 animate-fade-in-up">
           <nav className="container py-4 flex flex-col gap-2">
             {navLinks.map((link) => (
               <Link
