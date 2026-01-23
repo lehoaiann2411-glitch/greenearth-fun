@@ -37,7 +37,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="space-y-4">
             <Link to="/" className="flex items-center group relative">
-              <GreenEarthLogo className="relative z-10 h-20 md:h-32 w-auto drop-shadow-lg" />
+              <GreenEarthLogo className="relative z-10 h-20 md:h-32 w-auto" />
             </Link>
             <p className="text-white/80 text-sm leading-relaxed text-shadow-sm">{t('footer.description')}</p>
             <div className="flex items-center gap-3">
