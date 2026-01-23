@@ -37,7 +37,6 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="space-y-4">
             <Link to="/" className="flex items-center group relative">
-              <div className="absolute inset-0 bg-[radial-gradient(circle,_rgba(255,255,255,0.5)_0%,_rgba(74,222,128,0.4)_40%,_transparent_70%)] blur-xl scale-[2] animate-glow-pulse pointer-events-none" />
               <GreenEarthLogo className="relative z-10 h-20 md:h-32 w-auto drop-shadow-lg" />
             </Link>
             <p className="text-white/80 text-sm leading-relaxed text-shadow-sm">{t('footer.description')}</p>
