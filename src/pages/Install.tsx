@@ -55,7 +55,7 @@ export default function Install() {
                   ease: "easeInOut"
                 }}
               >
-                <GreenEarthLogo className="h-32 w-auto drop-shadow-xl" />
+                <GreenEarthLogo className="h-32 w-auto" />
               </motion.div>
             </div>
 
