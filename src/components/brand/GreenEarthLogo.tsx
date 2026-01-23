@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import newLogo from "@/assets/green-earth-logo-clear.png";
+import newLogo from "@/assets/green-earth-logo-transparent.png";
 import { cn } from "@/lib/utils";
 
 type Props = Omit<React.ImgHTMLAttributes<HTMLImageElement>, "src">;
