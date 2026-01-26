@@ -96,7 +96,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full">
-      <div className="absolute inset-0 bg-black/10 backdrop-blur-sm border-b border-white/10" />
+      <div className="absolute inset-0 border-b border-white/10" />
       
       <div className="container relative flex h-20 sm:h-24 md:h-36 items-center justify-between">
         <Link to="/" className="flex items-center group relative max-w-[120px] sm:max-w-[160px] md:max-w-none">
