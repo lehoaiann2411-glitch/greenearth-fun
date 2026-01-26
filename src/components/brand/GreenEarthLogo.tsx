@@ -16,7 +16,7 @@ export function GreenEarthLogo({
     <video
       {...videoProps}
       src={animatedLogo}
-      className={cn(className)}
+      className={cn("mix-blend-multiply dark:mix-blend-screen dark:invert", className)}
       autoPlay
       loop
       muted
