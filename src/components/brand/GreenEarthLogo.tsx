@@ -1,23 +1,28 @@
 import * as React from "react";
 
-import newLogo from "@/assets/green-earth-logo-transparent.png";
+import animatedLogo from "@/assets/green-earth-logo-animated.mp4";
 import { cn } from "@/lib/utils";
 
-type Props = Omit<React.ImgHTMLAttributes<HTMLImageElement>, "src">;
+type Props = Omit<React.VideoHTMLAttributes<HTMLVideoElement>, "src"> & {
+  alt?: string;
+};
 
 export function GreenEarthLogo({
   className,
   alt = "Green Earth",
-  ...imgProps
+  ...videoProps
 }: Props) {
   return (
-    <img
-      {...imgProps}
-      src={newLogo}
-      alt={alt}
+    <video
+      {...videoProps}
+      src={animatedLogo}
       className={cn(className)}
+      autoPlay
+      loop
+      muted
+      playsInline
       draggable={false}
-      loading={imgProps.loading ?? "eager"}
+      aria-label={alt}
     />
   );
 }
