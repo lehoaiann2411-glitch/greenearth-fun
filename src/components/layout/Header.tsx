@@ -100,7 +100,7 @@ export function Header() {
       
       <div className="container relative flex h-20 sm:h-24 md:h-28 items-center justify-between overflow-visible">
         <Link to="/" className="flex items-center group relative overflow-visible">
-          <GreenEarthLogo className="relative z-10 h-48 sm:h-72 md:h-96 w-auto -my-14 sm:-my-24 md:-my-32 transition-transform duration-300 group-hover:scale-105" />
+          <GreenEarthLogo className="relative z-10 h-48 sm:h-[288px] md:h-96 w-auto -my-14 sm:-my-24 md:-my-32 transition-transform duration-300 group-hover:scale-105" />
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
