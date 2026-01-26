@@ -15,7 +15,7 @@ export function GreenEarthLogo({
       {...imgProps}
       src={animatedLogo}
       alt={alt}
-      className={cn("mix-blend-screen", className)}
+      className={cn("mix-blend-screen object-contain", className)}
       draggable={false}
     />
   );
