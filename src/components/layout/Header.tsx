@@ -95,12 +95,12 @@ export function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full">
+    <header className="sticky top-0 z-50 w-full overflow-visible">
       <div className="absolute inset-0 border-b border-white/10" />
       
-      <div className="container relative flex h-44 sm:h-56 md:h-80 items-center justify-between">
-        <Link to="/" className="flex items-center group relative max-w-[320px] sm:max-w-[432px] md:max-w-none">
-          <GreenEarthLogo className="relative z-10 h-80 sm:h-[432px] md:h-[648px] w-auto transition-transform duration-300 group-hover:scale-105" />
+      <div className="container relative flex h-20 sm:h-24 md:h-28 items-center justify-between overflow-visible">
+        <Link to="/" className="flex items-center group relative overflow-visible">
+          <GreenEarthLogo className="relative z-10 h-32 sm:h-48 md:h-64 w-auto -my-6 sm:-my-12 md:-my-16 transition-transform duration-300 group-hover:scale-105" />
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
