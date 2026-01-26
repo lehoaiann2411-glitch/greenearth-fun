@@ -98,9 +98,9 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full">
       <div className="absolute inset-0 border-b border-white/10" />
       
-      <div className="container relative flex h-28 sm:h-40 md:h-56 items-center justify-between">
-        <Link to="/" className="flex items-center group relative max-w-[220px] sm:max-w-[300px] md:max-w-none">
-          <GreenEarthLogo className="relative z-10 h-52 sm:h-72 md:h-[432px] w-auto transition-transform duration-300 group-hover:scale-105" />
+      <div className="container relative flex h-44 sm:h-56 md:h-80 items-center justify-between">
+        <Link to="/" className="flex items-center group relative max-w-[320px] sm:max-w-[432px] md:max-w-none">
+          <GreenEarthLogo className="relative z-10 h-80 sm:h-[432px] md:h-[648px] w-auto transition-transform duration-300 group-hover:scale-105" />
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
